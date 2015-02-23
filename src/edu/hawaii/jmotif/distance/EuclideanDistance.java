@@ -66,9 +66,8 @@ public final class EuclideanDistance {
     if (point1.length == point2.length) {
       Double sum = 0D;
       for (int i = 0; i < point1.length; i++) {
-        sum = sum
-            + (Integer.valueOf(point2[i]).doubleValue() - Integer.valueOf(point1[i]).doubleValue())
-            * (Integer.valueOf(point2[i]).doubleValue() - Integer.valueOf(point1[i]).doubleValue());
+        int tmp = point2[i] - point1[i];
+        sum = sum + tmp * tmp;
       }
       return sum;
     }

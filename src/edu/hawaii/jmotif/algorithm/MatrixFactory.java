@@ -86,7 +86,7 @@ public final class MatrixFactory {
   }
 
   /**
-   * Mimics Matlab function for reshape: returns the m-by-n matrix B whose elements are taken
+   * Returns the m-by-n matrix B whose elements are taken
    * column-wise from A. An error results if A does not have m*n elements.
    * 
    * @param a the source matrix.
@@ -96,15 +96,15 @@ public final class MatrixFactory {
    * @return reshaped matrix.
    */
   public static double[][] reshape(double[][] a, int n, int m) {
-    int cEl = 0;
+    int currentElement = 0;
     int aRows = a.length;
 
     double[][] res = new double[n][m];
 
     for (int j = 0; j < m; j++) {
       for (int i = 0; i < n; i++) {
-        res[i][j] = a[cEl % aRows][cEl / aRows];
-        cEl++;
+        res[i][j] = a[currentElement % aRows][currentElement / aRows];
+        currentElement++;
       }
     }
 
