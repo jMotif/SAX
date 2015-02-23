@@ -5,12 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
-import edu.hawaii.jmotif.logic.JmotifMapEntry;
 
 /**
  * The collection for SAXRecords. This datastructure is used in the parallel SAX implementation.
@@ -220,45 +218,6 @@ public class SAXRecords implements Iterable<SaxRecord> {
    */
   public SortedSet<Integer> getAllIndices() {
     return (SortedSet<Integer>) this.realTSindex.keySet();
-  }
-
-  /**
-   * This build an index of digrams.
-   * 
-   * @return the map whose keys are digrams, while values are the same digram and it occurrence
-   * indexes.
-   */
-  public HashMap<String, JmotifMapEntry<String, ArrayList<Integer>>> getDigramFrequencies() {
-    // the resulting structure
-    HashMap<String, JmotifMapEntry<String, ArrayList<Integer>>> res = new HashMap<String, JmotifMapEntry<String, ArrayList<Integer>>>();
-
-    // iterating over whole set
-    Entry<Integer, SaxRecord> previousSAXWord = null;
-    int counter = 0;
-    for (Entry<Integer, SaxRecord> currentEntry : this.realTSindex.entrySet()) {
-      if (null == previousSAXWord) {
-        previousSAXWord = currentEntry;
-        continue;
-      }
-
-      StringBuffer sb = new StringBuffer();
-
-      sb.append(previousSAXWord.getValue().getPayload()).append(' ')
-          .append(currentEntry.getValue().getPayload());
-
-      JmotifMapEntry<String, ArrayList<Integer>> entry = res.get(sb.toString());
-      if (null == entry) {
-        entry = new JmotifMapEntry<String, ArrayList<Integer>>(sb.toString(),
-            new ArrayList<Integer>());
-        res.put(sb.toString(), entry);
-      }
-
-      entry.getValue().add(counter);
-
-      counter++;
-      previousSAXWord = currentEntry;
-    }
-    return res;
   }
 
   /**

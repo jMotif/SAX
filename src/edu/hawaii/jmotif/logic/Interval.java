@@ -1,17 +1,24 @@
 package edu.hawaii.jmotif.logic;
 
+/**
+ * Implements an interval class. Zero based, all-inclusive end.
+ * 
+ * @author psenin
+ * 
+ */
 public class Interval {
 
   private int start;
   private int end;
   private double coverage;
 
-  public Interval(Integer start, Integer end, Double coverage) {
-    this.start = start.intValue();
-    this.end = end.intValue();
-    this.coverage = coverage.doubleValue();
-  }
-
+  /**
+   * Constructor.
+   * 
+   * @param start
+   * @param end
+   * @param coverage
+   */
   public Interval(int start, int end, double coverage) {
     this.start = start;
     this.end = end;
@@ -34,13 +41,6 @@ public class Interval {
     this.end = end;
   }
 
-  public boolean overlaps(Interval intervalB) {
-    if ((this.start <= intervalB.getEnd()) && (this.end >= intervalB.getStart())) {
-      return true;
-    }
-    return false;
-  }
-
   public int getStart() {
     return this.start;
   }
@@ -53,6 +53,26 @@ public class Interval {
     return Math.abs(this.end - this.start);
   }
 
+  /**
+   * True if intervals overlap even by a single point.
+   * 
+   * @param intervalB the other interval.
+   * 
+   * @return true if overlap exists.
+   */
+  public boolean overlaps(Interval intervalB) {
+    if ((this.start <= intervalB.getEnd()) && (this.end >= intervalB.getStart())) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Computes the overlap in percents
+   * 
+   * @param otherInterval
+   * @return
+   */
   public Double overlapInPercent(Interval otherInterval) {
     if (this.overlaps(otherInterval)) {
       int overlapStart = Math.max(this.start, otherInterval.start);
@@ -64,7 +84,13 @@ public class Interval {
     return 0D;
   }
 
-  public int basesInsideOverlap(Interval otherInterval) {
+  /**
+   * Counts points within an interval.
+   * 
+   * @param otherInterval
+   * @return
+   */
+  public int pointsInsideOverlap(Interval otherInterval) {
     int res = 0;
     if (this.overlaps(otherInterval)) {
       int overlapStart = Math.max(this.start, otherInterval.start);
@@ -74,23 +100,40 @@ public class Interval {
     return res;
   }
 
-  public int basesOutsideOverlap(Interval otherInterval) {
+  /**
+   * Counts points outside of interval.
+   * 
+   * @param otherInterval
+   * @return
+   */
+  public int pointsOutsideOverlap(Interval otherInterval) {
     int res = 0;
     if (this.overlaps(otherInterval)) {
       int overlapStart = Math.max(this.start, otherInterval.start);
       int overlapEnd = Math.min(this.end, otherInterval.end);
       res = res + Math.abs(overlapStart - this.start)
           + Math.abs(overlapStart - otherInterval.start);
-
       res = res + Math.abs(overlapEnd - this.end) + Math.abs(overlapEnd - otherInterval.end);
     }
     return res;
   }
 
+  /**
+   * How much does this extends to the left?
+   * 
+   * @param other
+   * @return
+   */
   public int extendsLeft(Interval other) {
     return other.start - this.start;
   }
 
+  /**
+   * How much this extends to the right?
+   * 
+   * @param other
+   * @return
+   */
   public int extendsRight(Interval other) {
     return this.end - other.end;
   }

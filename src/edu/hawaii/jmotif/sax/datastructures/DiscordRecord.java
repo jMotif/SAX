@@ -17,10 +17,10 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
   /** The NN distance. */
   private double nnDistance;
 
-  /** The Rule - useful for SAXSequitur. */
+  /** The Rule - useful for GrammarViz. */
   private int ruleId;
 
-  /** The payload - auxiliary variable. */
+  /** The payload - auxiliary variable, may contain a SAX string. */
   private String payload;
 
   /** The info string - auxiliary variable. */

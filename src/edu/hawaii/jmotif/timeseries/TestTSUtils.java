@@ -6,9 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import edu.hawaii.jmotif.sax.alphabet.Alphabet;
-import edu.hawaii.jmotif.sax.alphabet.BuildTelemetryAlphabet;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
-import edu.hawaii.jmotif.sax.alphabet.UniversalTelemetryAlphabet;
 
 /**
  * Test the TSUtils.
@@ -40,8 +38,6 @@ public class TestTSUtils {
   private static final double ts2Min = 0.5;
 
   private static final Alphabet normalA = new NormalAlphabet();
-  private static final Alphabet buildA = new BuildTelemetryAlphabet();
-  private static final Alphabet universalA = new UniversalTelemetryAlphabet();
 
   private static final double[] tsWithNaNs = { 1.0, 4.0, 7.0, 10.0, 2.0, 5.0, 8.0, 11.0, 3.0, 6.0,
       9.0, 12 };
@@ -352,42 +348,6 @@ public class TestTSUtils {
     double[] ts1 = { -0.179, -0.18, -0.1801 };
     assertTrue("test num2char",
         "ddc".equalsIgnoreCase(new String(TSUtils.ts2String(new Timeseries(ts1, t), normalA, 7))));
-
-    // private static final double[] case2 = { -0.31629 };
-    assertEquals("test num2char", 'a', TSUtils.num2char(-0.32, buildA.getCuts(2)));
-    assertEquals("test num2char", 'b', TSUtils.num2char(-0.315, buildA.getCuts(2)));
-    assertEquals("test num2char", 'b', TSUtils.num2char(0.0, buildA.getCuts(2)));
-    double[] ts2 = { -0.32, -0.315, 0.0 };
-    assertTrue("test num2char",
-        "abb".equalsIgnoreCase(new String(TSUtils.ts2String(new Timeseries(ts2, t), buildA, 2))));
-    // private static final double[] case7 = { -0.682417, -0.48938550000000003, -0.3782755,
-    // -0.189843, 0.0532246, 0.67971 };
-    assertEquals("test num2char", 'd', TSUtils.num2char(-0.375, buildA.getCuts(7)));
-    assertEquals("test num2char", 'd', TSUtils.num2char(-0.1899, buildA.getCuts(7)));
-    assertEquals("test num2char", 'c', TSUtils.num2char(-0.3787, buildA.getCuts(7)));
-    double[] ts3 = { -0.375, -0.1899, -0.3787 };
-    assertTrue("test num2char",
-        "ddc".equalsIgnoreCase(new String(TSUtils.ts2String(new Timeseries(ts3, t), buildA, 7))));
-
-    // private static final double[] case2 = { -0.098181 };
-    assertEquals("test num2char", 'a', TSUtils.num2char(-0.099, universalA.getCuts(2)));
-    assertEquals("test num2char", 'b', TSUtils.num2char(-0.0980, universalA.getCuts(2)));
-    assertEquals("test num2char", 'b', TSUtils.num2char(0.0, universalA.getCuts(2)));
-    double[] ts4 = { -0.099, -0.098, 0.0 };
-    assertTrue("test num2char", "abb".equalsIgnoreCase(new String(TSUtils.ts2String(new Timeseries(
-        ts4, t), universalA, 2))));
-    // private static final double[] case7 = { -0.795985, -0.443235, -0.165274, 0.0, 0.399261,
-    // 0.77940 };
-    assertEquals("test num2char", 'd', TSUtils.num2char(-0.001, universalA.getCuts(7)));
-    assertEquals("test num2char", 'd', TSUtils.num2char(-0.164, universalA.getCuts(7)));
-    assertEquals("test num2char", 'c', TSUtils.num2char(-0.166, universalA.getCuts(7)));
-    double[] ts5 = { -0.001, -0.164, -0.166 };
-    assertTrue("test num2char", "ddc".equalsIgnoreCase(new String(TSUtils.ts2String(new Timeseries(
-        ts5, t), universalA, 7))));
-
-    double[] ts6 = { -0.001, Double.NEGATIVE_INFINITY, -0.166 };
-    assertTrue("test num2char", "d_c".equalsIgnoreCase(new String(TSUtils.ts2StringWithNaN(
-        new Timeseries(ts6, t), universalA, 7))));
 
   }
 
