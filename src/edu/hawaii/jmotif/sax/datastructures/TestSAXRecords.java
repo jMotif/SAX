@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
 import edu.hawaii.jmotif.sax.parallel.ParallelSAXImplementation;
-import edu.hawaii.jmotif.timeseries.TSUtils;
+import edu.hawaii.jmotif.timeseries.TSProcessor;
 
 public class TestSAXRecords {
 
@@ -21,7 +21,7 @@ public class TestSAXRecords {
   @Test
   public void testProperIndexing() throws Exception {
 
-    ts1 = TSUtils.readFileColumn(filenameTEK14, 0, 0);
+    ts1 = TSProcessor.readFileColumn(filenameTEK14, 0, 0);
 
     ParallelSAXImplementation ps = new ParallelSAXImplementation();
     SAXRecords parallelRes = ps.process(ts1, 2, 400, 6, 3, NumerosityReductionStrategy.EXACT, 0.01);

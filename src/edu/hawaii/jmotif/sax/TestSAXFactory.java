@@ -12,7 +12,7 @@ import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
 import edu.hawaii.jmotif.sax.datastructures.SaxRecord;
 import edu.hawaii.jmotif.timeseries.TSException;
-import edu.hawaii.jmotif.timeseries.TSUtils;
+import edu.hawaii.jmotif.timeseries.TSProcessor;
 import edu.hawaii.jmotif.timeseries.Timeseries;
 
 /**
@@ -51,32 +51,32 @@ public class TestSAXFactory {
    */
   @Test
   public void testTs2string() throws Exception {
-    ts1 = TSUtils.readTS(ts1File, length);
-    ts2 = TSUtils.readTS(ts2File, length);
+    ts1 = TSProcessor.readTS(ts1File, length);
+    ts2 = TSProcessor.readTS(ts2File, length);
 
     // series #1 based test
-    String ts1sax = SAXFactory.ts2string(ts1, 10, normalA, 11);
+    String ts1sax = SAXProcessor.ts2string(ts1, 10, normalA, 11);
     assertEquals("testing SAX", strLength, ts1sax.length());
     assertTrue("testing SAX", ts1StrRep10.equalsIgnoreCase(ts1sax));
 
-    ts1sax = SAXFactory.ts2string(ts1, 14, normalA, 10);
+    ts1sax = SAXProcessor.ts2string(ts1, 14, normalA, 10);
     assertEquals("testing SAX", 14, ts1sax.length());
     assertTrue("testing SAX", ts1StrRep14.equalsIgnoreCase(ts1sax));
 
-    ts1sax = SAXFactory.ts2string(ts1, 9, normalA, 7);
+    ts1sax = SAXProcessor.ts2string(ts1, 9, normalA, 7);
     assertEquals("testing SAX", 9, ts1sax.length());
     assertTrue("testing SAX", ts1StrRep7.equalsIgnoreCase(ts1sax));
 
     // series #2 goes here
-    String ts2sax = SAXFactory.ts2string(ts2, 10, normalA, 11);
+    String ts2sax = SAXProcessor.ts2string(ts2, 10, normalA, 11);
     assertEquals("testing SAX", strLength, ts2sax.length());
     assertTrue("testing SAX", ts2StrRep10.equalsIgnoreCase(ts2sax));
 
-    ts2sax = SAXFactory.ts2string(ts2, 14, normalA, 10);
+    ts2sax = SAXProcessor.ts2string(ts2, 14, normalA, 10);
     assertEquals("testing SAX", 14, ts2sax.length());
     assertTrue("testing SAX", ts2StrRep14.equalsIgnoreCase(ts2sax));
 
-    ts2sax = SAXFactory.ts2string(ts2, 9, normalA, 7);
+    ts2sax = SAXProcessor.ts2string(ts2, 9, normalA, 7);
     assertEquals("testing SAX", 9, ts2sax.length());
     assertTrue("testing SAX", ts2StrRep7.equalsIgnoreCase(ts2sax));
   }
@@ -88,14 +88,14 @@ public class TestSAXFactory {
    */
   @Test
   public void testTs2sax() throws Exception {
-    ts1 = TSUtils.readTS(ts1File, length);
-    ts2 = TSUtils.readTS(ts2File, length);
+    ts1 = TSProcessor.readTS(ts1File, length);
+    ts2 = TSProcessor.readTS(ts2File, length);
 
-    String ts2str_0 = SAXFactory.ts2string(ts2.subsection(0, 4), 5, normalA, 10);
-    String ts2str_3 = SAXFactory.ts2string(ts2.subsection(3, 7), 5, normalA, 10);
-    String ts2str_7 = SAXFactory.ts2string(ts2.subsection(7, 11), 5, normalA, 10);
+    String ts2str_0 = SAXProcessor.ts2string(ts2.subsection(0, 4), 5, normalA, 10);
+    String ts2str_3 = SAXProcessor.ts2string(ts2.subsection(3, 7), 5, normalA, 10);
+    String ts2str_7 = SAXProcessor.ts2string(ts2.subsection(7, 11), 5, normalA, 10);
 
-    SAXRecords ts2SAX = SAXFactory.ts2saxZNorm(TSUtils.zNormalize(ts2), 5, 5, normalA, 10);
+    SAXRecords ts2SAX = SAXProcessor.ts2saxZNorm(TSProcessor.zNormalize(ts2), 5, 5, normalA, 10);
 
     assertEquals("Testing ts2saxOptimized", ts2.size() - 5 + 1, ts2SAX.size());
 
@@ -117,21 +117,21 @@ public class TestSAXFactory {
   @Test
   public void testStringDistance() throws TSException {
     assertEquals("testing SAX distance", 0,
-        SAXFactory.strDistance(new char[] { 'a' }, new char[] { 'b' }));
+        SAXProcessor.strDistance(new char[] { 'a' }, new char[] { 'b' }));
     assertEquals("testing SAX distance", 2,
-        SAXFactory.strDistance(new char[] { 'a', 'a', 'a' }, new char[] { 'b', 'c', 'b' }));
+        SAXProcessor.strDistance(new char[] { 'a', 'a', 'a' }, new char[] { 'b', 'c', 'b' }));
 
     Alphabet a = new NormalAlphabet();
     assertEquals(
         "testing SAX distance",
         0.861D,
-        SAXFactory.saxMinDist(new char[] { 'a', 'a', 'a' }, new char[] { 'b', 'c', 'b' },
+        SAXProcessor.saxMinDist(new char[] { 'a', 'a', 'a' }, new char[] { 'b', 'c', 'b' },
             a.getDistanceMatrix(3)), delta);
 
     assertEquals(
         "testing SAX distance",
         0.0D,
-        SAXFactory.saxMinDist(new char[] { 'a', 'a', 'a' }, new char[] { 'b', 'b', 'b' },
+        SAXProcessor.saxMinDist(new char[] { 'a', 'a', 'a' }, new char[] { 'b', 'b', 'b' },
             a.getDistanceMatrix(3)), delta);
   }
 
@@ -144,16 +144,16 @@ public class TestSAXFactory {
   public void testTs2stringWithNAN() throws Exception {
 
     // read the timeseries first
-    ts1 = TSUtils.readTS(ts1File, length);
-    ts2 = TSUtils.readTS(ts2File, length);
+    ts1 = TSProcessor.readTS(ts1File, length);
+    ts2 = TSProcessor.readTS(ts2File, length);
 
     // series #1 based test
-    String ts1sax = SAXFactory.ts2string(ts1, 10, normalA, 11);
+    String ts1sax = SAXProcessor.ts2string(ts1, 10, normalA, 11);
     assertEquals("testing SAX", strLength, ts1sax.length());
     assertTrue("testing SAX", ts1StrRep10.equalsIgnoreCase(ts1sax));
 
     Timeseries ts1WithNaN = new Timeseries(ts1.values(), ts1.tstamps(), ts1.values()[2]);
-    String tsWithNaN1sax = String.valueOf(TSUtils.ts2StringWithNaNByCuts(ts1WithNaN,
+    String tsWithNaN1sax = String.valueOf(TSProcessor.ts2StringWithNaNByCuts(ts1WithNaN,
         normalA.getCuts(11)));
     assertSame("Checking Z conversion", tsWithNaN1sax.charAt(2), '_');
   }
@@ -167,20 +167,20 @@ public class TestSAXFactory {
   public void testTs2saxZnormByCuts() throws Exception {
     //
     // get series
-    ts1 = TSUtils.readTS(ts1File, length);
-    ts2 = TSUtils.readTS(ts2File, length);
+    ts1 = TSProcessor.readTS(ts1File, length);
+    ts2 = TSProcessor.readTS(ts2File, length);
 
     //
     // convert to sax with 2 letters alphabet and internal normalization
 
     double[] cut = { 0.0D };
-    SAXRecords sax = SAXFactory.ts2saxZnormByCuts(ts1, 14, 10, cut);
+    SAXRecords sax = SAXProcessor.ts2saxZnormByCuts(ts1, 14, 10, cut);
     Iterator<SaxRecord> i = sax.iterator();
     SaxRecord entry0 = i.next();
     assertTrue("Testing SAX routines",
         String.valueOf(entry0.getPayload()).equalsIgnoreCase("aabbbbaaaa"));
 
-    sax = SAXFactory.ts2saxZnormByCuts(ts1, 2, 2, cut);
+    sax = SAXProcessor.ts2saxZnormByCuts(ts1, 2, 2, cut);
     i = sax.iterator();
     entry0 = i.next();
     SaxRecord entry1 = i.next();
@@ -193,7 +193,7 @@ public class TestSAXFactory {
       data[k] = ts1.elementAt(k).value();
     }
 
-    sax = SAXFactory.ts2saxZnormByCuts(data, 14, 10, cut);
+    sax = SAXProcessor.ts2saxZnormByCuts(data, 14, 10, cut);
     i = sax.iterator();
     entry0 = i.next();
     assertTrue("Testing SAX routines",
@@ -210,13 +210,13 @@ public class TestSAXFactory {
   public void testTs2saxNoZnormByCuts() throws Exception {
     //
     // get series
-    ts1 = TSUtils.readTS(ts1File, length);
-    ts2 = TSUtils.readTS(ts2File, length);
+    ts1 = TSProcessor.readTS(ts1File, length);
+    ts2 = TSProcessor.readTS(ts2File, length);
 
     //
     // convert to sax with 2 letters alphabet and internal normalization
     double[] cut = { 0.0D };
-    SAXRecords sax = SAXFactory.ts2saxNoZnormByCuts(ts1, 14, 10, cut);
+    SAXRecords sax = SAXProcessor.ts2saxNoZnormByCuts(ts1, 14, 10, cut);
     Iterator<SaxRecord> i = sax.iterator();
     SaxRecord entry0 = i.next();
     assertTrue("Testing SAX routines",
@@ -226,7 +226,7 @@ public class TestSAXFactory {
     // now add two negatives
     ts1.elementAt(5).setValue(-5.0D);
     ts1.elementAt(4).setValue(-5.0D);
-    sax = SAXFactory.ts2saxNoZnormByCuts(ts1, 14, 10, cut);
+    sax = SAXProcessor.ts2saxNoZnormByCuts(ts1, 14, 10, cut);
     i = sax.iterator();
     entry0 = i.next();
     assertTrue("Testing SAX routines",
@@ -234,7 +234,7 @@ public class TestSAXFactory {
 
     //
     //
-    sax = SAXFactory.ts2saxNoZnormByCuts(ts1, 2, 2, cut);
+    sax = SAXProcessor.ts2saxNoZnormByCuts(ts1, 2, 2, cut);
     i = sax.iterator();
     entry0 = i.next();
     SaxRecord entry1 = i.next();
@@ -247,8 +247,8 @@ public class TestSAXFactory {
    */
   @Test
   public void testStrDistance() {
-    assertEquals("Testing StrDistance", 1, SAXFactory.strDistance('a', 'b'));
-    assertEquals("Testing StrDistance", 5, SAXFactory.strDistance('a', 'f'));
+    assertEquals("Testing StrDistance", 1, SAXProcessor.strDistance('a', 'b'));
+    assertEquals("Testing StrDistance", 5, SAXProcessor.strDistance('a', 'f'));
   }
 
 }

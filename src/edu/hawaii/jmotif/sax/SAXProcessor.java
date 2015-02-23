@@ -4,13 +4,12 @@ import java.util.Arrays;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import edu.hawaii.jmotif.logic.StackTrace;
 import edu.hawaii.jmotif.sax.alphabet.Alphabet;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
 import edu.hawaii.jmotif.timeseries.TSException;
-import edu.hawaii.jmotif.timeseries.TSUtils;
-import edu.hawaii.jmotif.timeseries.Timeseries;
+import edu.hawaii.jmotif.timeseries.TSProcessor;
+import edu.hawaii.jmotif.util.StackTrace;
 
 /**
  * Implements SAX algorithms.
@@ -18,7 +17,7 @@ import edu.hawaii.jmotif.timeseries.Timeseries;
  * @author Pavel Senin
  * 
  */
-public final class SAXFactory {
+public final class SAXProcessor {
 
   public static final int DEFAULT_COLLECTION_SIZE = 50;
 
@@ -28,14 +27,14 @@ public final class SAXFactory {
   private static final double NORMALIZATION_THRESHOLD = 0.005D;
 
   static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(SAXFactory.class);
+    consoleLogger = (Logger) LoggerFactory.getLogger(SAXProcessor.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
   }
 
   /**
    * Constructor.
    */
-  private SAXFactory() {
+  private SAXProcessor() {
     super();
   }
 
@@ -66,19 +65,19 @@ public final class SAXFactory {
       Timeseries subSection = ts.subsection(i, i + windowSize - 1);
 
       // Z normalize it
-      subSection = TSUtils.zNormalize(subSection);
+      subSection = TSProcessor.zNormalize(subSection);
 
       // perform PAA conversion if needed
       Timeseries paa;
       try {
-        paa = TSUtils.paa(subSection, paaSize);
+        paa = TSProcessor.paa(subSection, paaSize);
       }
       catch (CloneNotSupportedException e) {
         throw new TSException("Unable to clone: " + StackTrace.toString(e));
       }
 
       // Convert the PAA to a string.
-      char[] currentString = TSUtils.ts2StringWithNaNByCuts(paa, cuts);
+      char[] currentString = TSProcessor.ts2StringWithNaNByCuts(paa, cuts);
 
       res.add(currentString, i);
     }
@@ -114,19 +113,19 @@ public final class SAXFactory {
       Timeseries subSection = ts.subsection(i, i + windowSize - 1);
 
       // Z normalize it
-      subSection = TSUtils.zNormalize(subSection);
+      subSection = TSProcessor.zNormalize(subSection);
 
       // perform PAA conversion if needed
       Timeseries paa;
       try {
-        paa = TSUtils.paa(subSection, paaSize);
+        paa = TSProcessor.paa(subSection, paaSize);
       }
       catch (CloneNotSupportedException e) {
         throw new TSException("Unable to clone: " + StackTrace.toString(e));
       }
 
       // Convert the PAA to a string.
-      char[] currentString = TSUtils.ts2StringWithNaNByCuts(paa, cuts);
+      char[] currentString = TSProcessor.ts2StringWithNaNByCuts(paa, cuts);
 
       // check if previous one was the same, if so, ignore that (don't
       // know why though, but guess
@@ -221,13 +220,13 @@ public final class SAXFactory {
       double[] subSection = Arrays.copyOfRange(s, i, i + windowSize);
 
       // Z normalize it
-      subSection = TSUtils.zNormalize(subSection);
+      subSection = TSProcessor.zNormalize(subSection);
 
       // perform PAA conversion if needed
-      double[] paa = TSUtils.paa(subSection, paaSize);
+      double[] paa = TSProcessor.paa(subSection, paaSize);
 
       // Convert the PAA to a string.
-      char[] currentString = TSUtils.ts2String(paa, cuts);
+      char[] currentString = TSProcessor.ts2String(paa, cuts);
 
       // check if previous one was the same, if so, ignore that (don't
       // know why though, but guess
@@ -277,13 +276,13 @@ public final class SAXFactory {
       double[] subSection = Arrays.copyOfRange(s, i, i + windowSize);
 
       // Z normalize it
-      subSection = TSUtils.zNormalize(subSection);
+      subSection = TSProcessor.zNormalize(subSection);
 
       // perform PAA conversion if needed
-      double[] paa = TSUtils.paa(subSection, paaSize);
+      double[] paa = TSProcessor.paa(subSection, paaSize);
 
       // Convert the PAA to a string.
-      char[] currentString = TSUtils.ts2String(paa, cuts);
+      char[] currentString = TSProcessor.ts2String(paa, cuts);
 
       res.add(currentString, i);
 
@@ -328,14 +327,14 @@ public final class SAXFactory {
       // perform PAA conversion if needed
       Timeseries paa;
       try {
-        paa = TSUtils.paa(subSection, paaSize);
+        paa = TSProcessor.paa(subSection, paaSize);
       }
       catch (CloneNotSupportedException e) {
         throw new TSException("Unable to clone: " + StackTrace.toString(e));
       }
 
       // Convert the PAA to a string.
-      char[] currentString = TSUtils.ts2StringWithNaNByCuts(paa, cuts);
+      char[] currentString = TSProcessor.ts2StringWithNaNByCuts(paa, cuts);
 
       // check if previous one was the same, if so, ignore that (don't
       // know why though, but guess
@@ -403,11 +402,11 @@ public final class SAXFactory {
     SAXRecords res = new SAXRecords();
     for (int i = 0; i < ts.length - (slidingWindowSize - 1); i++) {
       double[] subSection = Arrays.copyOfRange(ts, i, i + slidingWindowSize);
-      if (TSUtils.stDev(subSection) > NORMALIZATION_THRESHOLD) {
-        subSection = TSUtils.zNormalize(subSection);
+      if (TSProcessor.stDev(subSection) > NORMALIZATION_THRESHOLD) {
+        subSection = TSProcessor.zNormalize(subSection);
       }
-      double[] paa = TSUtils.optimizedPaa(subSection, paaSize);
-      char[] currentString = TSUtils.ts2String(paa, normalA.getCuts(alphabetSize));
+      double[] paa = TSProcessor.optimizedPaa(subSection, paaSize);
+      char[] currentString = TSProcessor.ts2String(paa, normalA.getCuts(alphabetSize));
       if (!(previousString.isEmpty()) && previousString.equalsIgnoreCase(new String(currentString))) {
         continue;
       }
@@ -437,18 +436,18 @@ public final class SAXFactory {
 
     int tsLength = ts.size();
     if (tsLength == paaSize) {
-      return new String(TSUtils.ts2String(TSUtils.zNormalize(ts), alphabet, alphabetSize));
+      return new String(TSProcessor.ts2String(TSProcessor.zNormalize(ts), alphabet, alphabetSize));
     }
     else {
       // perform PAA conversion
       Timeseries PAA;
       try {
-        PAA = TSUtils.paa(TSUtils.zNormalize(ts), paaSize);
+        PAA = TSProcessor.paa(TSProcessor.zNormalize(ts), paaSize);
       }
       catch (CloneNotSupportedException e) {
         throw new TSException("Unable to clone: " + StackTrace.toString(e));
       }
-      return new String(TSUtils.ts2String(PAA, alphabet, alphabetSize));
+      return new String(TSProcessor.ts2String(PAA, alphabet, alphabetSize));
     }
   }
 
@@ -532,21 +531,22 @@ public final class SAXFactory {
    */
   public static char[] getSaxVals(double[] vals, int windowSize, double[] cuts) throws TSException {
     char[] saxVals;
-    double std = TSUtils.stDev(vals);
+    double std = TSProcessor.stDev(vals);
     if (std > NORMALIZATION_THRESHOLD) {
       if (windowSize == cuts.length + 1) {
-        saxVals = TSUtils.ts2String(TSUtils.zNormalize(vals), cuts);
+        saxVals = TSProcessor.ts2String(TSProcessor.zNormalize(vals), cuts);
       }
       else {
-        saxVals = TSUtils.ts2String(TSUtils.zNormalize(TSUtils.paa(vals, cuts.length + 1)), cuts);
+        saxVals = TSProcessor.ts2String(
+            TSProcessor.zNormalize(TSProcessor.paa(vals, cuts.length + 1)), cuts);
       }
     }
     else {
       if (windowSize == cuts.length + 1) {
-        saxVals = TSUtils.ts2String(vals, cuts);
+        saxVals = TSProcessor.ts2String(vals, cuts);
       }
       else {
-        saxVals = TSUtils.ts2String(TSUtils.paa(vals, cuts.length + 1), cuts);
+        saxVals = TSProcessor.ts2String(TSProcessor.paa(vals, cuts.length + 1), cuts);
       }
     }
     return saxVals;

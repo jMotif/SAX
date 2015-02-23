@@ -10,13 +10,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
-import edu.hawaii.jmotif.logic.StackTrace;
 import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
-import edu.hawaii.jmotif.sax.SAXFactory;
+import edu.hawaii.jmotif.sax.SAXProcessor;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
-import edu.hawaii.jmotif.timeseries.TSUtils;
+import edu.hawaii.jmotif.timeseries.TSProcessor;
 import edu.hawaii.jmotif.timeseries.Timeseries;
+import edu.hawaii.jmotif.util.StackTrace;
 
 public class TestParallelSAXImplementation {
 
@@ -33,7 +33,7 @@ public class TestParallelSAXImplementation {
 
   @Before
   public void setUp() throws Exception {
-    ts1 = TSUtils.readTS(ts1File, ts1Length);
+    ts1 = TSProcessor.readTS(ts1File, ts1Length);
   }
 
   /**
@@ -133,9 +133,9 @@ public class TestParallelSAXImplementation {
   @Test
   public void testParallelSAX() throws Exception {
 
-    double[] ts = TSUtils.readFileColumn(filenameTEK14, 0, 0);
+    double[] ts = TSProcessor.readFileColumn(filenameTEK14, 0, 0);
 
-    SAXRecords sequentialRes = SAXFactory.ts2saxZNorm(new Timeseries(ts), 128, 7,
+    SAXRecords sequentialRes = SAXProcessor.ts2saxZNorm(new Timeseries(ts), 128, 7,
         new NormalAlphabet(), 7);
 
     String sequentialString = sequentialRes.getSAXString(" ");
@@ -154,7 +154,7 @@ public class TestParallelSAXImplementation {
       assertTrue(entrySerial.equalsIgnoreCase(entryParallel));
     }
 
-    SAXRecords sequentialRes2 = SAXFactory.data2sax(ts, 100, 8, 4);
+    SAXRecords sequentialRes2 = SAXProcessor.data2sax(ts, 100, 8, 4);
     String sequentialString2 = sequentialRes2.getSAXString(" ");
     // 3 threads
     ParallelSAXImplementation ps2 = new ParallelSAXImplementation();

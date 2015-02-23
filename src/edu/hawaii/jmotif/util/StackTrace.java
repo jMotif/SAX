@@ -1,4 +1,4 @@
-package edu.hawaii.jmotif.logic;
+package edu.hawaii.jmotif.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

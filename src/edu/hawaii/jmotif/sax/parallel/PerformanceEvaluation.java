@@ -1,9 +1,9 @@
 package edu.hawaii.jmotif.sax.parallel;
 
 import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
-import edu.hawaii.jmotif.sax.SAXFactory;
+import edu.hawaii.jmotif.sax.SAXProcessor;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
-import edu.hawaii.jmotif.timeseries.TSUtils;
+import edu.hawaii.jmotif.timeseries.TSProcessor;
 
 /**
  * This runs the performance evaluation code - we are looking on the speedup.
@@ -36,7 +36,7 @@ public final class PerformanceEvaluation {
     Integer paaSize = Integer.valueOf(args[2]);
     Integer alphabetSize = Integer.valueOf(args[3]);
 
-    double[] ts = TSUtils.readFileColumn(dataFileName, 0, 0);
+    double[] ts = TSProcessor.readFileColumn(dataFileName, 0, 0);
     System.out.println("data file: " + dataFileName);
     System.out.println("data size: " + ts.length);
     System.out.println("SAX parameters: sliding window size " + slidingWindowSize + ", PAA size "
@@ -50,11 +50,11 @@ public final class PerformanceEvaluation {
     long tstamp1 = System.currentTimeMillis();
     for (int i = 0; i < NRUNS; i++) {
       @SuppressWarnings("unused")
-      SAXRecords sequentialRes2 = SAXFactory.data2sax(ts, slidingWindowSize, paaSize, alphabetSize);
+      SAXRecords sequentialRes2 = SAXProcessor.data2sax(ts, slidingWindowSize, paaSize, alphabetSize);
     }
     long tstamp2 = System.currentTimeMillis();
     System.out
-        .println("conversion with optimized PAA " + SAXFactory.timeToString(tstamp1, tstamp2));
+        .println("conversion with optimized PAA " + SAXProcessor.timeToString(tstamp1, tstamp2));
 
     // parallel
     for (int threadsNum = MIN_CPUS; threadsNum < MAX_CPUS; threadsNum++) {
@@ -67,7 +67,7 @@ public final class PerformanceEvaluation {
       }
       tstamp2 = System.currentTimeMillis();
       System.out.println("parallel conversion using " + threadsNum + " threads: "
-          + SAXFactory.timeToString(tstamp1, tstamp2));
+          + SAXProcessor.timeToString(tstamp1, tstamp2));
     }
   }
 

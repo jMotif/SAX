@@ -12,13 +12,13 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import edu.hawaii.jmotif.logic.StackTrace;
 import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
-import edu.hawaii.jmotif.sax.SAXFactory;
+import edu.hawaii.jmotif.sax.SAXProcessor;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
 import edu.hawaii.jmotif.sax.datastructures.SaxRecord;
 import edu.hawaii.jmotif.timeseries.TSException;
+import edu.hawaii.jmotif.util.StackTrace;
 
 /**
  * Implements a parallel SAX factory class.
@@ -187,7 +187,7 @@ public class ParallelSAXImplementation {
                   res.dropByIndex(resultHeadIndex);
                 }
                 else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                    && (0.0 == SAXFactory.saxMinDist(chunkTail.getPayload(),
+                    && (0.0 == SAXProcessor.saxMinDist(chunkTail.getPayload(),
                         res.getByIndex(resultHeadIndex).getPayload(),
                         alphabet.getDistanceMatrix(alphabetSize)))) {
                   consoleLogger.debug("res head "
@@ -243,7 +243,7 @@ public class ParallelSAXImplementation {
                       chunkRes.dropByIndex(chunkLeftmostIndex);
                     }
                     else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                        && (0.0 == SAXFactory.saxMinDist(resLeftEntry.getPayload(),
+                        && (0.0 == SAXProcessor.saxMinDist(resLeftEntry.getPayload(),
                             chunkLeftmostEntry.getPayload(),
                             alphabet.getDistanceMatrix(alphabetSize)))) {
                       consoleLogger.debug("res entry " + String.valueOf(resLeftEntry.getPayload())
@@ -289,7 +289,7 @@ public class ParallelSAXImplementation {
                       res.dropByIndex(rightOfChunkIndex);
                     }
                     else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                        && (0.0 == SAXFactory.saxMinDist(resRightEntry.getPayload(),
+                        && (0.0 == SAXProcessor.saxMinDist(resRightEntry.getPayload(),
                             chunkRightmostEntry.getPayload(),
                             alphabet.getDistanceMatrix(alphabetSize)))) {
                       consoleLogger.debug("res entry " + String.valueOf(resRightEntry.getPayload())

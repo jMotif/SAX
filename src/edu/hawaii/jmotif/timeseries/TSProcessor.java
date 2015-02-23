@@ -141,7 +141,7 @@ public final class TSProcessor {
    * @param series
    * @return
    */
-  public static Integer mean(int[] series) {
+  public int mean(int[] series) {
     int res = 0;
     int count = 0;
     for (int tp : series) {
@@ -468,7 +468,7 @@ public final class TSProcessor {
    * @param a the input matrix.
    * @return result.
    */
-  public static double[] colMeans(double[][] a) {
+  public double[] colMeans(double[][] a) {
     double[] res = new double[a[0].length];
     for (int j = 0; j < a[0].length; j++) {
       double sum = 0;
