@@ -7,18 +7,11 @@ import java.io.InputStreamReader;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import edu.hawaii.jmotif.algorithm.MatrixFactory;
-import edu.hawaii.jmotif.distance.EuclideanDistance;
-import edu.hawaii.jmotif.sax.LargeWindowAlgorithm;
-import edu.hawaii.jmotif.sax.SAXFactory;
-import edu.hawaii.jmotif.sax.VisitRegistry;
 import edu.hawaii.jmotif.sax.alphabet.Alphabet;
-import edu.hawaii.jmotif.sax.datastructures.DiscordRecord;
-import edu.hawaii.jmotif.sax.datastructures.DiscordRecords;
 
 /**
  * Implements algorithms for low-level data manipulation.
@@ -1058,125 +1051,6 @@ public final class TSUtils {
     }
     sb.delete(sb.length() - 2, sb.length() - 1).append("]");
     return sb.toString();
-  }
-
-  /**
-   * 
-   * @param series
-   * @param windowSize
-   * @param discordCollectionSize
-   * @param largeWindowAlgorithm
-   * @return
-   * @throws TSException
-   */
-  public static DiscordRecords series2Discords(double[] series, Integer windowSize,
-      int discordCollectionSize, LargeWindowAlgorithm marker) throws TSException {
-
-    DiscordRecords discords = new DiscordRecords();
-
-    VisitRegistry globalTrackVisitRegistry = new VisitRegistry(series.length - windowSize);
-
-    int discordCounter = 0;
-
-    while (discords.getSize() < discordCollectionSize) {
-
-      consoleLogger.debug("currently known discords: " + discords.getSize() + " out of "
-          + discordCollectionSize);
-
-      // mark start and number of iterattions
-      Date start = new Date();
-
-      DiscordRecord bestDiscord = findBestDiscord(series, windowSize, globalTrackVisitRegistry,
-          marker);
-      bestDiscord.setPayload("#" + discordCounter);
-      Date end = new Date();
-
-      // if the discord is null we getting out of the search
-      if (bestDiscord.getNNDistance() == 0.0D || bestDiscord.getPosition() == -1) {
-        consoleLogger.debug("breaking the outer search loop, discords found: " + discords.getSize()
-            + " last seen discord: " + bestDiscord.toString());
-        break;
-      }
-
-      bestDiscord.setInfo("position " + bestDiscord.getPosition() + ", NN distance "
-          + bestDiscord.getNNDistance() + ", elapsed time: "
-          + timeToString(start.getTime(), end.getTime()) + ", " + bestDiscord.getInfo());
-      consoleLogger.debug(bestDiscord.getInfo());
-
-      // collect the result
-      //
-      discords.add(bestDiscord);
-
-      // and maintain data structures
-      //
-      marker.markVisited(globalTrackVisitRegistry, bestDiscord.getPosition(), windowSize);
-
-      discordCounter++;
-    }
-
-    // done deal
-    //
-    return discords;
-  }
-
-  private static DiscordRecord findBestDiscord(double[] series, Integer windowSize,
-      VisitRegistry globalRegistry, LargeWindowAlgorithm marker) throws TSException {
-
-    Date start = new Date();
-
-    int distanceCallsCounter = 0;
-
-    double bestSoFarDistance = -1;
-    int bestSoFarPosition = -1;
-
-    // make an array of all subsequences
-    //
-    int[] locations = globalRegistry.getUnvisited();
-
-    for (int i : locations) { // outer loop
-
-      // check the global visits registry
-      if (globalRegistry.isVisited(i)) {
-        continue;
-      }
-
-      double[] cw = TSUtils.subseriesByCopy(series, i, i + windowSize);
-      double nearestNeighborDistance = Double.MAX_VALUE;
-
-      for (int j = 1; j < series.length - windowSize + 1; j++) { // inner loop
-
-        if (Math.abs(i - j) >= windowSize) {
-
-          double[] currentSubsequence = TSUtils.subseriesByCopy(series, j, j + windowSize);
-
-          double dist = EuclideanDistance.earlyAbandonedDistance(cw, currentSubsequence,
-              nearestNeighborDistance);
-
-          distanceCallsCounter++;
-
-          if ((!Double.isNaN(dist)) && dist < nearestNeighborDistance) {
-            nearestNeighborDistance = dist;
-          }
-
-        }
-      }
-
-      if (!(Double.isInfinite(nearestNeighborDistance))
-          && nearestNeighborDistance > bestSoFarDistance) {
-        bestSoFarDistance = nearestNeighborDistance;
-        bestSoFarPosition = i;
-      }
-    }
-    Date firstDiscord = new Date();
-
-    consoleLogger.debug("best discord found at " + bestSoFarPosition + ", best distance: "
-        + bestSoFarDistance + ", in "
-        + SAXFactory.timeToString(start.getTime(), firstDiscord.getTime()) + " distance calls: "
-        + distanceCallsCounter);
-
-    DiscordRecord res = new DiscordRecord(bestSoFarPosition, bestSoFarDistance);
-    res.setInfo("distance calls: " + distanceCallsCounter);
-    return res;
   }
 
   /**
