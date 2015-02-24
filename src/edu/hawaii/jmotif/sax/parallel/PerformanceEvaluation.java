@@ -2,8 +2,8 @@ package edu.hawaii.jmotif.sax.parallel;
 
 import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
 import edu.hawaii.jmotif.sax.SAXProcessor;
+import edu.hawaii.jmotif.sax.TSProcessor;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
-import edu.hawaii.jmotif.timeseries.TSProcessor;
 
 /**
  * This runs the performance evaluation code - we are looking on the speedup.

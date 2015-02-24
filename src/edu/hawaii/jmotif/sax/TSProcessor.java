@@ -1,4 +1,4 @@
-package edu.hawaii.jmotif.timeseries;
+package edu.hawaii.jmotif.sax;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -17,7 +17,7 @@ import ch.qos.logback.classic.Logger;
  * @author Pavel Senin
  * 
  */
-public final class TSProcessor {
+public class TSProcessor {
 
   /** The latin alphabet, lower case letters a-z. */
   static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
@@ -54,7 +54,7 @@ public final class TSProcessor {
    * @throws TSException if error occurs.
    */
   public double[] readFileColumn(String filename, int columnIdx, int sizeLimit)
-      throws NumberFormatException, IOException, TSException {
+      throws NumberFormatException, IOException, SAXException {
     BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filename),
         "UTF-8"));
 
@@ -67,7 +67,7 @@ public final class TSProcessor {
       if (split.length < columnIdx) {
         String message = "Unable to read data from column " + columnIdx + " of file " + filename;
         br.close();
-        throw new TSException(message);
+        throw new SAXException(message);
       }
       preRes.add(Double.valueOf(line));
       lineCounter++;
@@ -136,52 +136,6 @@ public final class TSProcessor {
   }
 
   /**
-   * Computes the mean for integer series.
-   * 
-   * @param series
-   * @return
-   */
-  public int mean(int[] series) {
-    int res = 0;
-    int count = 0;
-    for (int tp : series) {
-      res += tp;
-      count += 1;
-    }
-    return res / count;
-  }
-
-  /**
-   * Computes the autocorrelation value of timeseries. according to algorithm in:
-   * http://www.itl.nist.gov/div898/handbook/eda/section3/eda35c.htm
-   * 
-   * @param series The timeseries.
-   * @param lag The lag
-   * @return The autocorrelation value.
-   */
-  public double autocorrelation(double series[], int lag) {
-    double ac = 0;
-
-    double avg = mean(series);
-    double numerator = 0;
-    for (int i = 0; i < series.length - lag; i++) {
-      if (Double.isNaN(series[i]) || Double.isInfinite(series[i])) {
-        continue;
-      }
-      numerator += (series[i] - avg) * (series[i + lag] - avg);
-    }
-    double denominator = 0;
-    for (int i = 0; i < series.length; i++) {
-      if (Double.isNaN(series[i]) || Double.isInfinite(series[i])) {
-        continue;
-      }
-      denominator += (series[i] - avg) * (series[i] - avg);
-    }
-    ac = numerator / denominator;
-    return ac;
-  }
-
-  /**
    * Compute the variance of timeseries.
    * 
    * @param series The timeseries.
@@ -221,6 +175,36 @@ public final class TSProcessor {
   }
 
   /**
+   * Computes the autocorrelation value of timeseries. according to algorithm in:
+   * http://www.itl.nist.gov/div898/handbook/eda/section3/eda35c.htm
+   * 
+   * @param series The timeseries.
+   * @param lag The lag
+   * @return The autocorrelation value.
+   */
+  public double autocorrelation(double series[], int lag) {
+    double ac = 0;
+
+    double avg = mean(series);
+    double numerator = 0;
+    for (int i = 0; i < series.length - lag; i++) {
+      if (Double.isNaN(series[i]) || Double.isInfinite(series[i])) {
+        continue;
+      }
+      numerator += (series[i] - avg) * (series[i + lag] - avg);
+    }
+    double denominator = 0;
+    for (int i = 0; i < series.length; i++) {
+      if (Double.isNaN(series[i]) || Double.isInfinite(series[i])) {
+        continue;
+      }
+      denominator += (series[i] - avg) * (series[i] - avg);
+    }
+    ac = numerator / denominator;
+    return ac;
+  }
+
+  /**
    * Speed-optimized Z-Normalize routine, doesn't care about normalization threshold.
    * 
    * @param series The timeseries.
@@ -228,7 +212,7 @@ public final class TSProcessor {
    * @return Z-normalized time-series.
    * @throws TSException if error occurs.
    */
-  public double[] optimizedZNorm(double[] series, double normalizationThreshold) {
+  public double[] znorm(double[] series, double normalizationThreshold) {
     double[] res = new double[series.length];
     double mean = mean(series);
     double sd = stDev(series);
@@ -250,9 +234,8 @@ public final class TSProcessor {
    * @param ts The timeseries to approximate.
    * @param paaSize The desired length of approximated timeseries.
    * @return PAA-approximated timeseries.
-   * @throws TSException if error occurs.
    */
-  public double[] paa(double[] ts, int paaSize) throws TSException {
+  public double[] paa(double[] ts, int paaSize) {
     // fix the length
     int len = ts.length;
     // check for the trivial case
@@ -336,20 +319,6 @@ public final class TSProcessor {
   }
 
   /**
-   * Converts the vector into one-row matrix.
-   * 
-   * @param vector The vector.
-   * @return The matrix.
-   */
-  public double[][] asMatrix(double[] vector) {
-    double[][] res = new double[1][vector.length];
-    for (int i = 0; i < vector.length; i++) {
-      res[0][i] = vector[i];
-    }
-    return res;
-  }
-
-  /**
    * Extract subseries out of series.
    * 
    * @param series The series array.
@@ -373,16 +342,16 @@ public final class TSProcessor {
    * @param series Data to process.
    * @param filterWidth The filter width.
    * @return smoothed series.
-   * @throws TSException if error occurs.
+   * @throws SAXException if error occurs.
    */
-  public double[] gaussFilter(double[] series, double filterWidth) throws TSException {
+  public double[] gaussFilter(double[] series, double filterWidth) throws SAXException {
 
     double[] smoothedSignal = new double[series.length];
     double sigma = filterWidth / 2D;
     int maxShift = (int) Math.floor(4D * sigma); // Gaussian curve is reasonably > 0
 
     if (maxShift < 1) {
-      throw new TSException("NOT smoothing: filter width too small - " + filterWidth);
+      throw new SAXException("NOT smoothing: filter width too small - " + filterWidth);
     }
     for (int i = 0; i < smoothedSignal.length; i++) {
       smoothedSignal[i] = series[i];
@@ -458,6 +427,20 @@ public final class TSProcessor {
         res[i][j] = a[currentElement % aRows][currentElement / aRows];
         currentElement++;
       }
+    }
+    return res;
+  }
+
+  /**
+   * Converts the vector into one-row matrix.
+   * 
+   * @param vector The vector.
+   * @return The matrix.
+   */
+  public double[][] asMatrix(double[] vector) {
+    double[][] res = new double[1][vector.length];
+    for (int i = 0; i < vector.length; i++) {
+      res[0][i] = vector[i];
     }
     return res;
   }

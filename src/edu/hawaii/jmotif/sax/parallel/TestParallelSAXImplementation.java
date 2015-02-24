@@ -12,9 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
 import edu.hawaii.jmotif.sax.SAXProcessor;
+import edu.hawaii.jmotif.sax.TSProcessor;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
-import edu.hawaii.jmotif.timeseries.TSProcessor;
 import edu.hawaii.jmotif.timeseries.Timeseries;
 import edu.hawaii.jmotif.util.StackTrace;
 

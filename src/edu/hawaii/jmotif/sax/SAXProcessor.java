@@ -8,7 +8,6 @@ import edu.hawaii.jmotif.sax.alphabet.Alphabet;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
 import edu.hawaii.jmotif.timeseries.TSException;
-import edu.hawaii.jmotif.timeseries.TSProcessor;
 import edu.hawaii.jmotif.util.StackTrace;
 
 /**

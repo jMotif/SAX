@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
+import edu.hawaii.jmotif.sax.TSProcessor;
 import edu.hawaii.jmotif.sax.parallel.ParallelSAXImplementation;
-import edu.hawaii.jmotif.timeseries.TSProcessor;
 
 public class TestSAXRecords {
 
