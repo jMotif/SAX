@@ -53,6 +53,15 @@ public class SAXRecords implements Iterable<SaxRecord> {
   }
 
   /**
+   * Get the id.
+   * 
+   * @return the id.
+   */
+  public long getId() {
+    return this.id;
+  }
+
+  /**
    * Returns an iterator which is backed by a tree (i.e. sorted) map.
    */
   @Override
@@ -110,15 +119,6 @@ public class SAXRecords implements Iterable<SaxRecord> {
       entry.removeIndex(idx);
       realTSindex.remove(idx);
     }
-  }
-
-  /**
-   * Get the id.
-   * 
-   * @return the id.
-   */
-  public long getId() {
-    return this.id;
   }
 
   /**

@@ -1,6 +1,6 @@
 package edu.hawaii.jmotif.sax.alphabet;
 
-import edu.hawaii.jmotif.timeseries.TSException;
+import edu.hawaii.jmotif.sax.SAXException;
 
 /**
  * The Alphabet class template.
@@ -24,7 +24,7 @@ public abstract class Alphabet {
    * @return cut intervals for the alphabet.
    * @throws TSException if error occurs.
    */
-  public abstract double[] getCuts(Integer size) throws TSException;
+  public abstract double[] getCuts(Integer size) throws SAXException;
 
   /**
    * Get the distance matrix for the alphabet size.
@@ -33,6 +33,6 @@ public abstract class Alphabet {
    * @return The distance matrix.
    * @throws TSException if error occurs.
    */
-  public abstract double[][] getDistanceMatrix(Integer size) throws TSException;
+  public abstract double[][] getDistanceMatrix(Integer size) throws SAXException;
 
 }

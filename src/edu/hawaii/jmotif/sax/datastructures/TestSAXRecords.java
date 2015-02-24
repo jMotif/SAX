@@ -4,8 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
+import edu.hawaii.jmotif.sax.SAXProcessor;
 import edu.hawaii.jmotif.sax.TSProcessor;
-import edu.hawaii.jmotif.sax.parallel.ParallelSAXImplementation;
+import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 
 public class TestSAXRecords {
 
@@ -21,10 +22,15 @@ public class TestSAXRecords {
   @Test
   public void testProperIndexing() throws Exception {
 
-    ts1 = TSProcessor.readFileColumn(filenameTEK14, 0, 0);
+    TSProcessor ts = new TSProcessor();
 
-    ParallelSAXImplementation ps = new ParallelSAXImplementation();
-    SAXRecords parallelRes = ps.process(ts1, 2, 400, 6, 3, NumerosityReductionStrategy.EXACT, 0.01);
+    ts1 = ts.readFileColumn(filenameTEK14, 0, 0);
+
+    NormalAlphabet na = new NormalAlphabet();
+
+    SAXProcessor sp = new SAXProcessor();
+    SAXRecords parallelRes = sp.ts2saxViaWindow(ts1, 400, 6, na.getCuts(3),
+        NumerosityReductionStrategy.EXACT, 0.01);
 
     String str = parallelRes.getSAXString(" ");
 

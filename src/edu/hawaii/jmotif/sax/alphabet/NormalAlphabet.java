@@ -1,6 +1,6 @@
 package edu.hawaii.jmotif.sax.alphabet;
 
-import edu.hawaii.jmotif.timeseries.TSException;
+import edu.hawaii.jmotif.sax.SAXException;
 
 /**
  * Implements alphabet component for SAX.
@@ -530,7 +530,7 @@ public final class NormalAlphabet extends Alphabet {
    * {@inheritDoc}
    */
   @Override
-  public double[] getCuts(Integer size) throws TSException {
+  public double[] getCuts(Integer size) throws SAXException {
     switch (size) {
     case 2:
       return case2;
@@ -571,7 +571,7 @@ public final class NormalAlphabet extends Alphabet {
     case 20:
       return case20;
     default:
-      throw new TSException("Invalid alphabet size.");
+      throw new SAXException("Invalid alphabet size.");
     }
   }
 
@@ -584,7 +584,7 @@ public final class NormalAlphabet extends Alphabet {
   }
 
   @Override
-  public double[][] getDistanceMatrix(Integer size) throws TSException {
+  public double[][] getDistanceMatrix(Integer size) throws SAXException {
     switch (size) {
     case 2:
       return distance_case2;
@@ -625,7 +625,7 @@ public final class NormalAlphabet extends Alphabet {
     case 20:
       return distance_case20;
     default:
-      throw new TSException("Invalid alphabet size.");
+      throw new SAXException("Invalid alphabet size.");
     }
   }
 
