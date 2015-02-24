@@ -13,11 +13,11 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
+import edu.hawaii.jmotif.sax.SAXException;
 import edu.hawaii.jmotif.sax.SAXProcessor;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
 import edu.hawaii.jmotif.sax.datastructures.SaxRecord;
-import edu.hawaii.jmotif.timeseries.TSException;
 import edu.hawaii.jmotif.util.StackTrace;
 
 /**
@@ -59,11 +59,11 @@ public class ParallelSAXImplementation {
    * @param nrStrategy the SAX numerosity reduction strategy.
    * @param normalizationThreshold the normalization threshold.
    * @return a SAX representation of the input time series.
-   * @throws TSException if error occurs.
+   * @throws SAXException if error occurs.
    */
   public SAXRecords process(double[] timeseries, int threadsNum, int slidingWindowSize,
       int paaSize, int alphabetSize, NumerosityReductionStrategy nrStrategy,
-      double normalizationThreshold) throws TSException {
+      double normalizationThreshold) throws SAXException {
 
     consoleLogger.debug("Starting the parallel SAX");
 

@@ -4,10 +4,7 @@ import java.util.Arrays;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import edu.hawaii.jmotif.sax.alphabet.Alphabet;
-import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
-import edu.hawaii.jmotif.util.StackTrace;
 
 /**
  * Implements SAX algorithms.
@@ -30,7 +27,7 @@ public final class SAXProcessor {
   /**
    * Constructor.
    */
-  private SAXProcessor() {
+  public SAXProcessor() {
     super();
     this.tsProcessor = new TSProcessor();
   }
@@ -48,8 +45,8 @@ public final class SAXProcessor {
    * 
    * @return SAX representation of the time series.
    */
-  public SAXRecords ts2sax(double[] ts, int windowSize, int paaSize, double[] cuts,
-      double nThreshold, NumerosityReductionStrategy strategy) {
+  public SAXRecords ts2saxViaWindow(double[] ts, int windowSize, int paaSize, double[] cuts,
+      NumerosityReductionStrategy strategy, double nThreshold) {
 
     // the resulting data structure init
     //
@@ -81,7 +78,7 @@ public final class SAXProcessor {
           continue;
         }
         else if (NumerosityReductionStrategy.MINDIST.equals(strategy)
-            && minDistIsZero(previousString, currentString)) {
+            && checkMinDistIsZero(previousString, currentString)) {
           continue;
         }
 
@@ -97,18 +94,68 @@ public final class SAXProcessor {
   }
 
   /**
+   * Converts the input time series into a SAX data structure via chunking and Z normalization.
+   * 
+   * @param ts the input data.
+   * @param paaSize the PAA size.
+   * @param cuts the Alphabet cuts.
+   * @param nThreshold the normalization threshold value.
+   * 
+   * @return SAX representation of the time series.
+   */
+  public SAXRecords ts2saxByChunking(double[] ts, int paaSize, double[] cuts, double nThreshold) {
+
+    SAXRecords saxFrequencyData = new SAXRecords();
+
+    // Z normalize it
+    double[] normalizedTS = tsProcessor.znorm(ts, nThreshold);
+
+    // perform PAA conversion if needed
+    double[] paa = tsProcessor.paa(normalizedTS, paaSize);
+
+    // Convert the PAA to a string.
+    char[] currentString = tsProcessor.ts2String(paa, cuts);
+
+    // create the datastructure
+    for (int i = 0; i < currentString.length; i++) {
+      char c = currentString[i];
+      saxFrequencyData.add(String.valueOf(c).toCharArray(), i);
+    }
+
+    return saxFrequencyData;
+
+  }
+
+  /**
    * 
    * @param previousString
    * @param currentString
    * @return
    */
-  private boolean minDistIsZero(char[] a, char[] b) {
+  private boolean checkMinDistIsZero(char[] a, char[] b) {
     for (int i = 0; i < a.length; i++) {
       if (charDistance(a[i], b[i]) > 1) {
         return false;
       }
     }
     return true;
+  }
+
+  /**
+   * Convert the timeseries into SAX string representation.
+   * 
+   */
+  public char[] ts2string(double[] ts, int paaSize, double[] cuts, double nThreshold) {
+
+    int tsLength = ts.length;
+    if (tsLength == paaSize) {
+      return tsProcessor.ts2String(tsProcessor.znorm(ts, nThreshold), cuts);
+    }
+    else {
+      // perform PAA conversion
+      double[] paa = tsProcessor.paa(ts, paaSize);
+      return tsProcessor.ts2String(tsProcessor.znorm(ts, nThreshold), cuts);
+    }
   }
 
   /**
