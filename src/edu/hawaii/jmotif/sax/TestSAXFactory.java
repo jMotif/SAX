@@ -246,8 +246,8 @@ public class TestSAXFactory {
    */
   @Test
   public void testStrDistance() {
-    assertEquals("Testing StrDistance", 1, SAXProcessor.strDistance('a', 'b'));
-    assertEquals("Testing StrDistance", 5, SAXProcessor.strDistance('a', 'f'));
+    assertEquals("Testing StrDistance", 1, SAXProcessor.charDistance('a', 'b'));
+    assertEquals("Testing StrDistance", 5, SAXProcessor.charDistance('a', 'f'));
   }
 
 }
