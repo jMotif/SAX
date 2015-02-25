@@ -49,7 +49,7 @@ public class SAXWorker implements Callable<SAXRecords> {
   // logging stuff
   //
   private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.INFO;
+  private static Level LOGGING_LEVEL = Level.DEBUG;
 
   // static block - we instantiate the logger
   //
@@ -142,6 +142,7 @@ public class SAXWorker implements Callable<SAXRecords> {
 
     }
 
+    // System.out.println(this.id + "@" + res.getSAXString(" "));
     return res;
 
   }

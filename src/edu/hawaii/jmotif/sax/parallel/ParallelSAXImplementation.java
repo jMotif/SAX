@@ -31,11 +31,12 @@ public class ParallelSAXImplementation {
   // locale, charset, etc
   //
   final static Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+  final static int COMPLETED_FLAG = -1;
 
   // logging stuff
   //
   private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.INFO;
+  private static Level LOGGING_LEVEL = Level.DEBUG;
 
   // static block - we instantiate the logger
   //
@@ -67,7 +68,9 @@ public class ParallelSAXImplementation {
 
     consoleLogger.debug("Starting the parallel SAX");
 
-    NormalAlphabet alphabet = new NormalAlphabet();
+    NormalAlphabet na = new NormalAlphabet();
+
+    SAXProcessor sp = new SAXProcessor();
 
     SAXRecords res = new SAXRecords(0);
 
@@ -79,11 +82,20 @@ public class ParallelSAXImplementation {
 
     int totalTaskCounter = 0;
 
-    long tstamp = System.currentTimeMillis();
+    // this value used as a job id in future
+    //
+    final long tstamp = System.currentTimeMillis();
 
     // first chunk takes on the uneven division
     //
     int evenIncrement = timeseries.length / threadsNum;
+    if (evenIncrement <= slidingWindowSize) {
+      consoleLogger.warn("Unable to run with " + threadsNum
+          + " threads. Rolling back to single-threaded implementation.");
+      return sp.ts2saxViaWindow(timeseries, slidingWindowSize, paaSize, na.getCuts(alphabetSize),
+          nrStrategy, normalizationThreshold);
+    }
+
     int reminder = timeseries.length % threadsNum;
     int firstChunkSize = evenIncrement + reminder;
     consoleLogger.debug("data size " + timeseries.length + ", evenIncrement " + evenIncrement
@@ -95,7 +107,7 @@ public class ParallelSAXImplementation {
     // the first chunk
     {
       int firstChunkStart = 0;
-      int firstChunkEnd = firstChunkSize + slidingWindowSize - 1;
+      int firstChunkEnd = (firstChunkSize - 1) + slidingWindowSize;
       final SAXWorker job0 = new SAXWorker(tstamp + totalTaskCounter, timeseries, firstChunkStart,
           firstChunkEnd, slidingWindowSize, paaSize, alphabetSize, nrStrategy,
           normalizationThreshold);
@@ -106,14 +118,16 @@ public class ParallelSAXImplementation {
 
     // intermediate chunks
     while (totalTaskCounter < threadsNum - 1) {
-      int intermediateChunkStart = firstChunkSize + (totalTaskCounter - 1) * evenIncrement;
-      int intermediateChunkEnd = firstChunkSize + (totalTaskCounter * evenIncrement)
-          + slidingWindowSize - 1;
+      int intermediateChunkStart = (firstChunkSize - 1) + (totalTaskCounter - 1) * evenIncrement
+          + 1;
+      int intermediateChunkEnd = (firstChunkSize - 1) + (totalTaskCounter * evenIncrement)
+          + slidingWindowSize;
       final SAXWorker job = new SAXWorker(tstamp + totalTaskCounter, timeseries,
           intermediateChunkStart, intermediateChunkEnd, slidingWindowSize, paaSize, alphabetSize,
           nrStrategy, normalizationThreshold);
       completionService.submit(job);
-      consoleLogger.debug("submitted last chunk job " + Long.valueOf(tstamp + totalTaskCounter));
+      consoleLogger.debug("submitted intermediate chunk job "
+          + Long.valueOf(tstamp + totalTaskCounter));
       totalTaskCounter++;
     }
 
@@ -131,6 +145,9 @@ public class ParallelSAXImplementation {
 
     executorService.shutdown();
 
+    // the array of completed tasks
+    int[] completedChunks = new int[threadsNum];
+
     try {
       while (totalTaskCounter > 0) {
 
@@ -142,166 +159,199 @@ public class ParallelSAXImplementation {
           break;
         }
         else {
-          // merge the block with junctions
+
+          // get the result out
           //
           SAXRecords chunkRes = finished.get();
 
+          // get the real job index out
+          //
           int idx = (int) (chunkRes.getId() - tstamp);
-          consoleLogger.debug("job " + chunkRes.getId() + " of chunk " + idx + " has finished");
-          if (0 == res.size()) {
+
+          consoleLogger.debug("job with stamp " + chunkRes.getId() + " of chunk " + idx
+              + " has finished");
+          consoleLogger.debug("current completion status: " + Arrays.toString(completedChunks)
+              + " completion flag: " + COMPLETED_FLAG);
+
+          if (0 == res.size() || nrStrategy.equals(NumerosityReductionStrategy.NONE)) {
             res.addAll(chunkRes);
-            consoleLogger.debug("merged with an empty res");
+            completedChunks[idx] = COMPLETED_FLAG;
+            if (nrStrategy.equals(NumerosityReductionStrategy.NONE)) {
+              consoleLogger.debug("merged in as is because the NR strategy is NONE");
+            }
+            else {
+              consoleLogger.debug("merged in as is because the result id empty");
+            }
           }
           else {
-            consoleLogger.debug("processing chunk " + idx + " res has results already...");
+
+            consoleLogger.debug("processing chunk " + idx + "; res has results already...");
 
             // the very first chunk has ID=0
             //
             if (0 == idx) {
-              consoleLogger.debug("this is the first chunk, merging the tail only");
-              // we only need to care about the very last entry
-              int chunkTailIndex = chunkRes.getMaxIndex();
-              SaxRecord chunkTail = chunkRes.getByIndex(chunkTailIndex);
+              completedChunks[0] = COMPLETED_FLAG;
 
-              // find the first and last indexes
-              int resultHeadIndex = firstChunkSize - 1;
-              while ((null == res.getByIndex(resultHeadIndex))
-                  && (resultHeadIndex < (firstChunkSize + evenIncrement))) {
-                resultHeadIndex++;
-              }
+              if (completedChunks[1] == COMPLETED_FLAG) {
 
-              // check if the head is too far - i.e. there is a chunk which is missing
-              if (resultHeadIndex < (firstChunkSize + evenIncrement - 1)) {
-                SaxRecord resHead = res.getByIndex(resultHeadIndex);
-                consoleLogger.debug("first index in the res " + resultHeadIndex + " for "
-                    + String.valueOf(resHead.getPayload()) + ", last index in head "
-                    + chunkTailIndex + " for " + String.valueOf(chunkTail.getPayload()));
+                consoleLogger.debug("this is the very first chunk, merging the tail only");
+
+                // chunk tail
+                int chunkTailIndex = chunkRes.getMaxIndex();
+                SaxRecord chunkTail = chunkRes.getByIndex(chunkTailIndex);
+                String tailStr = String.valueOf(chunkTail.getPayload());
+
+                // res head
+                int resultHeadIndex = res.getMinIndex();
+                SaxRecord resultHead = res.getByIndex(resultHeadIndex);
+                String headStr = String.valueOf(resultHead.getPayload());
+
+                // print the log
+                consoleLogger.debug("first index in the res " + resultHeadIndex + " for " + headStr
+                    + ", last index in head " + chunkTailIndex + " for " + headStr);
+
                 // if the last entry equals the first, drop the first
                 if (nrStrategy.equals(NumerosityReductionStrategy.EXACT)
-                    && Arrays.equals(chunkTail.getPayload(), res.getByIndex(resultHeadIndex)
-                        .getPayload())) {
-                  consoleLogger.debug("res head "
-                      + String.valueOf(res.getByIndex(resultHeadIndex).getPayload()) + " at "
-                      + resultHeadIndex + " is dropped in favor of head tail "
-                      + String.valueOf(chunkTail.getPayload()) + " at " + chunkTailIndex);
+                    && headStr.equalsIgnoreCase(tailStr)) {
+                  consoleLogger.debug("res head " + headStr + " at " + resultHeadIndex
+                      + " is dropped in favor of head tail " + tailStr + " at " + chunkTailIndex);
                   res.dropByIndex(resultHeadIndex);
                 }
                 else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                    && (0.0 == SAXProcessor.saxMinDist(chunkTail.getPayload(),
-                        res.getByIndex(resultHeadIndex).getPayload(),
-                        alphabet.getDistanceMatrix(alphabetSize)))) {
-                  consoleLogger.debug("res head "
-                      + String.valueOf(res.getByIndex(resultHeadIndex).getPayload()) + " at "
-                      + resultHeadIndex + " is dropped in favor of head tail "
-                      + String.valueOf(chunkTail.getPayload()) + " at " + chunkTailIndex);
+                    && (sp.checkMinDistIsZero(chunkTail.getPayload(), resultHead.getPayload()))) {
+                  consoleLogger.debug("res head " + headStr + " at " + resultHeadIndex
+                      + " is dropped in favor of head tail " + tailStr + " at " + chunkTailIndex);
                   res.dropByIndex(resultHeadIndex);
+
                 }
-                else {
-                  consoleLogger.debug("has nothing to drop");
+              }
+              else {
+                consoleLogger
+                    .debug("this is the very first chunk, but second is not yet in the results, merging all in");
+              }
+              res.addAll(chunkRes);
+            }
+            else if (threadsNum - 1 == idx) {
+              completedChunks[idx] = COMPLETED_FLAG;
+
+              if (completedChunks[idx - 1] == COMPLETED_FLAG) {
+
+                consoleLogger.debug("this is the very last chunk, merging the head only");
+
+                int chunkHeadIndex = chunkRes.getMinIndex();
+                SaxRecord chunkHead = chunkRes.getByIndex(chunkHeadIndex);
+                String headStr = String.valueOf(chunkHead.getPayload());
+
+                // find the RES last index
+                int resultTailIndex = res.getMaxIndex();
+                SaxRecord resTail = res.getByIndex(resultTailIndex);
+                String resStr = String.valueOf(resTail.getPayload());
+
+                consoleLogger.debug("last index in the res " + resultTailIndex + " for " + resStr
+                    + ", first index in the tail " + chunkHeadIndex + " for " + headStr);
+
+                // if the last entry equals the first, drop the first
+                if (nrStrategy.equals(NumerosityReductionStrategy.EXACT)
+                    && resStr.equalsIgnoreCase(headStr)) {
+                  consoleLogger.debug("chunk head " + headStr + " at " + chunkHeadIndex
+                      + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
+                  chunkRes.dropByIndex(chunkHeadIndex);
                 }
+                else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
+                    && (sp.checkMinDistIsZero(chunkHead.getPayload(), resTail.getPayload()))) {
+                  consoleLogger.debug("chunk head " + headStr + " at " + chunkHeadIndex
+                      + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
+                  chunkRes.dropByIndex(chunkHeadIndex);
+                }
+              }
+              else {
+                consoleLogger
+                    .debug("this is the very last chunk, but previous is not yet in the results, merging all in");
               }
               res.addAll(chunkRes);
             }
             else {
-              // the other chunks have IDs >0
+              // the other chunks
               //
+              completedChunks[idx] = COMPLETED_FLAG;
+
               consoleLogger.debug("processing chunk " + idx);
-              // we only need to care about the very first entry and the very last
-              {
-                int resLeftmostIndex = res.getMinIndex();
-                int chunkLeftmostIndex = chunkRes.getMinIndex();
-                SaxRecord chunkLeftmostEntry = chunkRes.getByIndex(chunkLeftmostIndex);
-                consoleLogger.debug("res minIdx " + resLeftmostIndex + ", chunk head "
-                    + chunkLeftmostIndex);
-                // check if the result has something at the left from this chunk head
-                //
-                if (resLeftmostIndex < chunkLeftmostIndex) {
-                  consoleLogger.debug("checking ...");
-                  int leftOfChunkIndex = chunkLeftmostIndex;
-                  // traverse to the leftmost entry in the result
-                  while ((null == res.getByIndex(leftOfChunkIndex))
-                      && (leftOfChunkIndex >= resLeftmostIndex)
-                      && (leftOfChunkIndex >= chunkLeftmostIndex - evenIncrement)) {
-                    leftOfChunkIndex--;
-                  }
-                  // need to check the distance, it should be less than a chunk size
-                  //
-                  if (leftOfChunkIndex >= chunkLeftmostIndex - evenIncrement) {
-                    SaxRecord resLeftEntry = res.getByIndex(leftOfChunkIndex);
-                    consoleLogger.debug("res entry at " + leftOfChunkIndex + " "
-                        + String.valueOf(resLeftEntry.getPayload()) + " chunk entry at "
-                        + chunkLeftmostIndex + " "
-                        + String.valueOf(chunkLeftmostEntry.getPayload()));
-                    // if the last entry equals the first, drop the first
-                    if (nrStrategy.equals(NumerosityReductionStrategy.EXACT)
-                        && Arrays
-                            .equals(resLeftEntry.getPayload(), chunkLeftmostEntry.getPayload())) {
-                      consoleLogger.debug("chunk entry "
-                          + String.valueOf(chunkLeftmostEntry.getPayload()) + " at "
-                          + chunkLeftmostIndex + " is dropped in favor of res tail "
-                          + String.valueOf(resLeftEntry.getPayload()) + " at " + leftOfChunkIndex);
-                      chunkRes.dropByIndex(chunkLeftmostIndex);
-                    }
-                    else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                        && (0.0 == SAXProcessor.saxMinDist(resLeftEntry.getPayload(),
-                            chunkLeftmostEntry.getPayload(),
-                            alphabet.getDistanceMatrix(alphabetSize)))) {
-                      consoleLogger.debug("res entry " + String.valueOf(resLeftEntry.getPayload())
-                          + " at " + leftOfChunkIndex + " is dropped in favor of chunk head "
-                          + String.valueOf(chunkLeftmostEntry.getPayload()) + " at "
-                          + chunkLeftmostIndex);
-                      res.dropByIndex(leftOfChunkIndex);
-                    }
-                  }
+
+              if (completedChunks[idx - 1] == COMPLETED_FLAG) {
+
+                consoleLogger.debug("previous chunk was completed, merging in");
+
+                int chunkHeadIndex = chunkRes.getMinIndex();
+                SaxRecord chunkHead = chunkRes.getByIndex(chunkHeadIndex);
+                String headStr = String.valueOf(chunkHead.getPayload());
+
+                // find the RES last index
+                int tmpIdx = chunkHeadIndex;
+                while (null == res.getByIndex(tmpIdx)) {
+                  tmpIdx--;
+                }
+                int resultTailIndex = tmpIdx;
+                SaxRecord resTail = res.getByIndex(resultTailIndex);
+                String resStr = String.valueOf(resTail.getPayload());
+
+                consoleLogger.debug("last index in the res " + resultTailIndex + " for " + resStr
+                    + ", first index in the chunk " + chunkHeadIndex + " for " + headStr);
+
+                // if the last entry equals the first, drop the first
+                if (nrStrategy.equals(NumerosityReductionStrategy.EXACT)
+                    && resStr.equalsIgnoreCase(headStr)) {
+                  consoleLogger.debug("chunk head " + headStr + " at " + chunkHeadIndex
+                      + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
+                  chunkRes.dropByIndex(chunkHeadIndex);
+                }
+                else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
+                    && (sp.checkMinDistIsZero(chunkHead.getPayload(), resTail.getPayload()))) {
+                  consoleLogger.debug("chunk head " + headStr + " at " + chunkHeadIndex
+                      + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
+                  chunkRes.dropByIndex(chunkHeadIndex);
                 }
               }
-              {
-                // fix the right side
-                //
-                int resRightmostIndex = res.getMaxIndex();
-                int chunkRightmostIndex = chunkRes.getMaxIndex();
-                SaxRecord chunkRightmostEntry = chunkRes.getByIndex(chunkRightmostIndex);
-                consoleLogger.debug("res maxIdx " + resRightmostIndex + ", chunk tail "
-                    + chunkRightmostIndex);
-                // check if the result has something at the right from this chunk tail
-                //
-                if (resRightmostIndex > chunkRightmostIndex) {
-                  int rightOfChunkIndex = chunkRightmostIndex;
-                  while ((null == res.getByIndex(rightOfChunkIndex))
-                      && (rightOfChunkIndex <= resRightmostIndex)
-                      && (rightOfChunkIndex <= chunkRightmostIndex + evenIncrement)) {
-                    rightOfChunkIndex++;
-                  }
-                  if (rightOfChunkIndex <= chunkRightmostIndex + evenIncrement) {
-                    SaxRecord resRightEntry = res.getByIndex(rightOfChunkIndex);
-                    consoleLogger.debug("res entry at " + rightOfChunkIndex + " "
-                        + String.valueOf(resRightEntry.getPayload()) + " chunk entry at "
-                        + chunkRightmostIndex + " "
-                        + String.valueOf(chunkRightmostEntry.getPayload()));
-                    // if the last entry equals the first, drop the first
-                    if (nrStrategy.equals(NumerosityReductionStrategy.EXACT)
-                        && Arrays.equals(resRightEntry.getPayload(),
-                            chunkRightmostEntry.getPayload())) {
-                      consoleLogger.debug("res entry " + String.valueOf(resRightEntry.getPayload())
-                          + " at " + rightOfChunkIndex + " is dropped in favor of chunk head "
-                          + String.valueOf(chunkRightmostEntry.getPayload()) + " at "
-                          + chunkRightmostIndex);
-                      res.dropByIndex(rightOfChunkIndex);
-                    }
-                    else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                        && (0.0 == SAXProcessor.saxMinDist(resRightEntry.getPayload(),
-                            chunkRightmostEntry.getPayload(),
-                            alphabet.getDistanceMatrix(alphabetSize)))) {
-                      consoleLogger.debug("res entry " + String.valueOf(resRightEntry.getPayload())
-                          + " at " + rightOfChunkIndex + " is dropped in favor of chunk head "
-                          + String.valueOf(chunkRightmostEntry.getPayload()) + " at "
-                          + chunkRightmostIndex);
-                      res.dropByIndex(rightOfChunkIndex);
-                    }
-                  }
+
+              if (completedChunks[idx + 1] == COMPLETED_FLAG) {
+
+                consoleLogger.debug("next chunk was completed, merging the tail");
+
+                // chunk tail
+                int chunkTailIdx = chunkRes.getMaxIndex();
+                SaxRecord chunkTail = chunkRes.getByIndex(chunkTailIdx);
+                String tailStr = String.valueOf(chunkTail.getPayload());
+
+                // res head
+                int tmpIdx = chunkTailIdx;
+                while (null == res.getByIndex(tmpIdx)) {
+                  tmpIdx++;
+                }
+                int resultHeadIndex = tmpIdx;
+                SaxRecord resultHead = res.getByIndex(resultHeadIndex);
+                String headStr = String.valueOf(resultHead.getPayload());
+
+                // print the log
+                consoleLogger.debug("first index in the res " + resultHeadIndex + " for " + headStr
+                    + ", last index in chunk " + chunkTailIdx + " for " + headStr);
+
+                // if the last entry equals the first, drop the first
+                if (nrStrategy.equals(NumerosityReductionStrategy.EXACT)
+                    && headStr.equalsIgnoreCase(tailStr)) {
+                  consoleLogger.debug("res head " + headStr + " at " + resultHeadIndex
+                      + " is dropped in favor of chunk tail " + tailStr + " at " + chunkTailIdx);
+                  res.dropByIndex(resultHeadIndex);
+                }
+                else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
+                    && (sp.checkMinDistIsZero(chunkTail.getPayload(), resultHead.getPayload()))) {
+                  consoleLogger.debug("res head " + headStr + " at " + resultHeadIndex
+                      + " is dropped in favor of chunk tail " + tailStr + " at " + chunkTailIdx);
+                  res.dropByIndex(resultHeadIndex);
+
                 }
               }
+
               res.addAll(chunkRes);
+
             }
           }
         }
@@ -333,5 +383,4 @@ public class ParallelSAXImplementation {
 
     return res;
   }
-
 }

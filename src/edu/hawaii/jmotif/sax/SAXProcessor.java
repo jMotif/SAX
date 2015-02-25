@@ -173,7 +173,7 @@ public final class SAXProcessor {
    * @param b The second char.
    * @return The distance.
    */
-  public static int charDistance(char a, char b) {
+  public int charDistance(char a, char b) {
     return Math.abs(Character.getNumericValue(a) - Character.getNumericValue(b));
   }
 
@@ -186,7 +186,7 @@ public final class SAXProcessor {
    * @return The pairwise distance.
    * @throws SAXException if length are differ.
    */
-  public static int strDistance(char[] a, char[] b) throws SAXException {
+  public int strDistance(char[] a, char[] b) throws SAXException {
     if (a.length == b.length) {
       int distance = 0;
       for (int i = 0; i < a.length; i++) {
@@ -211,7 +211,7 @@ public final class SAXProcessor {
    * @return distance between strings.
    * @throws SAXException If error occurs.
    */
-  public static double saxMinDist(char[] a, char[] b, double[][] distanceMatrix)
+  public double saxMinDist(char[] a, char[] b, double[][] distanceMatrix)
       throws SAXException {
     if (a.length == b.length) {
       double dist = 0.0D;
@@ -255,8 +255,11 @@ public final class SAXProcessor {
          .appendSuffix("m")
          .appendSeconds()
          .appendSuffix("s")
+         .appendMillis()
+         .appendSuffix("ms")
          .toFormatter();
     String formatted = formatter.print(duration.toPeriod());
+    
     return formatted;
 
   }
