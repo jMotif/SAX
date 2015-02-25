@@ -45,8 +45,8 @@ public class TestSAXFactory {
 
     SAXProcessor sp = new SAXProcessor();
 
-    double[] ts1 = tsp.readFileColumn(ts1File, 0, length);
-    double[] ts2 = tsp.readFileColumn(ts2File, 0, length);
+    double[] ts1 = TSProcessor.readFileColumn(ts1File, 0, length);
+    double[] ts2 = TSProcessor.readFileColumn(ts2File, 0, length);
 
     // series #1 based test
     String ts1sax = sp.ts2saxByChunking(ts1, 10, normalA.getCuts(11), 0.005).getSAXString("");

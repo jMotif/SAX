@@ -8,7 +8,6 @@ import ch.qos.logback.classic.Logger;
 import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
 import edu.hawaii.jmotif.sax.SAXProcessor;
 import edu.hawaii.jmotif.sax.TSProcessor;
-import edu.hawaii.jmotif.sax.alphabet.Alphabet;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
 
@@ -120,19 +119,20 @@ public class SAXWorker implements Callable<SAXRecords> {
       double[] paa = tsp.paa(subSection, this.saxPAASize);
 
       // Convert the PAA to a string.
-      char[] currentString = ts2String(paa, normalA.getCuts(this.saxAlphabetSize));
+      char[] currentString = tsp.ts2String(paa, na.getCuts(this.saxAlphabetSize));
 
-      if (NumerosityReductionStrategy.EXACT.equals(this.numerosityReductionStrategy)
-          && Arrays.equals(previousString, currentString)) {
-        continue;
-      }
-      else if ((null != previousString)
-          && NumerosityReductionStrategy.MINDIST.equals(this.numerosityReductionStrategy)) {
-        double dist = saxMinDist(previousString, currentString,
-            normalA.getDistanceMatrix(this.saxAlphabetSize));
-        if (0.0D == dist) {
+      if (null != previousString) {
+
+        if (NumerosityReductionStrategy.EXACT.equals(this.numerosityReductionStrategy)
+            && Arrays.equals(previousString, currentString)) {
+          // NumerosityReduction
           continue;
         }
+        else if (NumerosityReductionStrategy.MINDIST.equals(this.numerosityReductionStrategy)
+            && sp.checkMinDistIsZero(previousString, currentString)) {
+          continue;
+        }
+
       }
 
       previousString = currentString;

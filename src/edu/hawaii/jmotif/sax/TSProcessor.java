@@ -53,7 +53,7 @@ public class TSProcessor {
    * @throws IOException if error occurs.
    * @throws TSException if error occurs.
    */
-  public double[] readFileColumn(String filename, int columnIdx, int sizeLimit)
+  public static double[] readFileColumn(String filename, int columnIdx, int sizeLimit)
       throws NumberFormatException, IOException, SAXException {
     BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filename),
         "UTF-8"));

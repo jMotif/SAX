@@ -15,7 +15,6 @@ import edu.hawaii.jmotif.sax.SAXProcessor;
 import edu.hawaii.jmotif.sax.TSProcessor;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
-import edu.hawaii.jmotif.timeseries.Timeseries;
 import edu.hawaii.jmotif.util.StackTrace;
 
 public class TestParallelSAXImplementation {
@@ -29,11 +28,11 @@ public class TestParallelSAXImplementation {
   private static final String filenameTEK14 = "test/data/TEK14.txt";
   private static final int THREADS_NUM = 6;
 
-  private static Timeseries ts1;
+  private static double[] ts1;
 
   @Before
   public void setUp() throws Exception {
-    ts1 = TSProcessor.readTS(ts1File, ts1Length);
+    ts1 = TSProcessor.readFileColumn(ts1File, 0, ts1Length);
   }
 
   /**
@@ -52,18 +51,18 @@ public class TestParallelSAXImplementation {
 
     long tstamp = System.currentTimeMillis();
 
-    final SAXWorker job1 = new SAXWorker(tstamp + totalTaskCounter, ts1.values(), 0, ts1.size(),
-        ts1.size(), 10, 11, NumerosityReductionStrategy.NONE, 0.005);
+    final SAXWorker job1 = new SAXWorker(tstamp + totalTaskCounter, ts1, 0, ts1.length, ts1.length,
+        10, 11, NumerosityReductionStrategy.NONE, 0.005);
     completionService.submit(job1);
     totalTaskCounter++;
 
-    final SAXWorker job2 = new SAXWorker(tstamp + totalTaskCounter, ts1.values(), 0, ts1.size(),
-        ts1.size(), 14, 10, NumerosityReductionStrategy.NONE, 0.005);
+    final SAXWorker job2 = new SAXWorker(tstamp + totalTaskCounter, ts1, 0, ts1.length, ts1.length,
+        14, 10, NumerosityReductionStrategy.NONE, 0.005);
     completionService.submit(job2);
     totalTaskCounter++;
 
-    final SAXWorker job3 = new SAXWorker(tstamp + totalTaskCounter, ts1.values(), 0, ts1.size(),
-        ts1.size(), 9, 7, NumerosityReductionStrategy.NONE, 0.005);
+    final SAXWorker job3 = new SAXWorker(tstamp + totalTaskCounter, ts1, 0, ts1.length, ts1.length,
+        9, 7, NumerosityReductionStrategy.NONE, 0.005);
 
     completionService.submit(job3);
     totalTaskCounter++;
@@ -133,10 +132,13 @@ public class TestParallelSAXImplementation {
   @Test
   public void testParallelSAX() throws Exception {
 
+    SAXProcessor sp = new SAXProcessor();
+    NormalAlphabet na = new NormalAlphabet();
+
     double[] ts = TSProcessor.readFileColumn(filenameTEK14, 0, 0);
 
-    SAXRecords sequentialRes = SAXProcessor.ts2saxZNorm(new Timeseries(ts), 128, 7,
-        new NormalAlphabet(), 7);
+    SAXRecords sequentialRes = sp.ts2saxViaWindow(ts, 128, 7, na.getCuts(7),
+        NumerosityReductionStrategy.EXACT, 0.005);
 
     String sequentialString = sequentialRes.getSAXString(" ");
     // 3 threads
@@ -154,7 +156,8 @@ public class TestParallelSAXImplementation {
       assertTrue(entrySerial.equalsIgnoreCase(entryParallel));
     }
 
-    SAXRecords sequentialRes2 = SAXProcessor.data2sax(ts, 100, 8, 4);
+    SAXRecords sequentialRes2 = sp.ts2saxViaWindow(ts, 100, 8, na.getCuts(4),
+        NumerosityReductionStrategy.EXACT, 0.05);
     String sequentialString2 = sequentialRes2.getSAXString(" ");
     // 3 threads
     ParallelSAXImplementation ps2 = new ParallelSAXImplementation();

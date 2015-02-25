@@ -33,7 +33,6 @@ public final class PerformanceEvaluation {
   public static void main(String[] args) throws Exception {
 
     NormalAlphabet na = new NormalAlphabet();
-    TSProcessor tsp = new TSProcessor();
     SAXProcessor sp = new SAXProcessor();
 
     String dataFileName = args[0];
@@ -41,7 +40,7 @@ public final class PerformanceEvaluation {
     Integer paaSize = Integer.valueOf(args[2]);
     Integer alphabetSize = Integer.valueOf(args[3]);
 
-    double[] ts = tsp.readFileColumn(dataFileName, 0, 0);
+    double[] ts = TSProcessor.readFileColumn(dataFileName, 0, 0);
     System.out.println("data file: " + dataFileName);
     System.out.println("data size: " + ts.length);
     System.out.println("SAX parameters: sliding window size " + slidingWindowSize + ", PAA size "

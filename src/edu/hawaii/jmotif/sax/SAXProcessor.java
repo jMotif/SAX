@@ -132,7 +132,7 @@ public final class SAXProcessor {
    * @param currentString
    * @return
    */
-  private boolean checkMinDistIsZero(char[] a, char[] b) {
+  public boolean checkMinDistIsZero(char[] a, char[] b) {
     for (int i = 0; i < a.length; i++) {
       if (charDistance(a[i], b[i]) > 1) {
         return false;
@@ -154,8 +154,13 @@ public final class SAXProcessor {
     else {
       // perform PAA conversion
       double[] paa = tsProcessor.paa(ts, paaSize);
-      return tsProcessor.ts2String(tsProcessor.znorm(ts, nThreshold), cuts);
+      return tsProcessor.ts2String(paa, cuts);
     }
+  }
+
+  public char[] ts2string(double[] paa, double[] cuts) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   /**
@@ -228,4 +233,43 @@ public final class SAXProcessor {
     }
   }
 
+  /**
+   * Generic method to convert the milliseconds into the elapsed time string.
+   * 
+   * @param start Start timestamp.
+   * @param finish End timestamp.
+   * @return String representation of the elapsed time.
+   */
+  public static String timeToString(long start, long finish) {
+    long diff = finish - start;
+
+    long secondInMillis = 1000;
+    long minuteInMillis = secondInMillis * 60;
+    long hourInMillis = minuteInMillis * 60;
+    long dayInMillis = hourInMillis * 24;
+    long yearInMillis = dayInMillis * 365;
+
+    @SuppressWarnings("unused")
+    long elapsedYears = diff / yearInMillis;
+    diff = diff % yearInMillis;
+
+    @SuppressWarnings("unused")
+    long elapsedDays = diff / dayInMillis;
+    diff = diff % dayInMillis;
+
+    // @SuppressWarnings("unused")
+    long elapsedHours = diff / hourInMillis;
+    diff = diff % hourInMillis;
+
+    long elapsedMinutes = diff / minuteInMillis;
+    diff = diff % minuteInMillis;
+
+    long elapsedSeconds = diff / secondInMillis;
+    diff = diff % secondInMillis;
+
+    long elapsedMilliseconds = diff % secondInMillis;
+
+    return elapsedHours + "h " + elapsedMinutes + "m " + elapsedSeconds + "s "
+        + elapsedMilliseconds + "ms";
+  }
 }
