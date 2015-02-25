@@ -22,9 +22,7 @@ public class TestSAXRecords {
   @Test
   public void testProperIndexing() throws Exception {
 
-    TSProcessor ts = new TSProcessor();
-
-    ts1 = ts.readFileColumn(filenameTEK14, 0, 0);
+    ts1 = TSProcessor.readFileColumn(filenameTEK14, 0, 0);
 
     NormalAlphabet na = new NormalAlphabet();
 

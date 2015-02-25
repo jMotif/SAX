@@ -1,6 +1,9 @@
 package edu.hawaii.jmotif.sax;
 
 import java.util.Arrays;
+import org.joda.time.Duration;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -241,35 +244,20 @@ public final class SAXProcessor {
    * @return String representation of the elapsed time.
    */
   public static String timeToString(long start, long finish) {
-    long diff = finish - start;
+    
+    Duration duration = new Duration(finish-start); // in milliseconds
+    PeriodFormatter formatter = new PeriodFormatterBuilder()
+         .appendDays()
+         .appendSuffix("d")
+         .appendHours()
+         .appendSuffix("h")
+         .appendMinutes()
+         .appendSuffix("m")
+         .appendSeconds()
+         .appendSuffix("s")
+         .toFormatter();
+    String formatted = formatter.print(duration.toPeriod());
+    return formatted;
 
-    long secondInMillis = 1000;
-    long minuteInMillis = secondInMillis * 60;
-    long hourInMillis = minuteInMillis * 60;
-    long dayInMillis = hourInMillis * 24;
-    long yearInMillis = dayInMillis * 365;
-
-    @SuppressWarnings("unused")
-    long elapsedYears = diff / yearInMillis;
-    diff = diff % yearInMillis;
-
-    @SuppressWarnings("unused")
-    long elapsedDays = diff / dayInMillis;
-    diff = diff % dayInMillis;
-
-    // @SuppressWarnings("unused")
-    long elapsedHours = diff / hourInMillis;
-    diff = diff % hourInMillis;
-
-    long elapsedMinutes = diff / minuteInMillis;
-    diff = diff % minuteInMillis;
-
-    long elapsedSeconds = diff / secondInMillis;
-    diff = diff % secondInMillis;
-
-    long elapsedMilliseconds = diff % secondInMillis;
-
-    return elapsedHours + "h " + elapsedMinutes + "m " + elapsedSeconds + "s "
-        + elapsedMilliseconds + "ms";
   }
 }

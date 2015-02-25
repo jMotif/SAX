@@ -41,8 +41,6 @@ public class TestSAXFactory {
   @Test
   public void testTs2string() throws Exception {
 
-    TSProcessor tsp = new TSProcessor();
-
     SAXProcessor sp = new SAXProcessor();
 
     double[] ts1 = TSProcessor.readFileColumn(ts1File, 0, length);
