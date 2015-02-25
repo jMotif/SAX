@@ -14,11 +14,11 @@ import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
  */
 public final class PerformanceEvaluation {
 
-  private static final Integer NRUNS = 10;
+  private static final Integer NRUNS = 20;
 
   private static final Integer MIN_CPUS = 2;
 
-  private static final Integer MAX_CPUS = 3;
+  private static final Integer MAX_CPUS = 8;
 
   private static final double N_THRESHOLD = 0.001d;
 

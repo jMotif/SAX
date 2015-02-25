@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -62,7 +63,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
   }
 
   /**
-   * Returns an iterator which is backed by a tree (i.e. sorted) map.
+   * Returns an iterator which is backed by a hash map.
    */
   @Override
   public Iterator<SaxRecord> iterator() {
@@ -150,6 +151,12 @@ public class SAXRecords implements Iterable<SaxRecord> {
         this.realTSindex.put(indexes.get(i), rr);
       }
 
+    }
+  }
+
+  public void addAll(HashMap<Integer, char[]> chunkRes) {
+    for (Entry<Integer, char[]> e : chunkRes.entrySet()) {
+      this.add(e.getValue(), e.getKey());
     }
   }
 

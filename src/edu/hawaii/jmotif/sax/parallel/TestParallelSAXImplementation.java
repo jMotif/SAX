@@ -1,13 +1,6 @@
 package edu.hawaii.jmotif.sax.parallel;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
@@ -15,7 +8,6 @@ import edu.hawaii.jmotif.sax.SAXProcessor;
 import edu.hawaii.jmotif.sax.TSProcessor;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
-import edu.hawaii.jmotif.util.StackTrace;
 
 public class TestParallelSAXImplementation {
 
@@ -42,94 +34,94 @@ public class TestParallelSAXImplementation {
     ts1 = TSProcessor.readFileColumn(ts1File, 0, ts1Length);
   }
 
-  /**
-   * Test the simple SAX conversion.
-   * 
-   * @throws Exception if error occurs.
-   */
-  @Test
-  public void testSAXWorker() throws Exception {
-
-    ExecutorService executorService = Executors.newFixedThreadPool(1);
-    CompletionService<SAXRecords> completionService = new ExecutorCompletionService<SAXRecords>(
-        executorService);
-
-    int totalTaskCounter = 0;
-
-    long tstamp = System.currentTimeMillis();
-
-    final SAXWorker job1 = new SAXWorker(tstamp + totalTaskCounter, ts1, 0, ts1.length, ts1.length,
-        10, 11, NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
-    completionService.submit(job1);
-    totalTaskCounter++;
-
-    final SAXWorker job2 = new SAXWorker(tstamp + totalTaskCounter, ts1, 0, ts1.length, ts1.length,
-        14, 10, NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
-    completionService.submit(job2);
-    totalTaskCounter++;
-
-    final SAXWorker job3 = new SAXWorker(tstamp + totalTaskCounter, ts1, 0, ts1.length, ts1.length,
-        9, 7, NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
-
-    completionService.submit(job3);
-    totalTaskCounter++;
-
-    executorService.shutdown();
-
-    try {
-      while (totalTaskCounter > 0) {
-        Future<SAXRecords> finished = completionService.poll(2, TimeUnit.HOURS);
-        if (null == finished) {
-          // something went wrong - break from here
-          System.err.println("Breaking POLL loop after 1 HOUR of waiting...");
-          break;
-        }
-        else {
-          SAXRecords res = finished.get();
-          if (tstamp + 0 == res.getId()) {
-            String ts1sax = String.valueOf(res.getByIndex(0).getPayload());
-            assertEquals("testing SAX", 10, ts1sax.length());
-            assertTrue("testing SAX", ts1StrRep10.equalsIgnoreCase(ts1sax));
-            totalTaskCounter--;
-          }
-          else if (tstamp + 1 == res.getId()) {
-            String ts1sax = String.valueOf(res.getByIndex(0).getPayload());
-            assertEquals("testing SAX", 14, ts1sax.length());
-            assertTrue("testing SAX", ts1StrRep14.equalsIgnoreCase(ts1sax));
-            totalTaskCounter--;
-          }
-          else if (tstamp + 2 == res.getId()) {
-            String ts1sax = String.valueOf(res.getByIndex(0).getPayload());
-            assertEquals("testing SAX", 9, ts1sax.length());
-            assertTrue("testing SAX", ts1StrRep9.equalsIgnoreCase(ts1sax));
-            totalTaskCounter--;
-          }
-        }
-      }
-
-    }
-    catch (Exception e) {
-      System.err.println("Error while waiting results: " + StackTrace.toString(e));
-    }
-    finally {
-      // wait at least 1 more hour before terminate and fail
-      try {
-        if (!executorService.awaitTermination(1, TimeUnit.HOURS)) {
-          executorService.shutdownNow(); // Cancel currently executing tasks
-          if (!executorService.awaitTermination(30, TimeUnit.MINUTES))
-            System.err.println("Pool did not terminate... FATAL ERROR");
-        }
-      }
-      catch (InterruptedException ie) {
-        System.err.println("Error while waiting interrupting: " + StackTrace.toString(ie));
-        // (Re-)Cancel if current thread also interrupted
-        executorService.shutdownNow();
-        // Preserve interrupt status
-        Thread.currentThread().interrupt();
-      }
-
-    }
-  }
+  // /**
+  // * Test the simple SAX conversion.
+  // *
+  // * @throws Exception if error occurs.
+  // */
+  // @Test
+  // public void testSAXWorker() throws Exception {
+  //
+  // ExecutorService executorService = Executors.newFixedThreadPool(1);
+  // CompletionService<SAXRecords> completionService = new ExecutorCompletionService<SAXRecords>(
+  // executorService);
+  //
+  // int totalTaskCounter = 0;
+  //
+  // long tstamp = System.currentTimeMillis();
+  //
+  // final SAXWorker job1 = new SAXWorker(tstamp + totalTaskCounter, ts1, 0, ts1.length, ts1.length,
+  // 10, 11, NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
+  // completionService.submit(job1);
+  // totalTaskCounter++;
+  //
+  // final SAXWorker job2 = new SAXWorker(tstamp + totalTaskCounter, ts1, 0, ts1.length, ts1.length,
+  // 14, 10, NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
+  // completionService.submit(job2);
+  // totalTaskCounter++;
+  //
+  // final SAXWorker job3 = new SAXWorker(tstamp + totalTaskCounter, ts1, 0, ts1.length, ts1.length,
+  // 9, 7, NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
+  //
+  // completionService.submit(job3);
+  // totalTaskCounter++;
+  //
+  // executorService.shutdown();
+  //
+  // try {
+  // while (totalTaskCounter > 0) {
+  // Future<SAXRecords> finished = completionService.poll(2, TimeUnit.HOURS);
+  // if (null == finished) {
+  // // something went wrong - break from here
+  // System.err.println("Breaking POLL loop after 1 HOUR of waiting...");
+  // break;
+  // }
+  // else {
+  // SAXRecords res = finished.get();
+  // if (tstamp + 0 == res.getId()) {
+  // String ts1sax = String.valueOf(res.getByIndex(0).getPayload());
+  // assertEquals("testing SAX", 10, ts1sax.length());
+  // assertTrue("testing SAX", ts1StrRep10.equalsIgnoreCase(ts1sax));
+  // totalTaskCounter--;
+  // }
+  // else if (tstamp + 1 == res.getId()) {
+  // String ts1sax = String.valueOf(res.getByIndex(0).getPayload());
+  // assertEquals("testing SAX", 14, ts1sax.length());
+  // assertTrue("testing SAX", ts1StrRep14.equalsIgnoreCase(ts1sax));
+  // totalTaskCounter--;
+  // }
+  // else if (tstamp + 2 == res.getId()) {
+  // String ts1sax = String.valueOf(res.getByIndex(0).getPayload());
+  // assertEquals("testing SAX", 9, ts1sax.length());
+  // assertTrue("testing SAX", ts1StrRep9.equalsIgnoreCase(ts1sax));
+  // totalTaskCounter--;
+  // }
+  // }
+  // }
+  //
+  // }
+  // catch (Exception e) {
+  // System.err.println("Error while waiting results: " + StackTrace.toString(e));
+  // }
+  // finally {
+  // // wait at least 1 more hour before terminate and fail
+  // try {
+  // if (!executorService.awaitTermination(1, TimeUnit.HOURS)) {
+  // executorService.shutdownNow(); // Cancel currently executing tasks
+  // if (!executorService.awaitTermination(30, TimeUnit.MINUTES))
+  // System.err.println("Pool did not terminate... FATAL ERROR");
+  // }
+  // }
+  // catch (InterruptedException ie) {
+  // System.err.println("Error while waiting interrupting: " + StackTrace.toString(ie));
+  // // (Re-)Cancel if current thread also interrupted
+  // executorService.shutdownNow();
+  // // Preserve interrupt status
+  // Thread.currentThread().interrupt();
+  // }
+  //
+  // }
+  // }
 
   /**
    * Test parallel SAX conversion.

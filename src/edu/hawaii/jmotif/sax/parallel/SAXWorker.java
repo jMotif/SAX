@@ -1,6 +1,7 @@
 package edu.hawaii.jmotif.sax.parallel;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -9,7 +10,6 @@ import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
 import edu.hawaii.jmotif.sax.SAXProcessor;
 import edu.hawaii.jmotif.sax.TSProcessor;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
-import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
 
 /**
  * A callable worker class that will translate a given interval of the timeseries into SAX.
@@ -17,7 +17,7 @@ import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
  * @author psenin
  * 
  */
-public class SAXWorker implements Callable<SAXRecords> {
+public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
 
   /** The worker ID. */
   private long id;
@@ -49,7 +49,7 @@ public class SAXWorker implements Callable<SAXRecords> {
   // logging stuff
   //
   private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.DEBUG;
+  private static Level LOGGING_LEVEL = Level.INFO;
 
   // static block - we instantiate the logger
   //
@@ -92,17 +92,14 @@ public class SAXWorker implements Callable<SAXRecords> {
   }
 
   @Override
-  public SAXRecords call() throws Exception {
+  public HashMap<Integer, char[]> call() throws Exception {
 
     NormalAlphabet na = new NormalAlphabet();
     TSProcessor tsp = new TSProcessor();
     SAXProcessor sp = new SAXProcessor();
 
-    SAXRecords res = new SAXRecords(this.id);
-
-    if (this.data.length < this.saxWindowSize) {
-      return res;
-    }
+    HashMap<Integer, char[]> res = new HashMap<Integer, char[]>();
+    res.put(-1, String.valueOf(this.id).toCharArray());
 
     // scan across the time series extract sub sequences, and convert
     // them to strings
@@ -137,7 +134,8 @@ public class SAXWorker implements Callable<SAXRecords> {
 
       previousString = currentString;
 
-      res.add(currentString, i);
+      res.put(i, currentString);
+
       consoleLogger.trace(this.id + ", " + String.valueOf(currentString) + ", " + i);
 
     }
