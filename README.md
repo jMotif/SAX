@@ -19,8 +19,33 @@ The code is written in Java and I use Ant to build it:
 
 	BUILD SUCCESSFUL
 	Total time: 1 second
-	
-1.0 USAGE
+
+2.0 CLI time series conversion
+------------
+Built jar can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
+
+	$ java -jar "jmotif-sax20.jar"
+	Command-line SAX converson utility, the output printed to STDOUT 
+	Expects 6 parameters:
+ 	[1] training dataset filename
+ 	[2] sliding window size
+ 	[3] PAA size
+ 	[4] Alphabet size
+ 	[5] numerosity reduction <NONE|EXACT|MINDIST>
+ 	[6] z-Normalization threshold value
+ 	[7] OPTIONAL: number of threads to use
+	An execution example: $java -jar "jmotif-vsm-20.jar"  test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 2
+
+When run, it prints the time series index and a corresponding word:
+	$ java -jar "jmotif-sax20.jar"  test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 3 | head
+	0, aceccdc
+	4, adeccdc
+	6, addccdc
+	8, addccdd
+	9, adccccd
+	...
+
+3.0 API USAGE
 ------------	
 There two classes which implement sequential end-to-end workflow for SAX and a parallel implementation of the discretization. 
 
