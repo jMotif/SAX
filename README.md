@@ -3,7 +3,7 @@ Time series discretization with SAX
 
 This Java library implements Symbolic Aggregate Approximation for time series. The code and API are very simple aiming at performance; the library provides a multi-threaded SAX discretization too. 
 
-You can find more information about SAX in following papers:
+You can find more information about SAX on [my old wiki page](https://code.google.com/p/jmotif/wiki/SAX) or in following papers:
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., [*Finding Motifs in Time Series*](http://cs.gmu.edu/~jessica/Lin_motif.pdf), The 2nd Workshop onTemporal Data Mining, the 8th ACM Int'l Conferenceon KDD (2002)
 
@@ -91,6 +91,6 @@ Parallel discretization:
 		System.out.println(idx + ", " + String.valueOf(res.getByIndex(idx).getPayload()));
 	}
 
-The speedup when using the parallelized version on the dataset `300_signal1.txt` of length 536976 point when using following SAX parameters: sliding window size 200, PAA size 11, alphabet size 7, and three different NR strategies.
+The plot below shows the speedup achieved when using the parallelized SAX version on the dataset [`300_signal1.txt`](https://raw.githubusercontent.com/jMotif/SAX/master/test/data/300_signal1.txt) of length 536,976 points. Parameters used in the experiment: sliding window size 200, PAA size 11, alphabet size 7, and three different NR strategies.
 
 ![Performance plot](https://raw.githubusercontent.com/jMotif/SAX/master/test/performance/profiling.png)
