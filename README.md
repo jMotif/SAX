@@ -13,12 +13,12 @@ The code is written in Java and I use Ant to build it:
 	
 	$ ant -f jar.build.xml 
 	Buildfile: /media/Stock/git/jmotif-sax/jar.build.xml
-  ...
-  [jar] Building jar: /media/Stock/git/jmotif-sax/jmotif-sax20.jar
-  [delete] Deleting directory /media/Stock/git/jmotif-sax/tmp
+	...
+	[jar] Building jar: /media/Stock/git/jmotif-sax/jmotif-sax20.jar
+	[delete] Deleting directory /media/Stock/git/jmotif-sax/tmp
 
-  BUILD SUCCESSFUL
-  Total time: 1 second
+	BUILD SUCCESSFUL
+	Total time: 1 second
 	
 1.0 USAGE
 ------------	
@@ -26,39 +26,39 @@ There two classes which implement sequential end-to-end workflow for SAX and a p
 
 Discretizing time-series via sliding window sequentially:
 
-  // instantiate needed classes
-  NormalAlphabet na = new NormalAlphabet();
-  SAXProcessor sp = new SAXProcessor();
-  
-  // read the input file
-  double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
+	// instantiate needed classes
+	NormalAlphabet na = new NormalAlphabet();
+	SAXProcessor sp = new SAXProcessor();
+	
+	// read the input file
+	double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
+	
+	// perform the discretization
+	SAXRecords res = sp.ts2saxViaWindow(ts, slidingWindowSize, paaSize, 
+		na.getCuts(alphabetSize), nrStrategy, nThreshold);
 
-  // perform the discretization
-  SAXRecords res = sp.ts2saxViaWindow(ts, slidingWindowSize, paaSize, 
-      na.getCuts(alphabetSize), nrStrategy, nThreshold);
-
-  // print the output
-  Set<Integer> index = res.getIndexes();
-  for (Integer idx : index) {
-    System.out.println(idx + COMMA + String.valueOf(res.getByIndex(idx).getPayload()));
-  }
+	// print the output
+	Set<Integer> index = res.getIndexes();
+	for (Integer idx : index) {
+		System.out.println(idx + ", " + String.valueOf(res.getByIndex(idx).getPayload()));
+	}
 
 Parallel discretization:
 
-  // instantiate needed classes
-  NormalAlphabet na = new NormalAlphabet();
-  SAXProcessor sp = new SAXProcessor();
+	// instantiate needed classes
+	NormalAlphabet na = new NormalAlphabet();
+	SAXProcessor sp = new SAXProcessor();
   
-  // read the input file
-  double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
+	// read the input file
+	double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
 
-  // perform the discretization using 8 threads
-  ParallelSAXImplementation ps = new ParallelSAXImplementation();
-  SAXRecords res = ps.process(ts, threadsNum, slidingWindowSize, paaSize, alphabetSize, 
-      nrStrategy, nThreshold);
+	// perform the discretization using 8 threads
+	ParallelSAXImplementation ps = new ParallelSAXImplementation();
+	SAXRecords res = ps.process(ts, threadsNum, slidingWindowSize, paaSize, alphabetSize, 
+		nrStrategy, nThreshold);
 
-  // print the output
-  Set<Integer> index = res.getIndexes();
-  for (Integer idx : index) {
-    System.out.println(idx + COMMA + String.valueOf(res.getByIndex(idx).getPayload()));
-  }
+	// print the output
+	Set<Integer> index = res.getIndexes();
+	for (Integer idx : index) {
+		System.out.println(idx + ", " + String.valueOf(res.getByIndex(idx).getPayload()));
+	}
