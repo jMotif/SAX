@@ -90,3 +90,7 @@ Parallel discretization:
 	for (Integer idx : index) {
 		System.out.println(idx + ", " + String.valueOf(res.getByIndex(idx).getPayload()));
 	}
+
+The speedup when using the parallelized version on the dataset 
+
+![Performance plot](https://raw.githubusercontent.com/jMotif/SAX/master/test/performance/profiling.png)
