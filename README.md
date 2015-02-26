@@ -50,7 +50,7 @@ When run, it prints the time series index and a corresponding word:
 
 3.0 API USAGE
 ------------	
-There two classes which implement sequential end-to-end workflow for SAX and a parallel implementation of the discretization. 
+There two classes which implement sequential end-to-end workflow for SAX and a parallel implementation of the discretization. These are [TSProcessor](https://github.com/jMotif/SAX/blob/master/src/edu/hawaii/jmotif/sax/TSProcessor.java) and [SAXProcessor](https://github.com/jMotif/SAX/blob/master/src/edu/hawaii/jmotif/sax/SAXProcessor.java).
 
 Discretizing time-series via sliding window sequentially:
 
