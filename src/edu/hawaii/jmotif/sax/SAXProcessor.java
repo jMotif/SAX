@@ -4,9 +4,6 @@ import java.util.Arrays;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
-import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
 
 /**
@@ -16,14 +13,6 @@ import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
  * 
  */
 public final class SAXProcessor {
-
-  private static Logger consoleLogger;
-  private static final Level LOGGING_LEVEL = Level.DEBUG;
-
-  static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(SAXProcessor.class);
-    consoleLogger.setLevel(LOGGING_LEVEL);
-  }
 
   private TSProcessor tsProcessor;
 
