@@ -91,6 +91,6 @@ Parallel discretization:
 		System.out.println(idx + ", " + String.valueOf(res.getByIndex(idx).getPayload()));
 	}
 
-The speedup when using the parallelized version on the dataset 
+The speedup when using the parallelized version on the dataset `300_signal1.txt` of length 536976 point when using following SAX parameters: sliding window size 200, PAA size 11, alphabet size 7, and three different NR strategies.
 
 ![Performance plot](https://raw.githubusercontent.com/jMotif/SAX/master/test/performance/profiling.png)
