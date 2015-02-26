@@ -1,7 +1,9 @@
 Time series discretization with SAX
 ====
 
-This Java library implements Symbolic Aggregate Approximation for time series.  The code and API are very simple aiming at performance. It provides a multi-threaded SAX version as well. You can find more information about SAX in the following papers:
+This Java library implements Symbolic Aggregate Approximation for time series. The code and API are very simple aiming at performance; the library provides a multi-threaded SAX discretization too. 
+
+You can find more information about SAX in following papers:
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., [*Finding Motifs in Time Series*](http://cs.gmu.edu/~jessica/Lin_motif.pdf), The 2nd Workshop onTemporal Data Mining, the 8th ACM Int'l Conferenceon KDD (2002)
 
