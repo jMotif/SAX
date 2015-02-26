@@ -72,24 +72,6 @@ public class SAXRecords implements Iterable<SaxRecord> {
   }
 
   /**
-   * Adds a single string and index entry by creating a SAXRecord.
-   * 
-   * @param str The string.
-   * @param idx The index.
-   */
-  public void add(char[] str, int idx) {
-    SaxRecord rr = records.get(String.valueOf(str));
-    if (null == rr) {
-      rr = new SaxRecord(str, idx);
-      this.records.put(String.valueOf(str), rr);
-    }
-    else {
-      rr.addIndex(idx);
-    }
-    this.realTSindex.put(idx, rr);
-  }
-
-  /**
    * Gets an entry by the index.
    * 
    * @param idx The index.
@@ -97,6 +79,16 @@ public class SAXRecords implements Iterable<SaxRecord> {
    */
   public SaxRecord getByIndex(int idx) {
     return realTSindex.get(idx);
+  }
+
+  /**
+   * Get a SAX record by the string key.
+   * 
+   * @param str The query string.
+   * @return the record if exists.
+   */
+  public SaxRecord getByWord(String str) {
+    return records.get(str);
   }
 
   /**
@@ -123,39 +115,44 @@ public class SAXRecords implements Iterable<SaxRecord> {
   }
 
   /**
+   * Adds a single string and index entry by creating a SAXRecord.
+   * 
+   * @param str The string.
+   * @param idx The index.
+   */
+  public void add(char[] str, int idx) {
+    SaxRecord rr = records.get(String.valueOf(str));
+    if (null == rr) {
+      rr = new SaxRecord(str, idx);
+      this.records.put(String.valueOf(str), rr);
+    }
+    else {
+      rr.addIndex(idx);
+    }
+    this.realTSindex.put(idx, rr);
+  }
+
+  /**
    * Adds all entries from the collection.
    * 
-   * @param chunk The collection.
+   * @param records The collection.
    */
-  public void addAll(SAXRecords chunk) {
-    for (SaxRecord rec : chunk) {
-
-      char[] payload = rec.getPayload();
-      ArrayList<Integer> indexes = rec.getIndexes();
-
-      // treat the premier index entry
-      SaxRecord rr = this.records.get(String.valueOf(payload));
-      if (null == rr) {
-        rr = new SaxRecord(payload, indexes.get(0));
-        this.records.put(String.valueOf(payload), rr);
-        this.realTSindex.put(indexes.get(0), rr);
+  public void addAll(SAXRecords records) {
+    for (SaxRecord record : records) {
+      char[] payload = record.getPayload();
+      for (Integer i : record.getIndexes()) {
+        this.add(payload, i);
       }
-      else {
-        rr.addIndex(indexes.get(0));
-        this.realTSindex.put(indexes.get(0), rr);
-      }
-
-      // and here the rest of indexes
-      for (int i = 1; i < indexes.size(); i++) {
-        rr.addIndex(indexes.get(i));
-        this.realTSindex.put(indexes.get(i), rr);
-      }
-
     }
   }
 
-  public void addAll(HashMap<Integer, char[]> chunkRes) {
-    for (Entry<Integer, char[]> e : chunkRes.entrySet()) {
+  /**
+   * This adds all to the data structure.
+   * 
+   * @param records
+   */
+  public void addAll(HashMap<Integer, char[]> records) {
+    for (Entry<Integer, char[]> e : records.entrySet()) {
       this.add(e.getValue(), e.getKey());
     }
   }
@@ -247,16 +244,6 @@ public class SAXRecords implements Iterable<SaxRecord> {
    */
   public Integer mapStringIndexToTSPosition(int idx) {
     return this.stringPosToRealPos.get(idx);
-  }
-
-  /**
-   * Get a SAX record by the string key.
-   * 
-   * @param str The query string.
-   * @return the record if exists.
-   */
-  public SaxRecord getByWord(String str) {
-    return records.get(str);
   }
 
 }

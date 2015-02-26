@@ -18,7 +18,7 @@ public final class PerformanceEvaluation {
 
   private static final Integer MIN_CPUS = 2;
 
-  private static final Integer MAX_CPUS = 8;
+  private static final Integer MAX_CPUS = 16;
 
   private static final double N_THRESHOLD = 0.001d;
 
@@ -48,19 +48,20 @@ public final class PerformanceEvaluation {
     System.out.println("SAX parameters: sliding window size " + slidingWindowSize + ", PAA size "
         + paaSize + ", alphabet size " + alphabetSize);
 
-    System.out.println("Will be performing " + NRUNS
-        + " SAX runs for each algorithm implementation ... ");
+    System.out.println("Performing " + NRUNS
+        + " SAX conversion runs for each algorithm implementation ... ");
 
     // conventional
     //
     long tstamp1 = System.currentTimeMillis();
     for (int i = 0; i < NRUNS; i++) {
       @SuppressWarnings("unused")
-      SAXRecords sequentialRes2 = sp.ts2saxViaWindow(ts, slidingWindowSize, paaSize,
+      SAXRecords sequentialRes = sp.ts2saxViaWindow(ts, slidingWindowSize, paaSize,
           na.getCuts(alphabetSize), NumerosityReductionStrategy.EXACT, N_THRESHOLD);
     }
     long tstamp2 = System.currentTimeMillis();
-    System.out.println("single thread conversion " + SAXProcessor.timeToString(tstamp1, tstamp2));
+    System.out.println("single thread conversion: " + String.valueOf(tstamp2 - tstamp1) + ", "
+        + SAXProcessor.timeToString(tstamp1, tstamp2));
 
     // parallel
     for (int threadsNum = MIN_CPUS; threadsNum < MAX_CPUS; threadsNum++) {
@@ -73,7 +74,7 @@ public final class PerformanceEvaluation {
       }
       tstamp2 = System.currentTimeMillis();
       System.out.println("parallel conversion using " + threadsNum + " threads: "
-          + SAXProcessor.timeToString(tstamp1, tstamp2));
+          + String.valueOf(tstamp2 - tstamp1) + ", " + SAXProcessor.timeToString(tstamp1, tstamp2));
     }
   }
 
