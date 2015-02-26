@@ -37,13 +37,14 @@ Built jar can be used to convert a time series (represented as a single-column t
 	An execution example: $java -jar "jmotif-vsm-20.jar"  test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 2
 
 When run, it prints the time series index and a corresponding word:
-	$ java -jar "jmotif-sax20.jar"  test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 3 | head
-	0, aceccdc
-	4, adeccdc
-	6, addccdc
-	8, addccdd
-	9, adccccd
-	...
+
+ 	$ java -jar "jmotif-sax20.jar"  test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 3 | head
+ 	0, aceccdc
+ 	4, adeccdc
+ 	6, addccdc
+ 	8, addccdd
+ 	9, adccccd
+ 	...
 
 3.0 API USAGE
 ------------	
