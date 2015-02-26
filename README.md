@@ -5,7 +5,7 @@ This Java library implements Symbolic Aggregate Approximation for time series.  
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., [*Finding Motifs in Time Series*](http://cs.gmu.edu/~jessica/Lin_motif.pdf), The 2nd Workshop onTemporal Data Mining, the 8th ACM Int'l Conferenceon KDD (2002)
 
-[2] Patel, P., Keogh, E., Lin, J., Lonardi, S., *Mining Motifs in Massive Time Series Databases*, In Proc. ICDM (2002)
+[2] Patel, P., Keogh, E., Lin, J., Lonardi, S., [*Mining Motifs in Massive Time Series Databases*](http://www.cs.gmu.edu/~jessica/publications/motif_icdm02.pdf), In Proc. ICDM (2002)
 
 1.0 BUILDING
 ------------
@@ -54,7 +54,7 @@ Parallel discretization:
 
 	// perform the discretization using 8 threads
 	ParallelSAXImplementation ps = new ParallelSAXImplementation();
-	SAXRecords res = ps.process(ts, threadsNum, slidingWindowSize, paaSize, alphabetSize, 
+	SAXRecords res = ps.process(ts, 8, slidingWindowSize, paaSize, alphabetSize, 
 		nrStrategy, nThreshold);
 
 	// print the output
