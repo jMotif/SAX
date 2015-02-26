@@ -55,4 +55,17 @@ public enum NumerosityReductionStrategy {
       throw new RuntimeException("Unknown index:" + value);
     }
   }
+
+  public String toString() {
+    switch (this.index) {
+    case 0:
+      return "NONE";
+    case 1:
+      return "EXACT";
+    case 2:
+      return "MINDIST";
+    default:
+      throw new RuntimeException("Unknown index:" + this.index);
+    }
+  }
 }

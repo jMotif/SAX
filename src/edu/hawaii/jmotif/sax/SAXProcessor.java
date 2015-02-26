@@ -45,7 +45,6 @@ public final class SAXProcessor {
     SAXRecords saxFrequencyData = new SAXRecords();
 
     // scan across the time series extract sub sequences, and convert them to strings
-
     char[] previousString = null;
 
     for (int i = 0; i < ts.length - (windowSize - 1); i++) {
@@ -200,8 +199,7 @@ public final class SAXProcessor {
    * @return distance between strings.
    * @throws SAXException If error occurs.
    */
-  public double saxMinDist(char[] a, char[] b, double[][] distanceMatrix)
-      throws SAXException {
+  public double saxMinDist(char[] a, char[] b, double[][] distanceMatrix) throws SAXException {
     if (a.length == b.length) {
       double dist = 0.0D;
       for (int i = 0; i < a.length; i++) {
@@ -233,22 +231,13 @@ public final class SAXProcessor {
    * @return String representation of the elapsed time.
    */
   public static String timeToString(long start, long finish) {
-    
-    Duration duration = new Duration(finish-start); // in milliseconds
-    PeriodFormatter formatter = new PeriodFormatterBuilder()
-         .appendDays()
-         .appendSuffix("d")
-         .appendHours()
-         .appendSuffix("h")
-         .appendMinutes()
-         .appendSuffix("m")
-         .appendSeconds()
-         .appendSuffix("s")
-         .appendMillis()
-         .appendSuffix("ms")
-         .toFormatter();
+
+    Duration duration = new Duration(finish - start); // in milliseconds
+    PeriodFormatter formatter = new PeriodFormatterBuilder().appendDays().appendSuffix("d")
+        .appendHours().appendSuffix("h").appendMinutes().appendSuffix("m").appendSeconds()
+        .appendSuffix("s").appendMillis().appendSuffix("ms").toFormatter();
     String formatted = formatter.print(duration.toPeriod());
-    
+
     return formatted;
 
   }
