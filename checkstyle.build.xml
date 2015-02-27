@@ -1,0 +1,50 @@
+<?xml version = '1.0' encoding = 'windows-1252'?>
+<!DOCTYPE project>
+<project name="checkstyle" default="checkstyle.report">
+ <description>
+  Provides the Checkstyle tool and the Hackystat Checkstyle sensor.
+  Note: The error message "Unable to create a Checker" indicates you have an old version of Checkstyle in ant/lib.
+  </description>
+
+ <import file="build.xml" />
+ <property environment="env" />
+ <property name="checkstyle.dir" location="${build.dir}/checkstyle" />
+ <property name="checkstyle.version" value="5.5" />
+ <property name="checkstyle.jar" value="checkstyle-${checkstyle.version}-all.jar" />
+ <property name="checkstyle.failOnViolation" value="false" />
+
+ <target name="checkstyle" depends="checkstyle.tool, checkstyle.sensor" />
+
+ <target name="checkstyle.tool" depends="compile" description="Checks the style of the sources and reports issues.">
+  <!-- Check for the CHECKSTYLE_HOME environment variable, failing the build if it can't be found. -->
+  <available file="${env.CHECKSTYLE_HOME}/${checkstyle.jar}" property="checkstyle.available" />
+  <fail unless="checkstyle.available" message="Error: CHECKSTYLE_HOME not set or ${env.CHECKSTYLE_HOME}/${checkstyle.jar} not found." />
+  <taskdef resource="checkstyletask.properties" classpath="${env.CHECKSTYLE_HOME}/${checkstyle.jar}" />
+
+  <mkdir dir="${checkstyle.dir}" />
+  <checkstyle config="${basedir}/lib/checkstyle/hackystat.checkstyle.xml" failOnViolation="${checkstyle.failOnViolation}">
+   <fileset dir="${src.dir}" includes="**/*.java" />
+   <formatter type="plain" />
+   <formatter type="xml" tofile="${checkstyle.dir}/checkstyle.xml" />
+   <classpath>
+    <pathelement location="${build.dir}/classes" />
+    <path refid="compile.classpath" />
+   </classpath>
+  </checkstyle>
+ </target>
+
+ <target name="checkstyle.report" depends="checkstyle.tool" description="Generates an HTML report for Checkstyle.">
+  <xslt in="${checkstyle.dir}/checkstyle.xml" out="${checkstyle.dir}/index.html" style="${env.CHECKSTYLE_HOME}/contrib/checkstyle-noframes.xsl">
+   <param name="title" expression="Checkstyle Report" />
+   <param name="module" expression="${system.name}" />
+  </xslt>
+ </target>
+
+ <target name="checkstyle.sensor" description="Send hackystat data about this Checkstyle invocation." if="hackystat.enabled">
+  <fileset id="checkstyle.datafiles" dir="${checkstyle.dir}" includes="checkstyle.xml" />
+  <hackystat.checkstyle checkstyle.datafiles.fileset="checkstyle.datafiles" verbose="${hackystat.verbose.mode}" />
+ </target>
+
+</project>
+
+
