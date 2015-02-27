@@ -27,7 +27,7 @@ The code is written in Java and I use Ant to build it:
 Built jar can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
 
 	$ java -jar "jmotif-sax20.jar"
-	Command-line SAX converson utility, the output printed to STDOUT 
+	Command-line SAX conversion utility, the output printed to STDOUT 
 	Expects 6 parameters:
  	[1] training dataset filename
  	[2] sliding window size
