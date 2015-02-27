@@ -23,8 +23,6 @@ public class TSProcessor {
   static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
       'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
-  public static final double GLOBAL_NORMALIZATION_THRESHOLD = 0.05D;
-
   // logging stuff
   //
   private static Logger consoleLogger;
@@ -51,7 +49,7 @@ public class TSProcessor {
    * @return data.
    * @throws NumberFormatException if error occurs.
    * @throws IOException if error occurs.
-   * @throws TSException if error occurs.
+   * @throws SAXException if error occurs.
    */
   public static double[] readFileColumn(String filename, int columnIdx, int sizeLimit)
       throws NumberFormatException, IOException, SAXException {
@@ -178,9 +176,8 @@ public class TSProcessor {
    * Speed-optimized Z-Normalize routine, doesn't care about normalization threshold.
    * 
    * @param series The timeseries.
-   * @param normalizationThreshold
+   * @param normalizationThreshold the zNormalization threshold value.
    * @return Z-normalized time-series.
-   * @throws TSException if error occurs.
    */
   public double[] znorm(double[] series, double normalizationThreshold) {
     double[] res = new double[series.length];
@@ -292,8 +289,8 @@ public class TSProcessor {
    * Extract subseries out of series.
    * 
    * @param series The series array.
-   * @param start Start position
-   * @param length Length of subseries to extract.
+   * @param start the fragment start.
+   * @param end the fragment end.
    * @return The subseries.
    * @throws IndexOutOfBoundsException If error occurs.
    */
@@ -306,6 +303,14 @@ public class TSProcessor {
     return Arrays.copyOfRange(series, start, end);
   }
 
+  /**
+   * Prettyfies the timeseries for screen output.
+   * 
+   * @param series the data.
+   * @param df the number format to use.
+   * 
+   * @return The timeseries formatted for screen output.
+   */
   public String seriesToString(double[] series, NumberFormat df) {
     StringBuffer sb = new StringBuffer();
     sb.append('[');

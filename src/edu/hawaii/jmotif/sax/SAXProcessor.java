@@ -118,10 +118,11 @@ public final class SAXProcessor {
   }
 
   /**
+   * Check for mindist.
    * 
-   * @param previousString
-   * @param currentString
-   * @return
+   * @param a first string.
+   * @param b second string.
+   * @return true if mindist between strings is zero.
    */
   public boolean checkMinDistIsZero(char[] a, char[] b) {
     for (int i = 0; i < a.length; i++) {
@@ -135,6 +136,12 @@ public final class SAXProcessor {
   /**
    * Convert the timeseries into SAX string representation.
    * 
+   * @param ts the timeseries.
+   * @param paaSize the PAA size.
+   * @param cuts the alphabet cuts.
+   * @param nThreshold the normalization thresholds.
+   * 
+   * @return The SAX representation for timeseries.
    */
   public char[] ts2string(double[] ts, int paaSize, double[] cuts, double nThreshold) {
 

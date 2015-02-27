@@ -22,7 +22,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
   /** The id is used to identify the chunk. */
   private final long id;
 
-  /** All the SAX records */
+  /** All the SAX records. */
   private final HashMap<String, SaxRecord> records;
 
   /** The index of occurrences, key is the position in the time series. */
@@ -64,6 +64,8 @@ public class SAXRecords implements Iterable<SaxRecord> {
 
   /**
    * Returns an iterator which is backed by a hash map.
+   * 
+   * @return an iterator.
    */
   @Override
   public Iterator<SaxRecord> iterator() {
@@ -148,7 +150,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
   /**
    * This adds all to the data structure.
    * 
-   * @param records
+   * @param records the data to add.
    */
   public void addAll(HashMap<Integer, char[]> records) {
     for (Entry<Integer, char[]> e : records.entrySet()) {

@@ -11,7 +11,7 @@ import java.util.Arrays;
  */
 public class SaxRecord implements Comparable<SaxRecord> {
 
-  /** The payload */
+  /** The payload. */
   private char[] saxString;
 
   /** The index of occurrences in the raw sequence. */
@@ -23,7 +23,12 @@ public class SaxRecord implements Comparable<SaxRecord> {
     super();
   }
 
-  /** The allowed constructor. */
+  /**
+   * The allowed constructor.
+   * 
+   * @param str the payload value.
+   * @param idx the occurrence index.
+   */
   public SaxRecord(char[] str, int idx) {
     super();
     this.saxString = str.clone();
@@ -74,6 +79,7 @@ public class SaxRecord implements Comparable<SaxRecord> {
    * frequency of entry occurrence.
    * 
    * @param o an entry to compare with.
+   * @return results of comparison.
    */
   @Override
   public int compareTo(SaxRecord o) {

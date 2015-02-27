@@ -65,7 +65,6 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
    * @param data the data array.
    * @param intervalStart from which coordinate to start the conversion.
    * @param intervalEnd where to end conversion (non-ionclusive).
-   * @param offset the offset for final values of SAX word positions.
    * @param windowSize SAX window size.
    * @param paaSize SAX paa size.
    * @param alphabetSize SAX alphabet size.

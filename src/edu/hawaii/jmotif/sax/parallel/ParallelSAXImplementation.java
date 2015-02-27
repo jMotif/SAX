@@ -32,8 +32,8 @@ public class ParallelSAXImplementation {
 
   // locale, charset, etc
   //
-  final static Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-  final static int COMPLETED_FLAG = -1;
+  static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+  static final int COMPLETED_FLAG = -1;
 
   // logging stuff
   //
@@ -47,6 +47,9 @@ public class ParallelSAXImplementation {
     consoleLogger.setLevel(LOGGING_LEVEL);
   }
 
+  /**
+   * Constructor.
+   */
   public ParallelSAXImplementation() {
     super();
   }

@@ -22,7 +22,7 @@ public abstract class Alphabet {
    * 
    * @param size The alphabet size.
    * @return cut intervals for the alphabet.
-   * @throws TSException if error occurs.
+   * @throws SAXException if error occurs.
    */
   public abstract double[] getCuts(Integer size) throws SAXException;
 
@@ -31,7 +31,7 @@ public abstract class Alphabet {
    * 
    * @param size The alphabet size.
    * @return The distance matrix.
-   * @throws TSException if error occurs.
+   * @throws SAXException if error occurs.
    */
   public abstract double[][] getDistanceMatrix(Integer size) throws SAXException;
 
