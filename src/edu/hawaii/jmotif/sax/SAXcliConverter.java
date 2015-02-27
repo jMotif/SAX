@@ -10,13 +10,17 @@ import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
 import edu.hawaii.jmotif.sax.parallel.ParallelSAXImplementation;
 import edu.hawaii.jmotif.util.StackTrace;
 
+/**
+ * This implements a simple CLI tool for ad-hoc SAX discretization.
+ * 
+ * @author Pavel Senin
+ * 
+ */
 public class SAXcliConverter {
 
   private static final String CR = "\n";
   private static final String COMMA = ", ";
 
-  // static block - we instantiate the logger
-  //
   // logging stuff
   //
   private static Logger consoleLogger;
@@ -26,6 +30,11 @@ public class SAXcliConverter {
     consoleLogger.setLevel(LOGGING_LEVEL);
   }
 
+  /**
+   * The main runnable.
+   * 
+   * @param args
+   */
   public static void main(String[] args) {
 
     try {
@@ -88,7 +97,7 @@ public class SAXcliConverter {
    */
   private static String printHelp() {
     StringBuffer sb = new StringBuffer();
-    sb.append("Command-line SAX converson utility, the output printed to STDOUT ").append(CR);
+    sb.append("Command-line SAX conversion utility, the output printed to STDOUT ").append(CR);
     sb.append("Expects 6 parameters:").append(CR);
     sb.append(" [1] training dataset filename").append(CR);
     sb.append(" [2] sliding window size").append(CR);
@@ -98,7 +107,7 @@ public class SAXcliConverter {
     sb.append(" [6] z-Normalization threshold value").append(CR);
     sb.append(" [7] OPTIONAL: number of threads to use").append(CR);
     sb.append("An execution example: $java -jar \"jmotif-vsm-20.jar\" ");
-    sb.append(" test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 2").append(CR);
+    sb.append("test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 2").append(CR);
     return sb.toString();
   }
 
