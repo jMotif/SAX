@@ -9,6 +9,10 @@ You can find more information about SAX on [my old wiki page](https://code.googl
 
 [2] Patel, P., Keogh, E., Lin, J., Lonardi, S., [*Mining Motifs in Massive Time Series Databases*](http://www.cs.gmu.edu/~jessica/publications/motif_icdm02.pdf), In Proc. ICDM (2002)
 
+0.0 Javadocs
+------------
+[http://jmotif.github.io/SAX](http://jmotif.github.io/SAX)
+
 1.0 Building
 ------------
 The code is written in Java and I use Ant to build it:
