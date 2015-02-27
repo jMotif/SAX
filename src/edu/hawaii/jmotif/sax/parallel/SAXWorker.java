@@ -20,31 +20,31 @@ import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
 
   /** The worker ID. */
-  private long id;
+  private final long id;
 
   /** The input timeseries. */
-  private double[] data;
+  private final double[] ts;
 
   /** The conversion start index. */
-  private int intervalStart;
+  private final int intervalStart;
 
   /** The conversion end index. */
-  private int intervalEnd;
+  private final int intervalEnd;
 
   /** The SAX discretization sliding window parameter size. */
-  private int saxWindowSize;
+  private final int saxWindowSize;
 
   /** The SAX discretization PAA size. */
-  private int saxPAASize;
+  private final int saxPAASize;
 
   /** The SAX discretization alphabet size. */
-  private int saxAlphabetSize;
+  private final int saxAlphabetSize;
 
   /** The SAX discretization sliding window parameter size. */
-  private NumerosityReductionStrategy numerosityReductionStrategy;
+  private final NumerosityReductionStrategy numerosityReductionStrategy;
 
   /** The SAX discretization normalization threshold. */
-  private double normalizationThreshold;
+  private final double normalizationThreshold;
 
   // logging stuff
   //
@@ -76,7 +76,7 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
       int paaSize, int alphabetSize, NumerosityReductionStrategy nrs, double normalizationThreshold) {
     super();
     this.id = id;
-    this.data = data;
+    this.ts = data;
     this.intervalStart = intervalStart;
     this.intervalEnd = intervalEnd;
     this.saxWindowSize = windowSize;
@@ -84,7 +84,7 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
     this.saxAlphabetSize = alphabetSize;
     this.numerosityReductionStrategy = nrs;
     this.normalizationThreshold = normalizationThreshold;
-    consoleLogger.debug("sax worker instance id " + this.id + ", data " + this.data.length
+    consoleLogger.debug("sax worker instance id " + this.id + ", data " + this.ts.length
         + ", window " + this.saxWindowSize + ", paa " + this.saxPAASize + ", alphabet "
         + this.saxAlphabetSize + ", nr " + this.numerosityReductionStrategy.toString()
         + ", threshold: " + normalizationThreshold + ", start: " + this.intervalStart + ", end: "
@@ -107,7 +107,7 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
     for (int i = this.intervalStart; i < this.intervalEnd - (this.saxWindowSize - 1); i++) {
 
       // fix the current subsection
-      double[] subSection = Arrays.copyOfRange(this.data, i, i + this.saxWindowSize);
+      double[] subSection = Arrays.copyOfRange(this.ts, i, i + this.saxWindowSize);
 
       // Z normalize it
       subSection = tsp.znorm(subSection, normalizationThreshold);

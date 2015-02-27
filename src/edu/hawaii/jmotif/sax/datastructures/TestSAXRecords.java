@@ -12,8 +12,6 @@ public class TestSAXRecords {
 
   private static final String filenameTEK14 = "test/data/TEK14.txt";
 
-  private double[] ts1;
-
   /**
    * Test the simple SAX conversion.
    * 
@@ -22,7 +20,7 @@ public class TestSAXRecords {
   @Test
   public void testProperIndexing() throws Exception {
 
-    ts1 = TSProcessor.readFileColumn(filenameTEK14, 0, 0);
+    double[] ts1 = TSProcessor.readFileColumn(filenameTEK14, 0, 0);
 
     NormalAlphabet na = new NormalAlphabet();
 

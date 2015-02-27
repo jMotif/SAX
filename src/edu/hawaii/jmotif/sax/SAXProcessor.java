@@ -14,7 +14,7 @@ import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
  */
 public final class SAXProcessor {
 
-  private TSProcessor tsProcessor;
+  private final TSProcessor tsProcessor;
 
   /**
    * Constructor.
@@ -147,11 +147,6 @@ public final class SAXProcessor {
       double[] paa = tsProcessor.paa(ts, paaSize);
       return tsProcessor.ts2String(paa, cuts);
     }
-  }
-
-  public char[] ts2string(double[] paa, double[] cuts) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   /**

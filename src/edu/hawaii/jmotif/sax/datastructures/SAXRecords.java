@@ -20,13 +20,13 @@ import java.util.TreeMap;
 public class SAXRecords implements Iterable<SaxRecord> {
 
   /** The id is used to identify the chunk. */
-  private long id;
+  private final long id;
 
   /** All the SAX records */
-  private HashMap<String, SaxRecord> records;
+  private final HashMap<String, SaxRecord> records;
 
   /** The index of occurrences, key is the position in the time series. */
-  private SortedMap<Integer, SaxRecord> realTSindex;
+  private final SortedMap<Integer, SaxRecord> realTSindex;
 
   /** The mapping from SAX string positions to real time series positions. */
   private HashMap<Integer, Integer> stringPosToRealPos;
@@ -67,8 +67,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
    */
   @Override
   public Iterator<SaxRecord> iterator() {
-    Iterator<SaxRecord> res = this.realTSindex.values().iterator();
-    return res;
+    return this.realTSindex.values().iterator();
   }
 
   /**

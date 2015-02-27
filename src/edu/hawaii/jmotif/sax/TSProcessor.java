@@ -175,36 +175,6 @@ public class TSProcessor {
   }
 
   /**
-   * Computes the autocorrelation value of timeseries. according to algorithm in:
-   * http://www.itl.nist.gov/div898/handbook/eda/section3/eda35c.htm
-   * 
-   * @param series The timeseries.
-   * @param lag The lag
-   * @return The autocorrelation value.
-   */
-  public double autocorrelation(double series[], int lag) {
-    double ac = 0;
-
-    double avg = mean(series);
-    double numerator = 0;
-    for (int i = 0; i < series.length - lag; i++) {
-      if (Double.isNaN(series[i]) || Double.isInfinite(series[i])) {
-        continue;
-      }
-      numerator += (series[i] - avg) * (series[i + lag] - avg);
-    }
-    double denominator = 0;
-    for (int i = 0; i < series.length; i++) {
-      if (Double.isNaN(series[i]) || Double.isInfinite(series[i])) {
-        continue;
-      }
-      denominator += (series[i] - avg) * (series[i] - avg);
-    }
-    ac = numerator / denominator;
-    return ac;
-  }
-
-  /**
    * Speed-optimized Z-Normalize routine, doesn't care about normalization threshold.
    * 
    * @param series The timeseries.
@@ -334,66 +304,6 @@ public class TSProcessor {
           + series.length + ", start: " + start + ", end: " + String.valueOf(end - start));
     }
     return Arrays.copyOfRange(series, start, end);
-  }
-
-  /**
-   * Implements Gaussian smoothing.
-   * 
-   * @param series Data to process.
-   * @param filterWidth The filter width.
-   * @return smoothed series.
-   * @throws SAXException if error occurs.
-   */
-  public double[] gaussFilter(double[] series, double filterWidth) throws SAXException {
-
-    double[] smoothedSignal = new double[series.length];
-    double sigma = filterWidth / 2D;
-    int maxShift = (int) Math.floor(4D * sigma); // Gaussian curve is reasonably > 0
-
-    if (maxShift < 1) {
-      throw new SAXException("NOT smoothing: filter width too small - " + filterWidth);
-    }
-    for (int i = 0; i < smoothedSignal.length; i++) {
-      smoothedSignal[i] = series[i];
-
-      if (maxShift < 1) {
-        continue;
-      }
-      for (int j = 1; j <= maxShift; j++) {
-
-        double gaussFilter = Math.exp(-(j * j) / (2. * sigma * sigma));
-        double leftAmpl, rightAmpl;
-
-        // go left
-        if ((i - j) >= 0) {
-          leftAmpl = series[i - j];
-        }
-        else {
-          leftAmpl = series[i];
-        }
-
-        // go right
-        if ((i + j) <= smoothedSignal.length - 1) {
-          rightAmpl = series[i + j];
-        }
-        else {
-          rightAmpl = series[i];
-        }
-
-        smoothedSignal[i] += gaussFilter * (leftAmpl + rightAmpl);
-
-      }
-
-      double normalizingCoef = Math.sqrt(2. * Math.PI) * sigma;
-      smoothedSignal[i] /= normalizingCoef;
-
-    }
-    return smoothedSignal;
-  }
-
-  public double gaussian(double x, double filterWidth) {
-    double sigma = filterWidth / 2.;
-    return Math.exp(-(x * x) / (2. * sigma * sigma));
   }
 
   public String seriesToString(double[] series, NumberFormat df) {

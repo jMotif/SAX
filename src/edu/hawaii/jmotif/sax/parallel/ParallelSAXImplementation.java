@@ -129,7 +129,7 @@ public class ParallelSAXImplementation {
           nrStrategy, normalizationThreshold);
       completionService.submit(job);
       consoleLogger.debug("submitted intermediate chunk job "
-          + Long.valueOf(tstamp + totalTaskCounter));
+          + String.valueOf(tstamp + totalTaskCounter));
       totalTaskCounter++;
     }
 
@@ -141,7 +141,7 @@ public class ParallelSAXImplementation {
           lastChunkEnd, slidingWindowSize, paaSize, alphabetSize, nrStrategy,
           normalizationThreshold);
       completionService.submit(jobN);
-      consoleLogger.debug("submitted last chunk job " + Long.valueOf(tstamp + totalTaskCounter));
+      consoleLogger.debug("submitted last chunk job " + String.valueOf(tstamp + totalTaskCounter));
       totalTaskCounter++;
     }
 
@@ -168,7 +168,7 @@ public class ParallelSAXImplementation {
 
           // get the real job index out
           //
-          int idx = (int) (Long.valueOf(String.valueOf(chunkRes.get(-1))) - tstamp);
+          int idx = (int) (Long.parseLong(String.valueOf(chunkRes.get(-1))) - tstamp);
 
           consoleLogger.debug("job with stamp " + String.valueOf(chunkRes.get(-1)) + " of chunk "
               + idx + " has finished");
@@ -176,7 +176,7 @@ public class ParallelSAXImplementation {
               + " completion flag: " + COMPLETED_FLAG);
 
           chunkRes.remove(-1);
-          
+
           if (0 == res.size() || nrStrategy.equals(NumerosityReductionStrategy.NONE)) {
             res.addAll(chunkRes);
             completedChunks[idx] = COMPLETED_FLAG;

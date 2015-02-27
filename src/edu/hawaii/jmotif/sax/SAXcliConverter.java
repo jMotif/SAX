@@ -16,7 +16,7 @@ import edu.hawaii.jmotif.util.StackTrace;
  * @author Pavel Senin
  * 
  */
-public class SAXcliConverter {
+public final class SAXcliConverter {
 
   private static final String CR = "\n";
   private static final String COMMA = ", ";
@@ -28,6 +28,13 @@ public class SAXcliConverter {
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(SAXcliConverter.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
+  }
+
+  /**
+   * Constructor.
+   */
+  private SAXcliConverter() {
+    assert true;
   }
 
   /**
@@ -96,18 +103,18 @@ public class SAXcliConverter {
    * @return formatted help string.
    */
   private static String printHelp() {
-    StringBuffer sb = new StringBuffer();
-    sb.append("Command-line SAX conversion utility, the output printed to STDOUT ").append(CR);
-    sb.append("Expects 6 parameters:").append(CR);
-    sb.append(" [1] training dataset filename").append(CR);
-    sb.append(" [2] sliding window size").append(CR);
-    sb.append(" [3] PAA size").append(CR);
-    sb.append(" [4] Alphabet size").append(CR);
-    sb.append(" [5] numerosity reduction <NONE|EXACT|MINDIST>").append(CR);
-    sb.append(" [6] z-Normalization threshold value").append(CR);
-    sb.append(" [7] OPTIONAL: number of threads to use").append(CR);
-    sb.append("An execution example: $java -jar \"jmotif-vsm-20.jar\" ");
-    sb.append("test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 2").append(CR);
+    StringBuffer sb = new StringBuffer(512);
+    sb.append("Command-line SAX conversion utility, the output printed to STDOUT ").append(CR).
+    append("Expects 6 parameters:").append(CR).
+    append(" [1] training dataset filename").append(CR).
+    append(" [2] sliding window size").append(CR).
+    append(" [3] PAA size").append(CR).
+    append(" [4] Alphabet size").append(CR).
+    append(" [5] numerosity reduction <NONE|EXACT|MINDIST>").append(CR).
+    append(" [6] z-Normalization threshold value").append(CR).
+    append(" [7] OPTIONAL: number of threads to use").append(CR).
+    append("An execution example: $java -jar \"jmotif-vsm-20.jar\" test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 2").
+    append(CR);
     return sb.toString();
   }
 

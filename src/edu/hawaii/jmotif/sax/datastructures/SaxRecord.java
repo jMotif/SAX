@@ -141,8 +141,7 @@ public class SaxRecord implements Comparable<SaxRecord> {
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
-    sb.append(this.saxString).append(" -> ");
-    sb.append(occurrences.toString());
+    sb.append(this.saxString).append(" -> ").append(occurrences.toString());
     return sb.toString();
   }
 
