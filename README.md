@@ -9,7 +9,7 @@ You can find more information about SAX on [my old wiki page](https://code.googl
 
 [2] Patel, P., Keogh, E., Lin, J., Lonardi, S., [*Mining Motifs in Massive Time Series Databases*](http://www.cs.gmu.edu/~jessica/publications/motif_icdm02.pdf), In Proc. ICDM (2002)
 
-1.0 BUILDING
+1.0 Building
 ------------
 The code is written in Java and I use Ant to build it:
 	
@@ -48,7 +48,7 @@ When run, it prints the time series index and a corresponding word:
  	9, adccccd
  	...
 
-3.0 API USAGE
+3.0 API usage
 ------------	
 There two classes which implement sequential end-to-end workflow for SAX and a parallel implementation of the discretization. These are [TSProcessor](https://github.com/jMotif/SAX/blob/master/src/edu/hawaii/jmotif/sax/TSProcessor.java) and [SAXProcessor](https://github.com/jMotif/SAX/blob/master/src/edu/hawaii/jmotif/sax/SAXProcessor.java).
 
