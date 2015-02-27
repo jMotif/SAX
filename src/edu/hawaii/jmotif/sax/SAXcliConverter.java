@@ -40,7 +40,7 @@ public final class SAXcliConverter {
   /**
    * The main runnable.
    * 
-   * @param args
+   * @param args the command line parameters.
    */
   public static void main(String[] args) {
 
@@ -104,17 +104,27 @@ public final class SAXcliConverter {
    */
   private static String printHelp() {
     StringBuffer sb = new StringBuffer(512);
-    sb.append("Command-line SAX conversion utility, the output printed to STDOUT ").append(CR).
-    append("Expects 6 parameters:").append(CR).
-    append(" [1] training dataset filename").append(CR).
-    append(" [2] sliding window size").append(CR).
-    append(" [3] PAA size").append(CR).
-    append(" [4] Alphabet size").append(CR).
-    append(" [5] numerosity reduction <NONE|EXACT|MINDIST>").append(CR).
-    append(" [6] z-Normalization threshold value").append(CR).
-    append(" [7] OPTIONAL: number of threads to use").append(CR).
-    append("An execution example: $java -jar \"jmotif-vsm-20.jar\" test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 2").
-    append(CR);
+    sb.append("Command-line SAX conversion utility, the output printed to STDOUT ")
+        .append(CR)
+        .append("Expects 6 parameters:")
+        .append(CR)
+        .append(" [1] training dataset filename")
+        .append(CR)
+        .append(" [2] sliding window size")
+        .append(CR)
+        .append(" [3] PAA size")
+        .append(CR)
+        .append(" [4] Alphabet size")
+        .append(CR)
+        .append(" [5] numerosity reduction <NONE|EXACT|MINDIST>")
+        .append(CR)
+        .append(" [6] z-Normalization threshold value")
+        .append(CR)
+        .append(" [7] OPTIONAL: number of threads to use")
+        .append(CR)
+        .append(
+            "An execution example: $java -jar \"jmotif-vsm-20.jar\" test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 2")
+        .append(CR);
     return sb.toString();
   }
 
