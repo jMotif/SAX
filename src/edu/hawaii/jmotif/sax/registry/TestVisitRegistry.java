@@ -57,6 +57,7 @@ public class TestVisitRegistry {
    */
   @Test
   public void testGetNextRandomUnvisitedPosition() {
+
     int k = vr.getNextRandomUnvisitedPosition();
     assertTrue("Test visit registry", vr.isNotVisited(k));
     assertFalse("Test visit registry", vr.isVisited(k, k));

@@ -8,7 +8,7 @@ import java.util.Random;
  * 
  * @author Pavel Senin.
  */
-public class VisitRegistry {
+public class VisitRegistry implements Cloneable {
 
   protected byte[] registry; // 1 visited, 0 unvisited
   private int unvisitedCount;
@@ -21,17 +21,17 @@ public class VisitRegistry {
    * @param capacity The initial capacity.
    */
   public VisitRegistry(int capacity) {
-
+    super();
     this.capacity = capacity;
-
     this.registry = new byte[capacity];
-
     this.unvisitedCount = capacity;
-
   }
 
-  protected VisitRegistry() {
-
+  /**
+   * Disabling the default constructor.
+   */
+  private VisitRegistry() {
+    super();
   }
 
   /**
@@ -65,35 +65,11 @@ public class VisitRegistry {
    * @return The next unvisited position.
    */
   public int getNextRandomUnvisitedPosition() {
+    // if all visited return -1
     if (0 == this.unvisitedCount) {
       return -1;
     }
-    // the idea is to count unvisited, get a random position and map it back to the array
-    //
-    // int unvisitedCount = 0;
-    // for (int i = 0; i < capacity; i++) {
-    // if (0 == this.registry[i]) {
-    // unvisitedCount++;
-    // }
-    // }
-    // if (0 == unvisitedCount) {
-    // if (0 == this.unvisitedCount) {
-    // // it is impossible to get unvisited, all marked as visited
-    // return -1;
-    // }
-    // else {
-    // // int randomIndex = this.randomizer.nextInt(unvisitedCount);
-    // int randomIndex = this.randomizer.nextInt(this.unvisitedCount);
-    // int counter = 0;
-    // for (int i = 0; i < capacity; i++) {
-    // if (0 == this.registry[i]) {
-    // if (randomIndex == counter) {
-    // return i;
-    // }
-    // counter++;
-    // }
-    // }
-    // }
+    // if there is space continue with random sampling
     int i = this.randomizer.nextInt(capacity);
     while (1 == registry[i]) {
       i = this.randomizer.nextInt(capacity);
@@ -169,18 +145,22 @@ public class VisitRegistry {
   }
 
   /**
-   * Transfers all visited entries to this registry.
+   * Transfers all visited entries from another registry to current.
    * 
    * @param discordRegistry The discords registry to copy from.
    */
   public void transferVisited(VisitRegistry discordRegistry) {
-    // discordRegistry.registry = Arrays.copyOfRange(this.registry, 0, this.registry.length);
     for (int v : discordRegistry.getVisited()) {
       this.markVisited(v);
     }
   }
 
-  public VisitRegistry copy() {
+  /**
+   * Creates the copy of a registry.
+   * 
+   * @return the complete copy.
+   */
+  public VisitRegistry clone() {
     VisitRegistry res = new VisitRegistry();
     res.capacity = this.capacity;
     res.unvisitedCount = this.unvisitedCount;
@@ -188,6 +168,11 @@ public class VisitRegistry {
     return res;
   }
 
+  /**
+   * The registry size.
+   * 
+   * @return the registry size.
+   */
   public int size() {
     return this.registry.length;
   }
