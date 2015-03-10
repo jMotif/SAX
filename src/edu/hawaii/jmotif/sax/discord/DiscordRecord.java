@@ -17,9 +17,6 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
   /** The NN distance. */
   private double nnDistance;
 
-  /** The Rule - useful for SAXSequitur. */
-  private int ruleId;
-
   /** The payload - auxiliary variable. */
   private String payload;
 
@@ -30,7 +27,6 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
    * Constructor.
    */
   public DiscordRecord() {
-    this.ruleId = -1;
     this.position = -1;
     this.length = -1;
     this.nnDistance = -1.0D;
@@ -43,7 +39,6 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
    * @param dist The distance from other sequences.
    */
   public DiscordRecord(int index, double dist) {
-    this.ruleId = -1;
     this.position = index;
     this.nnDistance = dist;
     this.payload = "";
@@ -57,7 +52,6 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
    * @param payload The payload.
    */
   public DiscordRecord(int index, double dist, String payload) {
-    this.ruleId = -1;
     this.position = index;
     this.nnDistance = dist;
     this.payload = payload;
@@ -151,24 +145,6 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
    */
   public Integer getLength() {
     return this.length;
-  }
-
-  /**
-   * Set the rule ID.
-   * 
-   * @param ruleId the rule ID.
-   */
-  public void setRule(int ruleId) {
-    this.ruleId = ruleId;
-  }
-
-  /**
-   * Get the rule.
-   * 
-   * @return the rule Id.
-   */
-  public int getRuleId() {
-    return ruleId;
   }
 
   /**

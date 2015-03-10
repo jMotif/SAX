@@ -8,6 +8,12 @@ import edu.hawaii.jmotif.sax.SAXProcessor;
 import edu.hawaii.jmotif.sax.TSProcessor;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 
+/**
+ * Testing SAX records store.
+ * 
+ * @author psenin
+ * 
+ */
 public class TestSAXRecords {
 
   private static final String filenameTEK14 = "test/data/TEK14.txt";
