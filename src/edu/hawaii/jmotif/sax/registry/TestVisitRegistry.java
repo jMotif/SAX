@@ -1,4 +1,4 @@
-package edu.hawaii.jmotif.sax.trie;
+package edu.hawaii.jmotif.sax.registry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

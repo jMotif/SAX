@@ -1,4 +1,4 @@
-package edu.hawaii.jmotif.sax.trie;
+package edu.hawaii.jmotif.sax.registry;
 
 import java.util.Arrays;
 import java.util.Random;

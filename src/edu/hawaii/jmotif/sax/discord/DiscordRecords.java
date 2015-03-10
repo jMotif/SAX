@@ -26,7 +26,6 @@ public class DiscordRecords implements Iterable<DiscordRecord> {
    * Add a new discord to the list.
    * 
    * @param discord The discord instance to add.
-   * @return if the discord got added.
    */
   public void add(DiscordRecord discord) {
     this.discords.insertSorted(discord);

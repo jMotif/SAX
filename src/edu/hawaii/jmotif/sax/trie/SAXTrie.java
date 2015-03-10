@@ -106,6 +106,11 @@ public class SAXTrie {
     return res;
   }
 
+  /**
+   * Get the alphabet size used for the trie construction.
+   * 
+   * @return the alphabet size.
+   */
   public int getAlphabetSize() {
     return this.alphabetSize;
   }

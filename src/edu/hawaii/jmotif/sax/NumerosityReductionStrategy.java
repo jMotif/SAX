@@ -56,6 +56,9 @@ public enum NumerosityReductionStrategy {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String toString() {
     switch (this.index) {
     case 0:

@@ -22,10 +22,6 @@ public final class PerformanceEvaluation {
 
   private static final double N_THRESHOLD = 0.001d;
 
-  private PerformanceEvaluation() {
-    assert true;
-  }
-
   /**
    * Runs the evaluation.
    * 

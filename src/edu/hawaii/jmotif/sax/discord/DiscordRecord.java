@@ -11,7 +11,7 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
   /** The discord position. */
   private int position;
 
-  /** The discord length */
+  /** The discord length. */
   private int length;
 
   /** The NN distance. */

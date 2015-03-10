@@ -32,9 +32,9 @@ public final class SAXTrieHitEntry implements Cloneable, Comparable<SAXTrieHitEn
   /**
    * Constructor.
    * 
-   * @param position
-   * @param payload
-   * @param frequency
+   * @param position the original entry position.
+   * @param payload the payload string.
+   * @param frequency the frequency.
    */
   public SAXTrieHitEntry(Integer position, char[] payload, int frequency) {
     this.position = position;
@@ -184,11 +184,17 @@ public final class SAXTrieHitEntry implements Cloneable, Comparable<SAXTrieHitEn
     return true;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String toString() {
     return "payload: " + String.valueOf(this.payload) + ", frequency: " + this.frequency
         + ", location: " + this.position;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public SAXTrieHitEntry clone() {
     SAXTrieHitEntry res = new SAXTrieHitEntry(this.payload.length, this.position);
     res.setStr(this.payload);
