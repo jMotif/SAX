@@ -51,7 +51,8 @@ public class VisitRegistry implements Cloneable {
   /**
    * Marks as visited a range of locations.
    * 
-   * @param i The location to mark.
+   * @param start the start of labeling (inclusive).
+   * @param end the end of labeling (exclusive).
    */
   public void markVisited(int start, int end) {
     for (int i = start; i < end; i++) {
@@ -88,10 +89,10 @@ public class VisitRegistry implements Cloneable {
   }
 
   /**
-   * Check if position was visited.
+   * Check if interval boundaries were visited.
    * 
-   * @param intervalStart The position.
-   * @param intervalEnd
+   * @param intervalStart The interval start (inclusive).
+   * @param intervalEnd The interval end (inclusive).
    * @return True if visited.
    */
   public boolean isVisited(Integer intervalStart, int intervalEnd) {

@@ -4,12 +4,20 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import edu.hawaii.jmotif.sax.alphabet.Alphabet;
+import edu.hawaii.jmotif.util.StackTrace;
 
 /**
  * Implements algorithms for low-level data manipulation.
@@ -19,9 +27,11 @@ import ch.qos.logback.classic.Logger;
  */
 public class TSProcessor {
 
+  private final static Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+
   /** The latin alphabet, lower case letters a-z. */
-  static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-      'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+  private static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+      'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
   // logging stuff
   //
@@ -246,6 +256,24 @@ public class TSProcessor {
   }
 
   /**
+   * Convert the timeseries into the index using SAX cuts.
+   * 
+   * @param series The timeseries to convert.
+   * @param alphabet The alphabet to use.
+   * @param alphabetSize The alphabet size in use.
+   * @return SAX representation of timeseries.
+   * @throws Exception if error occurs.
+   */
+  public int[] ts2Index(double[] series, Alphabet alphabet, int alphabetSize) throws Exception {
+    double[] cuts = alphabet.getCuts(alphabetSize);
+    int[] res = new int[series.length];
+    for (int i = 0; i < series.length; i++) {
+      res[i] = num2index(series[i], cuts);
+    }
+    return res;
+  }
+
+  /**
    * Get mapping of a number to char.
    * 
    * @param value the value to map.
@@ -386,5 +414,68 @@ public class TSProcessor {
       }
     }
     return res;
+  }
+
+  /**
+   * Read at least N elements from the file.
+   * 
+   * @param dataFileName the file name.
+   * @param loadLimit the load limit.
+   * @return the read data or empty array if nothing to load.
+   * @throws SAXException if error occurs.
+   */
+  public double[] readTS(String dataFileName, int loadLimit) throws SAXException {
+
+    // make sure the path exists
+    Path path = Paths.get(dataFileName);
+    if (!(Files.exists(path))) {
+      throw new SAXException("unable to load data - data source not found.");
+    }
+
+    // read the input
+    //
+    // init the data araay
+    ArrayList<Double> data = new ArrayList<Double>();
+
+    // lets go
+    try {
+
+      // open the reader
+      BufferedReader reader = Files.newBufferedReader(path, DEFAULT_CHARSET);
+
+      // read by the line in the loop from reader
+      String line = null;
+      long lineCounter = 0;
+      while ((line = reader.readLine()) != null) {
+        String[] lineSplit = line.trim().split("\\s+");
+        // we read only first column
+        // for (int i = 0; i < lineSplit.length; i++) {
+        double value = new BigDecimal(lineSplit[0]).doubleValue();
+        data.add(value);
+        // }
+        lineCounter++;
+        // break the load if needed
+        if ((loadLimit > 0) && (lineCounter > loadLimit)) {
+          break;
+        }
+      }
+      reader.close();
+    }
+    catch (Exception e) {
+      System.err.println(StackTrace.toString(e));
+    }
+    finally {
+      assert true;
+    }
+
+    // convert to simple doubles array and clean the variable
+    if (!(data.isEmpty())) {
+      double[] ts = new double[data.size()];
+      for (int i = 0; i < data.size(); i++) {
+        ts[i] = data.get(i);
+      }
+      return ts;
+    }
+    return new double[0];
   }
 }

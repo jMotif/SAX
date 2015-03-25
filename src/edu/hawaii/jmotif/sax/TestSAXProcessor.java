@@ -12,7 +12,7 @@ import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
  * @author Pavel Senin
  * 
  */
-public class TestSAXFactory {
+public class TestSAXProcessor {
 
   private static final String ts1File = "test/data/timeseries01.csv";
   private static final String ts2File = "test/data/timeseries02.csv";

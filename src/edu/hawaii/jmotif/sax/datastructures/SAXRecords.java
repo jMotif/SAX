@@ -247,4 +247,9 @@ public class SAXRecords implements Iterable<SaxRecord> {
     return this.stringPosToRealPos.get(idx);
   }
 
+  public void excludePositions(int[] stops) {
+    this.buildIndex();
+    
+  }
+
 }

@@ -19,11 +19,17 @@ public class SortedArrayList<T> extends ArrayList<T> {
   /** The fancy serial. */
   private static final long serialVersionUID = 291265617765342218L;
 
-  @SuppressWarnings("unchecked")
+  /**
+   * Inserts an element and sorts the array.
+   * 
+   * @param value the value to insert.
+   */
   public void insertSorted(T value) {
     add(value);
+    @SuppressWarnings("unchecked")
     Comparable<T> cmp = (Comparable<T>) value;
-    for (int i = size() - 1; i > 0 && cmp.compareTo(get(i - 1)) < 0; i--)
+    for (int i = size() - 1; i > 0 && cmp.compareTo(get(i - 1)) < 0; i--) {
       Collections.swap(this, i, i - 1);
+    }
   }
 }

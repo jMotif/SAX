@@ -8,6 +8,12 @@ import edu.hawaii.jmotif.sax.TSProcessor;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
 import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
 
+/**
+ * Testing the parallel SAX implementation.
+ * 
+ * @author psenin
+ * 
+ */
 public class TestParallelSAXImplementation {
 
   private static final String filenameTEK14 = "test/data/TEK14.txt";
