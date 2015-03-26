@@ -247,9 +247,22 @@ public class SAXRecords implements Iterable<SaxRecord> {
     return this.stringPosToRealPos.get(idx);
   }
 
-  public void excludePositions(int[] stops) {
-    this.buildIndex();
-    
+  /**
+   * Removes saxRecord occurrences that correspond to these positions.
+   * 
+   * @param positions The positions to clear.
+   */
+  public void excludePositions(ArrayList<Integer> positions) {
+    for (Integer p : positions) {
+      if (realTSindex.containsKey(p)) {
+        SaxRecord rec = realTSindex.get(p);
+        rec.removeIndex(p);
+        if (0 == rec.getIndexes().size()) {
+          this.records.remove(String.valueOf(rec.getPayload()));
+        }
+        realTSindex.remove(p);
+      }
+    }
   }
 
 }

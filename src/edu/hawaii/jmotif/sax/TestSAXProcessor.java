@@ -2,9 +2,12 @@ package edu.hawaii.jmotif.sax;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import java.io.IOException;
+import java.util.ArrayList;
 import org.junit.Test;
 import edu.hawaii.jmotif.sax.alphabet.Alphabet;
 import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
+import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
 
 /**
  * Test SAX factory methods.
@@ -16,6 +19,7 @@ public class TestSAXProcessor {
 
   private static final String ts1File = "test/data/timeseries01.csv";
   private static final String ts2File = "test/data/timeseries02.csv";
+  private static final String ts3File = "test/data/timeseries03.csv";
 
   private static final String ts1StrRep10 = "bcjkiheebb";
   private static final String ts2StrRep10 = "bcefgijkdb";
@@ -32,6 +36,36 @@ public class TestSAXProcessor {
   private static final Alphabet normalA = new NormalAlphabet();
 
   private static final double delta = 0.001;
+
+  @Test
+  public void testConnectedConversion() throws NumberFormatException, IOException, SAXException {
+
+    SAXProcessor sp = new SAXProcessor();
+    double[] ts = TSProcessor.readFileColumn(ts3File, 0, 0);
+
+    ArrayList<Integer> skips = new ArrayList<Integer>();
+    for (int i = 30 - 6; i <= 30; i++) {
+      skips.add(i);
+    }
+
+    SAXRecords regularSAX = sp.ts2saxViaWindow(ts, 6, 3, normalA.getCuts(3),
+        NumerosityReductionStrategy.NONE, 0.01);
+    System.out.println("NONE: there are " + regularSAX.getAllIndices().size() + " words: \n"
+        + regularSAX.getSAXString(" ") + "\n" + regularSAX.getAllIndices());
+    SAXRecords saxData = sp.ts2saxViaWindowSkipping(ts, 6, 3, normalA.getCuts(3),
+        NumerosityReductionStrategy.NONE, 0.01, skips);
+    System.out.println("NONE with skips: there are " + saxData.getAllIndices().size()
+        + " words: \n" + saxData.getSAXString(" ") + "\n" + saxData.getAllIndices());
+
+    regularSAX = sp.ts2saxViaWindow(ts, 6, 3, normalA.getCuts(3),
+        NumerosityReductionStrategy.EXACT, 0.01);
+    System.out.println("EXACT: there are " + regularSAX.getAllIndices().size() + " words: \n"
+        + regularSAX.getSAXString(" ") + "\n" + regularSAX.getAllIndices());
+    saxData = sp.ts2saxViaWindowSkipping(ts, 6, 3, normalA.getCuts(3),
+        NumerosityReductionStrategy.EXACT, 0.01, skips);
+    System.out.println("EXACT with skips: there are " + saxData.getAllIndices().size()
+        + " words: \n" + saxData.getSAXString(" ") + "\n" + saxData.getAllIndices());
+  }
 
   /**
    * Test the SAX conversion.

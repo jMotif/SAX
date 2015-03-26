@@ -1,6 +1,8 @@
 package edu.hawaii.jmotif.sax;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -82,6 +84,83 @@ public final class SAXProcessor {
 
     return saxFrequencyData;
 
+  }
+
+  /**
+   * Converts the input time series into a SAX data structure via sliding window and Z
+   * normalization.
+   * 
+   * @param ts the input data.
+   * @param windowSize the sliding window size.
+   * @param paaSize the PAA size.
+   * @param cuts the Alphabet cuts.
+   * @param nThreshold the normalization threshold value.
+   * @param strategy the NR strategy.
+   * @param skips The list of points which shall be skipped during conversion; this feature is
+   * particularly important when building a concatenated from pieces time series and junction shall
+   * not make it into the grammar.
+   * 
+   * @return SAX representation of the time series.
+   */
+  public SAXRecords ts2saxViaWindowSkipping(double[] ts, int windowSize, int paaSize,
+      double[] cuts, NumerosityReductionStrategy strategy, double nThreshold,
+      ArrayList<Integer> skips) {
+
+    // the resulting data structure init
+    //
+    SAXRecords saxFrequencyData = new SAXRecords();
+
+    Collections.sort(skips);
+    int cSkipIdx = 0;
+
+    // scan across the time series extract sub sequences, and convert them to strings
+    char[] previousString = null;
+    boolean skipped = false;
+
+    for (int i = 0; i < ts.length - (windowSize - 1); i++) {
+
+      // skip what need to be skipped
+      if (cSkipIdx < skips.size() && i == skips.get(cSkipIdx)) {
+        cSkipIdx = cSkipIdx + 1;
+        skipped = true;
+        continue;
+      }
+
+      // fix the current subsection
+      double[] subSection = Arrays.copyOfRange(ts, i, i + windowSize);
+
+      // Z normalize it
+      subSection = tsProcessor.znorm(subSection, nThreshold);
+
+      // perform PAA conversion if needed
+      double[] paa = tsProcessor.paa(subSection, paaSize);
+
+      // Convert the PAA to a string.
+      char[] currentString = tsProcessor.ts2String(paa, cuts);
+
+      if (!(skipped) && null != previousString) {
+
+        if (NumerosityReductionStrategy.EXACT.equals(strategy)
+            && Arrays.equals(previousString, currentString)) {
+          // NumerosityReduction
+          continue;
+        }
+        else if (NumerosityReductionStrategy.MINDIST.equals(strategy)
+            && checkMinDistIsZero(previousString, currentString)) {
+          continue;
+        }
+
+      }
+
+      previousString = currentString;
+      if (skipped) {
+        skipped = false;
+      }
+
+      saxFrequencyData.add(currentString, i);
+    }
+
+    return saxFrequencyData;
   }
 
   /**
