@@ -26,7 +26,7 @@ The code is written in Java and I use Ant to build it:
 	BUILD SUCCESSFUL
 	Total time: 1 second
 
-2.0 CLI time series conversion
+2.0 Time series to SAX conversion using CLI
 ------------
 Built jar can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
 
