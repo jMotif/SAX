@@ -61,7 +61,7 @@ public class DiscordRecords implements Iterable<DiscordRecord> {
 
   @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = new StringBuffer(128);
     for (int i = 0; i < discords.size(); i++) {
       DiscordRecord record = discords.get(i);
       if (record.getPayload().isEmpty()) {

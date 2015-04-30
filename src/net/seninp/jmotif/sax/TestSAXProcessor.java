@@ -1,6 +1,7 @@
 package net.seninp.jmotif.sax;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +38,13 @@ public class TestSAXProcessor {
 
   private static final double delta = 0.001;
 
+  /**
+   * Testing the concatenated time series SAX conversion.
+   * 
+   * @throws NumberFormatException if error occurs.
+   * @throws IOException if error occurs.
+   * @throws SAXException if error occurs.
+   */
   @Test
   public void testConnectedConversion() throws NumberFormatException, IOException, SAXException {
 
@@ -59,6 +67,7 @@ public class TestSAXProcessor {
 
     regularSAX = sp.ts2saxViaWindow(ts, 6, 3, normalA.getCuts(3),
         NumerosityReductionStrategy.EXACT, 0.01);
+    assertNotNull("asserting the processing result", regularSAX);
     System.out.println("EXACT: there are " + regularSAX.getAllIndices().size() + " words: \n"
         + regularSAX.getSAXString(" ") + "\n" + regularSAX.getAllIndices());
     saxData = sp.ts2saxViaWindowSkipping(ts, 6, 3, normalA.getCuts(3),

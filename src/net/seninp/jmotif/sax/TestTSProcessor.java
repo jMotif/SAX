@@ -159,7 +159,7 @@ public class TestTSProcessor {
   /**
    * Test the SAX conversion.
    * 
-   * @throws SAXException
+   * @throws SAXException if error occurs.
    * 
    */
   @Test

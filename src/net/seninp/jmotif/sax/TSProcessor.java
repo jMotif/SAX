@@ -27,7 +27,7 @@ import ch.qos.logback.classic.Logger;
  */
 public class TSProcessor {
 
-  private final static Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+  private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
   /** The latin alphabet, lower case letters a-z. */
   private static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',

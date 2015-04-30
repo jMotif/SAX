@@ -12,7 +12,7 @@ public class VisitRegistry implements Cloneable {
 
   protected byte[] registry; // 1 visited, 0 unvisited
   private int unvisitedCount;
-  private Random randomizer = new Random(System.currentTimeMillis());
+  private final Random randomizer = new Random(System.currentTimeMillis());
   private int capacity;
 
   /**
@@ -30,6 +30,7 @@ public class VisitRegistry implements Cloneable {
   /**
    * Disabling the default constructor.
    */
+  @SuppressWarnings("unused")
   private VisitRegistry() {
     super();
   }
@@ -40,11 +41,9 @@ public class VisitRegistry implements Cloneable {
    * @param i The location to mark.
    */
   public void markVisited(int i) {
-    if (i >= 0 && i < this.capacity) {
-      if (0 == this.registry[i]) {
-        this.unvisitedCount--;
-        this.registry[i] = 1;
-      }
+    if (i >= 0 && i < this.capacity && 0 == this.registry[i]) {
+      this.unvisitedCount--;
+      this.registry[i] = 1;
     }
   }
 
@@ -160,9 +159,10 @@ public class VisitRegistry implements Cloneable {
    * Creates the copy of a registry.
    * 
    * @return the complete copy.
+   * @throws CloneNotSupportedException if error occurs.
    */
-  public VisitRegistry clone() {
-    VisitRegistry res = new VisitRegistry();
+  public VisitRegistry clone() throws CloneNotSupportedException {
+    VisitRegistry res = (VisitRegistry) super.clone();
     res.capacity = this.capacity;
     res.unvisitedCount = this.unvisitedCount;
     res.registry = Arrays.copyOfRange(this.registry, 0, this.registry.length);
