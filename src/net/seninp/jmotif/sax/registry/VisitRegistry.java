@@ -1,5 +1,6 @@
 package net.seninp.jmotif.sax.registry;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -103,19 +104,11 @@ public class VisitRegistry implements Cloneable {
    * 
    * @return list of unvisited positions.
    */
-  public int[] getUnvisited() {
-    int count = 0;
+  public ArrayList<Integer> getUnvisited() {
+    ArrayList<Integer> res = new ArrayList<Integer>(capacity);
     for (int i = 0; i < capacity; i++) {
       if (0 == this.registry[i]) {
-        count++;
-      }
-    }
-    int[] res = new int[count];
-    int cp = 0;
-    for (int i = 0; i < capacity; i++) {
-      if (0 == this.registry[i]) {
-        res[cp] = i;
-        cp++;
+        res.add(i);
       }
     }
     return res;
