@@ -33,7 +33,7 @@
   <fixcrlf srcdir="${javadoc.dir}" includes="**/*.html" />
  </target>
 
- <target name="javadoc.zip" depends="javadoc" description="Create javadoc and source zip files for Ivy publication.">
+ <target name="javadoc.zip" depends="javadoc" description="Create javadoc and source zip files.">
   <mkdir dir="${build.dir}/jar" />
   <property name="javadoc.linksource" value="false" />
   <zip zipfile="${build.dir}/jar/${system.name}-javadoc.zip" basedir="${javadoc.dir}" />

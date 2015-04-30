@@ -1,7 +1,6 @@
 <project name="build" default="compile">
  <description>
-  	The basic build file for the GrammarViz system. I have collected tasks from other files in here because 
-    Travis CI runs only "ant test"
+  	The basic build file for the Jmotif SAX library."
   </description>
 
  <!-- Always make environment variables available with the "env." prefix. -->
@@ -26,7 +25,7 @@
  <fail message="This package requires Ant 1.8." unless="ant.available" />
 
  <!-- Basic properties for this system. -->
- <property name="system.name" value="grammarviz" />
+ <property name="system.name" value="jmotif-sax" />
  <property name="majorVersionNumber" value="2" />
  <property name="minorVersionNumber" value="0" />
  <tstamp>
