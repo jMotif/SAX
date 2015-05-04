@@ -5,12 +5,13 @@
   <formats>
     <format>jar</format>
   </formats>
+  <fileSets>
+    <fileSet>
+      <directory>src/main/java/net</directory>
+      <outputDirectory>net</outputDirectory>
+    </fileSet>
+  </fileSets>
   <files>
-    <file>
-      <source>README.md</source>
-      <outputDirectory>/</outputDirectory>
-      <filtered>true</filtered>
-    </file>
     <file>
       <source>LICENSE.txt</source>
       <outputDirectory>/</outputDirectory>
