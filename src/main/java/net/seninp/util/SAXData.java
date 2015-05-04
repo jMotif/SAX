@@ -6,7 +6,7 @@ package net.seninp.util;
  * @author psenin
  * 
  */
-public class TestData {
+public class SAXData {
 
   public static final double[] ecg0606 = { -6.095, -6.095, -6.1, -6.1, -6.095, -6.095, -6.1,
       -6.105, -6.105, -6.115, -6.105, -6.1, -6.095, -6.09, -6.08, -6.075, -6.065, -6.06, -6.035,

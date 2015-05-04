@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public class TestParallelSAXImplementation {
 
-  private static final String filenameTEK14 = "test/data/TEK14.txt";
+  private static final String filenameTEK14 = "src/test/test/data/TEK14.txt";
 
   private static final int THREADS_NUM = 5;
 

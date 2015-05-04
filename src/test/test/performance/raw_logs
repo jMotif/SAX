@@ -1,0 +1,131 @@
+== EXACT ==
+
+$ java -Xmx16G -cp "jmotif-sax20.jar" edu.hawaii.jmotif.sax.parallel.PerformanceEvaluation SAX/test/data/300_signal1.txt 200 11 7
+data file: SAX/test/data/300_signal1.txt
+data size: 536976
+SAX parameters: sliding window size 200, PAA size 11, alphabet size 7
+Will be performing 20 SAX runs for each algorithm implementation ... 
+single thread conversion: 169055, 2m49s55ms
+parallel conversion using 2 threads: 89856, 1m29s856ms
+parallel conversion using 3 threads: 60485, 1m485ms
+parallel conversion using 4 threads: 47980, 47s980ms
+parallel conversion using 5 threads: 39512, 39s512ms
+parallel conversion using 6 threads: 33371, 33s371ms
+parallel conversion using 7 threads: 29244, 29s244ms
+parallel conversion using 8 threads: 25734, 25s734ms
+parallel conversion using 9 threads: 23448, 23s448ms
+parallel conversion using 10 threads: 21872, 21s872ms
+parallel conversion using 11 threads: 20233, 20s233ms
+parallel conversion using 12 threads: 18906, 18s906ms
+parallel conversion using 13 threads: 17954, 17s954ms
+parallel conversion using 14 threads: 19906, 19s906ms
+parallel conversion using 15 threads: 18784, 18s784ms
+$ java -Xmx16G -cp "jmotif-sax20.jar" edu.hawaii.jmotif.sax.parallel.PerformanceEvaluation SAX/test/data/300_signal1.txt 120 6 3
+data file: SAX/test/data/300_signal1.txt
+data size: 536976
+SAX parameters: sliding window size 120, PAA size 6, alphabet size 3
+Will be performing 20 SAX runs for each algorithm implementation ... 
+single thread conversion: 32208, 32s208ms
+parallel conversion using 2 threads: 17688, 17s688ms
+parallel conversion using 3 threads: 12948, 12s948ms
+parallel conversion using 4 threads: 10970, 10s970ms
+parallel conversion using 5 threads: 9671, 9s671ms
+parallel conversion using 6 threads: 8947, 8s947ms
+parallel conversion using 7 threads: 8187, 8s187ms
+parallel conversion using 8 threads: 7795, 7s795ms
+parallel conversion using 9 threads: 7470, 7s470ms
+parallel conversion using 10 threads: 7161, 7s161ms
+parallel conversion using 11 threads: 7067, 7s67ms
+parallel conversion using 12 threads: 7047, 7s47ms
+parallel conversion using 13 threads: 6934, 6s934ms
+parallel conversion using 14 threads: 6830, 6s830ms
+parallel conversion using 15 threads: 6720, 6s720ms
+
+
+=== NONE ====
+
+$ java -Xmx16G -cp "jmotif-sax20.jar" edu.hawaii.jmotif.sax.parallel.PerformanceEvaluation SAX/test/data/300_signal1.txt 120 6 3 NONE
+data file: SAX/test/data/300_signal1.txt
+data size: 536976
+SAX parameters: sliding window size 120, PAA size 6, alphabet size 3, NR strategy NONE
+Performing 20 SAX conversion runs for each algorithm implementation ... 
+single thread conversion: 34293, 34s293ms
+parallel conversion using 2 threads: 17945, 17s945ms
+parallel conversion using 3 threads: 12514, 12s514ms
+parallel conversion using 4 threads: 10585, 10s585ms
+parallel conversion using 5 threads: 9764, 9s764ms
+parallel conversion using 6 threads: 8798, 8s798ms
+parallel conversion using 7 threads: 8159, 8s159ms
+parallel conversion using 8 threads: 7730, 7s730ms
+parallel conversion using 9 threads: 7322, 7s322ms
+parallel conversion using 10 threads: 7000, 7s
+parallel conversion using 11 threads: 6880, 6s880ms
+parallel conversion using 12 threads: 6720, 6s720ms
+parallel conversion using 13 threads: 6714, 6s714ms
+parallel conversion using 14 threads: 6670, 6s670ms
+parallel conversion using 15 threads: 6456, 6s456ms
+
+$ java -Xmx16G -cp "jmotif-sax20.jar" edu.hawaii.jmotif.sax.parallel.PerformanceEvaluation SAX/test/data/300_signal1.txt 200 11 7 NONE
+data file: SAX/test/data/300_signal1.txt
+data size: 536976
+SAX parameters: sliding window size 200, PAA size 11, alphabet size 7, NR strategy NONE
+Performing 20 SAX conversion runs for each algorithm implementation ... 
+single thread conversion: 170279, 2m50s279ms
+parallel conversion using 2 threads: 89807, 1m29s807ms
+parallel conversion using 3 threads: 61176, 1m1s176ms
+parallel conversion using 4 threads: 48336, 48s336ms
+parallel conversion using 5 threads: 39511, 39s511ms
+parallel conversion using 6 threads: 33373, 33s373ms
+parallel conversion using 7 threads: 29335, 29s335ms
+parallel conversion using 8 threads: 25840, 25s840ms
+parallel conversion using 9 threads: 23531, 23s531ms
+parallel conversion using 10 threads: 21418, 21s418ms
+parallel conversion using 11 threads: 20044, 20s44ms
+parallel conversion using 12 threads: 18577, 18s577ms
+parallel conversion using 13 threads: 17898, 17s898ms
+parallel conversion using 14 threads: 19349, 19s349ms
+parallel conversion using 15 threads: 19181, 19s181ms
+
+===== MINDIST ===== 
+
+$ java -Xmx16G -cp "jmotif-sax20.jar" edu.hawaii.jmotif.sax.parallel.PerformanceEvaluation SAX/test/data/300_signal1.txt 200 11 7 MINDIST
+data file: SAX/test/data/300_signal1.txt
+data size: 536976
+SAX parameters: sliding window size 200, PAA size 11, alphabet size 7, NR strategy MINDIST
+Performing 20 SAX conversion runs for each algorithm implementation ... 
+single thread conversion: 168183, 2m48s183ms
+parallel conversion using 2 threads: 90009, 1m30s9ms
+parallel conversion using 3 threads: 60828, 1m828ms
+parallel conversion using 4 threads: 47402, 47s402ms
+parallel conversion using 5 threads: 39675, 39s675ms
+parallel conversion using 6 threads: 33269, 33s269ms
+parallel conversion using 7 threads: 29408, 29s408ms
+parallel conversion using 8 threads: 25901, 25s901ms
+parallel conversion using 9 threads: 23225, 23s225ms
+parallel conversion using 10 threads: 21856, 21s856ms
+parallel conversion using 11 threads: 20113, 20s113ms
+parallel conversion using 12 threads: 18784, 18s784ms
+parallel conversion using 13 threads: 17781, 17s781ms
+parallel conversion using 14 threads: 19611, 19s611ms
+parallel conversion using 15 threads: 19403, 19s403ms
+
+$java -Xmx16G -cp "jmotif-sax20.jar" edu.hawaii.jmotif.sax.parallel.PerformanceEvaluation SAX/test/data/300_signal1.txt 120 6 3 MINDIST
+data file: SAX/test/data/300_signal1.txt
+data size: 536976
+SAX parameters: sliding window size 120, PAA size 6, alphabet size 3, NR strategy MINDIST
+Performing 20 SAX conversion runs for each algorithm implementation ... 
+single thread conversion: 32749, 32s749ms
+parallel conversion using 2 threads: 17912, 17s912ms
+parallel conversion using 3 threads: 12667, 12s667ms
+parallel conversion using 4 threads: 10717, 10s717ms
+parallel conversion using 5 threads: 9543, 9s543ms
+parallel conversion using 6 threads: 8584, 8s584ms
+parallel conversion using 7 threads: 8005, 8s5ms
+parallel conversion using 8 threads: 7648, 7s648ms
+parallel conversion using 9 threads: 7169, 7s169ms
+parallel conversion using 10 threads: 6955, 6s955ms
+parallel conversion using 11 threads: 6851, 6s851ms
+parallel conversion using 12 threads: 6674, 6s674ms
+parallel conversion using 13 threads: 6642, 6s642ms
+parallel conversion using 14 threads: 6546, 6s546ms
+parallel conversion using 15 threads: 6532, 6s532ms

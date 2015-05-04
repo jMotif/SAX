@@ -15,7 +15,7 @@ import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.datastructures.SaxRecord;
-import net.seninp.util.TestData;
+import net.seninp.util.SAXData;
 import net.seninp.util.UCRUtils;
 
 public class SAXBitmapPrinter {
@@ -34,7 +34,7 @@ public class SAXBitmapPrinter {
     SAXProcessor sp = new SAXProcessor();
     NormalAlphabet na = new NormalAlphabet();
 
-    Map<String, List<double[]>> train = UCRUtils.readUCRData("data/CBF/CBF_TRAIN");
+    Map<String, List<double[]>> train = UCRUtils.readUCRData("src/main/resources/data/CBF/CBF_TRAIN");
 
     String[] allStrings = getAllLists(ALPHABET, SHINGLE_SIZE);
     System.out.println("Using words: " + Arrays.toString(allStrings).replace(", ", "\", \""));

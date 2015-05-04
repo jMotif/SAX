@@ -18,14 +18,14 @@ import org.junit.Test;
  */
 public class TestTSProcessor {
 
-  private static final String ts1File = "test/data/timeseries01.csv";
-  private static final String ts2File = "test/data/timeseries02.csv";
+  private static final String ts1File = "src/test/test/data/timeseries01.csv";
+  private static final String ts2File = "src/test/test/data/timeseries02.csv";
 
-  private static final String ts1NormFile = "test/data/timeseries01.norm.csv";
-  private static final String ts2NormFile = "test/data/timeseries02.norm.csv";
+  private static final String ts1NormFile = "src/test/test/data/timeseries01.norm.csv";
+  private static final String ts2NormFile = "src/test/test/data/timeseries02.norm.csv";
 
-  private static final String ts1PAAFile = "test/data/timeseries01.PAA10.csv";
-  private static final String ts2PAAFile = "test/data/timeseries02.PAA10.csv";
+  private static final String ts1PAAFile = "src/test/test/data/timeseries01.PAA10.csv";
+  private static final String ts2PAAFile = "src/test/test/data/timeseries02.PAA10.csv";
 
   private static final int length = 15;
   private static final int PAAlength = 10;

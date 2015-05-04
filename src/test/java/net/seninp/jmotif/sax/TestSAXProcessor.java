@@ -18,9 +18,9 @@ import org.junit.Test;
  */
 public class TestSAXProcessor {
 
-  private static final String ts1File = "test/data/timeseries01.csv";
-  private static final String ts2File = "test/data/timeseries02.csv";
-  private static final String ts3File = "test/data/timeseries03.csv";
+  private static final String ts1File = "src/test/test/data/timeseries01.csv";
+  private static final String ts2File = "src/test/test/data/timeseries02.csv";
+  private static final String ts3File = "src/test/test/data/timeseries03.csv";
 
   private static final String ts1StrRep10 = "bcjkiheebb";
   private static final String ts2StrRep10 = "bcefgijkdb";
