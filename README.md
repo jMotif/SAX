@@ -45,7 +45,7 @@ Built jar can be used to convert a time series (represented as a single-column t
 
 When run, it prints the time series index and a corresponding word:
 
- 	$ java -jar "target/jmotif-sax-0.0.1-SNAPSHOT-jar-with-dependencies.jar"src/resources/test-data/ecg0606_1.csv 120 7 5 EXACT 0.001 2 | head
+ 	$ java -jar "target/jmotif-sax-0.0.1-SNAPSHOT-jar-with-dependencies.jar" src/resources/test-data/ecg0606_1.csv 120 7 5 EXACT 0.001 2 | head
  	0, aceccdc
  	4, adeccdc
  	6, addccdc
