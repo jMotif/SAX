@@ -39,12 +39,12 @@ public class DiscordFinder {
   /**
    * Brute force discord search implementation. BRUTE FORCE algorithm.
    * 
-   * @param series
-   * @param windowSize
-   * @param discordCollectionSize
-   * @param largeWindowAlgorithm
-   * @return
-   * @throws Exception
+   * @param series the data we work with.
+   * @param windowSize the sliding window size.
+   * @param discordCollectionSize the number of discords we look for.
+   * @param marker the marker window algorithm implementation.
+   * @return discords.
+   * @throws Exception if error occurs.
    */
   public DiscordRecords series2BruteForceDiscords(double[] series, Integer windowSize,
       int discordCollectionSize, LargeWindowAlgorithm marker) throws Exception {
@@ -103,12 +103,12 @@ public class DiscordFinder {
   /**
    * Finds the best discord. BRUTE FORCE algorithm.
    * 
-   * @param series
-   * @param windowSize
-   * @param globalRegistry
-   * @param marker
-   * @return
-   * @throws Exception
+   * @param series the data.
+   * @param windowSize the SAX sliding window size.
+   * @param globalRegistry the visit registry to use.
+   * @param marker the marker algorithm implementation.
+   * @return the best discord with respect to registry.
+   * @throws Exception if error occurs.
    */
   protected DiscordRecord findBestDiscordBruteForce(double[] series, Integer windowSize,
       VisitRegistry globalRegistry, LargeWindowAlgorithm marker) throws Exception {

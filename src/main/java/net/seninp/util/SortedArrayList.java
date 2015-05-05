@@ -12,7 +12,7 @@ import java.util.Collections;
  * 
  * @author psenin
  * 
- * @param <T>
+ * @param <T> the type.
  */
 public class SortedArrayList<T> extends ArrayList<T> {
 

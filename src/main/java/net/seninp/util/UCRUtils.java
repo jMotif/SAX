@@ -22,9 +22,9 @@ public class UCRUtils {
    * Reads bunch of series from file. First column treats as a class label. Rest as a real-valued
    * series.
    * 
-   * @param fileName
-   * @return
-   * @throws IOException
+   * @param fileName the input filename.
+   * @return time series read.
+   * @throws IOException if error occurs.
    */
   public static Map<String, List<double[]>> readUCRData(String fileName) throws IOException {
 
