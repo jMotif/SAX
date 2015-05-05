@@ -1,1 +1,4 @@
 /build
+/target
+/gradle.properties
+/bin
