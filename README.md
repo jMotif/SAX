@@ -15,22 +15,23 @@ You can find more information about SAX at [my old wiki page](https://code.googl
 
 1.0 Building
 ------------
-The code is written in Java and I use Ant to build it:
+The code is written in Java and I use maven to build it:
 	
-	$ ant -f jar.build.xml 
-	Buildfile: /media/Stock/git/jmotif-sax/jar.build.xml
+	$ mvn package
+	[INFO] Scanning for projects...
+	[INFO] ------------------------------------------------------------------------
+	[INFO] Building jmotif-sax
+	[INFO]    task-segment: [package]
 	...
-	[jar] Building jar: /media/Stock/git/jmotif-sax/jmotif-sax20.jar
-	[delete] Deleting directory /media/Stock/git/jmotif-sax/tmp
-
-	BUILD SUCCESSFUL
-	Total time: 1 second
+	[INFO] Building jar: /media/Stock/git/jmotif-sax/target/jmotif-sax-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+	[INFO] ------------------------------------------------------------------------
+	[INFO] BUILD SUCCESSFUL
 
 2.0 Time series to SAX conversion using CLI
 ------------
 Built jar can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
 
-	$ java -jar "jmotif-sax20.jar"
+	$ java -jar target/jmotif-sax-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 	Command-line SAX conversion utility, the output printed to STDOUT 
 	Expects 6 parameters:
  	[1] training dataset filename
@@ -40,11 +41,11 @@ Built jar can be used to convert a time series (represented as a single-column t
  	[5] numerosity reduction <NONE|EXACT|MINDIST>
  	[6] z-Normalization threshold value
  	[7] OPTIONAL: number of threads to use
-	An execution example: $java -jar "jmotif-vsm-20.jar"  test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 2
+	An execution example: $java -jar target/jmotif-sax-0.0.1-SNAPSHOT-jar-with-dependencies.jar  src/resources/test-data/ecg0606_1.csv 120 7 5 EXACT 0.001 2
 
 When run, it prints the time series index and a corresponding word:
 
- 	$ java -jar "jmotif-sax20.jar"  test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 3 | head
+ 	$ java -jar "target/jmotif-sax-0.0.1-SNAPSHOT-jar-with-dependencies.jar"src/resources/test-data/ecg0606_1.csv 120 7 5 EXACT 0.001 2 | head
  	0, aceccdc
  	4, adeccdc
  	6, addccdc
