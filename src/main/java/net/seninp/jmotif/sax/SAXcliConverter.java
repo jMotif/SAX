@@ -123,8 +123,8 @@ public final class SAXcliConverter {
         .append(" [7] OPTIONAL: number of threads to use")
         .append(CR)
         .append(
-            "An execution example: $java -jar \"jmotif-vsm-20.jar\" test/data/ecg0606_1.csv 120 7 5 EXACT 0.001 2")
-        .append(CR);
+            "An execution example: $java -jar \"target/jmotif-sax-0.0.1-SNAPSHOT-jar-with-dependencies.jar\" ")
+        .append("src/resources/test-data/ecg0606_1.csv 120 7 5 EXACT 0.001 2").append(CR);
     return sb.toString();
   }
 
