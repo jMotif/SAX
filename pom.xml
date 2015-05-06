@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
@@ -8,7 +9,7 @@
 
   <groupId>net.seninp</groupId>
   <artifactId>jmotif-sax</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.0-SNAPSHOT</version>
 
   <name>jmotif-sax</name>
   <description>An implementation of time series Symbolic Aggregate approXimation.</description>
@@ -31,7 +32,7 @@
   <scm>
     <url>http://github.com/jMotif/sax.git</url>
     <connection>scm:git:git://git@github.com/jMotif/sax.git</connection>
-    <developerConnection>scm:git:git://git@github.com/jMotif/sax.git</developerConnection>
+    <developerConnection>scm:git:ssh://git@github.com/jMotif/sax.git</developerConnection>
     <tag>jmotif-sax-0.1.0</tag>
   </scm>
 
@@ -118,7 +119,6 @@
           <useReleaseProfile>false</useReleaseProfile>
           <releaseProfiles>ossrh</releaseProfiles>
           <goals>deploy</goals>
-          <username>seninp</username>
         </configuration>
       </plugin>
 
