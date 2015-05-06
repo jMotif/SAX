@@ -8,7 +8,7 @@
 
   <groupId>net.seninp</groupId>
   <artifactId>jmotif-sax</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.0-SNAPSHOT</version>
 
   <name>jmotif-sax</name>
   <description>An implementation of time series Symbolic Aggregate approXimation.</description>
@@ -30,8 +30,8 @@
 
   <scm>
     <url>scm:git:https://github.com/jMotif/SAX.git</url>
-    <connection>scm:git:https://github.com/jMotif/SAX</connection>
-    <developerConnection>scm:git:https://github.com/jMotif/SAX.git</developerConnection>
+    <connection>scm:git:ssh://github.com/jMotif/SAX</connection>
+    <developerConnection>scm:git:ssh://git@github.com/jMotif/SAX.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
