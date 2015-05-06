@@ -3,7 +3,7 @@ Time series discretization with SAX
 
 This Java library implements Symbolic Aggregate Approximation for time series. The code and API are very simple aiming at performance; the library provides a multi-threaded SAX discretization too. 
 
-*The library is _available through Maven_*.
+**The library is _available through Maven_.**
 
 You can find more information about SAX at [this wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html) or in following papers:
 
