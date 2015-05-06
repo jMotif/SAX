@@ -31,8 +31,8 @@
 
   <scm>
     <url>http://github.com/jMotif/sax.git</url>
-    <connection>scm:git:ssh://git@github.com/jMotif/sax.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/jMotif/sax.git</developerConnection>
+    <connection>scm:git:git://git@github.com/jMotif/sax.git</connection>
+    <developerConnection>scm:git:git://git@github.com/jMotif/sax.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
