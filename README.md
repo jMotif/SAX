@@ -5,11 +5,13 @@ This Java library implements Symbolic Aggregate Approximation for time series. T
 
 **The library is _available through Maven_.**
 
-You can find more information about SAX at [this wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html) or in following papers:
+You can find more information about SAX at [sax-vsm wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html), at [Eamonn Keogh's page] (http://www.cs.ucr.edu/~eamonn/SAX.htm) or in following papers:
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., [*Finding Motifs in Time Series*](http://cs.gmu.edu/~jessica/Lin_motif.pdf), The 2nd Workshop onTemporal Data Mining, the 8th ACM Int'l Conferenceon KDD (2002)
 
 [2] Patel, P., Keogh, E., Lin, J., Lonardi, S., [*Mining Motifs in Massive Time Series Databases*](http://www.cs.gmu.edu/~jessica/publications/motif_icdm02.pdf), In Proc. ICDM (2002)
+
+** If you are interested in the time series motif and discord discovery, please check out our new tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html) -- it is based on SAX and enables variable-length time series recurrent and anomalous patterns detection.
 
 0.0 Javadocs
 ------------
