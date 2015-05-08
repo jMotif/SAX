@@ -1,6 +1,5 @@
 package net.seninp.jmotif.sax.datastructures;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;

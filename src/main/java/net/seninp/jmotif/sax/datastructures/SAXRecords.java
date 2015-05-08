@@ -7,9 +7,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * The collection for SAXRecords. This datastructure is used in the parallel SAX implementation.
@@ -17,6 +16,7 @@ import java.util.TreeMap;
  * @author psenin
  * 
  */
+// public class SAXRecords {
 public class SAXRecords implements Iterable<SaxRecord> {
 
   /** The id is used to identify the chunk. */
@@ -26,7 +26,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
   private final HashMap<String, SaxRecord> records;
 
   /** The index of occurrences, key is the position in the time series. */
-  private final SortedMap<Integer, SaxRecord> realTSindex;
+  private final HashMap<Integer, SaxRecord> realTSindex;
 
   /** The mapping from SAX string positions to real time series positions. */
   private HashMap<Integer, Integer> stringPosToRealPos;
@@ -38,7 +38,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
     super();
     this.id = System.currentTimeMillis();
     this.records = new HashMap<String, SaxRecord>();
-    this.realTSindex = new TreeMap<Integer, SaxRecord>();
+    this.realTSindex = new HashMap<Integer, SaxRecord>();
   }
 
   /**
@@ -50,7 +50,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
     super();
     this.id = id;
     this.records = new HashMap<String, SaxRecord>();
-    this.realTSindex = new TreeMap<Integer, SaxRecord>();
+    this.realTSindex = new HashMap<Integer, SaxRecord>();
   }
 
   /**
@@ -63,7 +63,8 @@ public class SAXRecords implements Iterable<SaxRecord> {
   }
 
   /**
-   * Returns an iterator which is backed by a hash map.
+   * Returns an iterator which is backed by a hash map (i.e. there is no guarantee for keys
+   * ordering).
    * 
    * @return an iterator.
    */
@@ -217,12 +218,14 @@ public class SAXRecords implements Iterable<SaxRecord> {
   }
 
   /**
-   * Get all indexes.
+   * Get all indexes, sorted.
    * 
    * @return all the indexes.
    */
   public SortedSet<Integer> getAllIndices() {
-    return (SortedSet<Integer>) this.realTSindex.keySet();
+    SortedSet<Integer> res = new TreeSet<Integer>();
+    res.addAll(this.realTSindex.keySet());
+    return res;
   }
 
   /**

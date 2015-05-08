@@ -14,8 +14,6 @@ import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
-import net.seninp.jmotif.sax.datastructures.SaxRecord;
-import net.seninp.util.SAXData;
 import net.seninp.util.UCRUtils;
 
 public class SAXBitmapPrinter {
