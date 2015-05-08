@@ -149,7 +149,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
   }
 
   /**
-   * This adds all to the data structure.
+   * This adds all to the internal store. Used by the parallel SAX conversion engine.
    * 
    * @param records the data to add.
    */
