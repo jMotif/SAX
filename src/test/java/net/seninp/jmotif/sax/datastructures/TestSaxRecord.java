@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import java.util.ArrayList;
+import java.util.Collection;
 import org.junit.Test;
 
 /**
@@ -34,21 +34,21 @@ public class TestSaxRecord {
 
     assertTrue("Testing SAXRecord", str11.equalsIgnoreCase(String.valueOf(se.getPayload())));
 
-    ArrayList<Integer> freqs = se.getIndexes();
+    Collection<Integer> freqs = se.getIndexes();
     assertEquals("Testing SAXRecord", 1, freqs.size());
-    assertEquals("Testing SAXRecord", iNum2, freqs.get(0));
+    assertTrue("Testing SAXRecord", freqs.contains(iNum2));
 
     se.addIndex(iNum1);
-    ArrayList<Integer> freqs1 = se.getIndexes();
+    Collection<Integer> freqs1 = se.getIndexes();
     assertEquals("Testing SAXRecord", 2, freqs1.size());
-    assertEquals("Testing SAXRecord", iNum2, freqs1.get(0));
-    assertEquals("Testing SAXRecord", iNum1, freqs1.get(1));
+    assertTrue("Testing SAXRecord", freqs.contains(iNum2));
+    assertTrue("Testing SAXRecord", freqs.contains(iNum1));
 
     se.addIndex(iNum2);
-    ArrayList<Integer> freqs2 = se.getIndexes();
+    Collection<Integer> freqs2 = se.getIndexes();
     assertEquals("Testing SAXRecord", 2, freqs2.size());
-    assertEquals("Testing SAXRecord", iNum2, freqs2.get(0));
-    assertEquals("Testing SAXRecord", iNum1, freqs2.get(1));
+    assertTrue("Testing SAXRecord", freqs.contains(iNum2));
+    assertTrue("Testing SAXRecord", freqs.contains(iNum1));
   }
 
   /**
@@ -61,7 +61,7 @@ public class TestSaxRecord {
     assertTrue("Testing constructor", String.valueOf(sfe1.getPayload()).equalsIgnoreCase(str1));
     assertFalse("Testing constructor", String.valueOf(sfe1.getPayload()).equalsIgnoreCase(str2));
     assertEquals("Testing constructor", (Integer) sfe1.getIndexes().size(), ONE);
-    assertEquals("Testing constructor", sfe1.getIndexes().get(0), ZERO);
+    assertTrue("Testing constructor", sfe1.getIndexes().contains(ZERO));
 
     sfe1.addIndex(15);
     assertTrue("Testing setter", sfe1.getIndexes().contains(15));

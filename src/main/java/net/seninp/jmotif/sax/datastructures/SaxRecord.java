@@ -2,6 +2,8 @@ package net.seninp.jmotif.sax.datastructures;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Implement a data container for the parallel SAX.
@@ -15,7 +17,7 @@ public class SaxRecord implements Comparable<SaxRecord> {
   private char[] saxString;
 
   /** The index of occurrences in the raw sequence. */
-  private ArrayList<Integer> occurrences;
+  private HashSet<Integer> occurrences;
 
   /** Disable the constructor. */
   @SuppressWarnings("unused")
@@ -32,7 +34,7 @@ public class SaxRecord implements Comparable<SaxRecord> {
   public SaxRecord(char[] str, int idx) {
     super();
     this.saxString = str.clone();
-    this.occurrences = new ArrayList<Integer>();
+    this.occurrences = new HashSet<Integer>();
     this.addIndex(idx);
   }
 
@@ -70,7 +72,7 @@ public class SaxRecord implements Comparable<SaxRecord> {
    * 
    * @return all indexes.
    */
-  public ArrayList<Integer> getIndexes() {
+  public Collection<Integer> getIndexes() {
     return this.occurrences;
   }
 
