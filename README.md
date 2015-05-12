@@ -5,7 +5,7 @@ This library implements Symbolic Aggregate Approximation for time series in Java
 
 The library is **[available through Maven](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22)**.
 
-Here is the SAX transform in a nutshell:
+Here is the SAX transform in a nutshell, a time series of 128 points into the word of 8 letters:
 
 ![SAX in a nutshell](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/sax.png)
 
