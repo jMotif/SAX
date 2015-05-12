@@ -6,6 +6,7 @@ This library implements Symbolic Aggregate Approximation for time series in Java
 The library is **[available through Maven](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22)**.
 
 Here is the SAX transform in a nutshell:
+
 ![SAX in a nutshell](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/sax.png)
 
 You can find more information about SAX at its authors pages: [(i) SAX overview by Jessica Lin](http://cs.gmu.edu/~jessica/sax.htm), [(ii) Eamonn Keogh's SAX page](http://www.cs.ucr.edu/~eamonn/SAX.htm), or at [sax-vsm wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html).
