@@ -17,6 +17,9 @@ The key publications introducing SAX:
 
 [2] Patel, P., Keogh, E., Lin, J., Lonardi, S., [*Mining Motifs in Massive Time Series Databases*](http://www.cs.gmu.edu/~jessica/publications/motif_icdm02.pdf), In Proc. ICDM (2002)
 
+If you are using this implementation for you academic work, please cite this paper:
+[Citation] Senin, P., Lin, J., Wang, X., Oates, T., Gandhi, S., Boedihardjo, A.P., Chen, C., Frankenstein, S., Lerner, M.,  [**GrammarViz 2.0: a tool for grammar-based pattern discovery in time series**](http://www2.hawaii.edu/~senin/assets/papers/grammarviz2.pdf), ECML/PKDD Conference, 2014.
+
 _If you are interested in the time series motif and discord discovery, please check out our new tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html) -- it is based on SAX and enables variable-length time series recurrent and anomalous patterns detection._
 
 0.0 Javadocs
