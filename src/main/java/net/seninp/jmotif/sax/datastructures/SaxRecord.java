@@ -1,8 +1,8 @@
 package net.seninp.jmotif.sax.datastructures;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Implement a data container for the parallel SAX.
@@ -43,9 +43,9 @@ public class SaxRecord implements Comparable<SaxRecord> {
    * @param idx The index to add.
    */
   public void addIndex(int idx) {
-    if (!(this.occurrences.contains(idx))) {
-      this.occurrences.add(idx);
-    }
+    // if (!(this.occurrences.contains(idx))) {
+    this.occurrences.add(idx);
+    // }
   }
 
   /**
@@ -71,7 +71,7 @@ public class SaxRecord implements Comparable<SaxRecord> {
    * 
    * @return all indexes.
    */
-  public Collection<Integer> getIndexes() {
+  public Set<Integer> getIndexes() {
     return this.occurrences;
   }
 

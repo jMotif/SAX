@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * The collection for SAXRecords. This datastructure is used in the parallel SAX implementation.
@@ -103,16 +101,9 @@ public class SAXRecords implements Iterable<SaxRecord> {
     if (null == entry) {
       return;
     }
-    // how many things in da index
-    if (1 == entry.getIndexes().size()) {
-      // dropping the entry completely off
-      realTSindex.remove(idx);
+    realTSindex.remove(idx);
+    if (entry.getIndexes().isEmpty()) {
       records.remove(String.valueOf(entry.getPayload()));
-    }
-    else {
-      // dropping off just a single index
-      entry.removeIndex(idx);
-      realTSindex.remove(idx);
     }
   }
 
@@ -222,9 +213,10 @@ public class SAXRecords implements Iterable<SaxRecord> {
    * 
    * @return all the indexes.
    */
-  public SortedSet<Integer> getAllIndices() {
-    SortedSet<Integer> res = new TreeSet<Integer>();
+  public ArrayList<Integer> getAllIndices() {
+    ArrayList<Integer> res = new ArrayList<Integer>(this.realTSindex.size());
     res.addAll(this.realTSindex.keySet());
+    Collections.sort(res);
     return res;
   }
 
@@ -260,7 +252,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
       if (realTSindex.containsKey(p)) {
         SaxRecord rec = realTSindex.get(p);
         rec.removeIndex(p);
-        if (0 == rec.getIndexes().size()) {
+        if (rec.getIndexes().isEmpty()) {
           this.records.remove(String.valueOf(rec.getPayload()));
         }
         realTSindex.remove(p);
