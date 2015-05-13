@@ -41,8 +41,8 @@ public class SAXBitmapPrinter {
   private static final DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
   private static DecimalFormat df = new DecimalFormat("0.000000", otherSymbols);
 
-  private static final String[] ALPHABET = { "a", "b", "c" };
-  private static final int SHINGLE_SIZE = 3;
+  private static final String[] ALPHABET = { "a", "b", "c", "d", "e", "f" };
+  private static final int SHINGLE_SIZE = 6;
 
   private static final Object COMMA = ", ";
   private static final Object CR = "\n";
@@ -79,8 +79,8 @@ public class SAXBitmapPrinter {
       for (double[] series : e.getValue()) {
 
         // discretize the timeseries
-        SAXRecords saxData = sp.ts2saxViaWindow(series, 40, 3, na.getCuts(ALPHABET.length),
-            NumerosityReductionStrategy.NONE, 0.001);
+        SAXRecords saxData = sp.ts2saxViaWindow(series, 60, SHINGLE_SIZE,
+            na.getCuts(ALPHABET.length), NumerosityReductionStrategy.EXACT, 0.001);
 
         // allocate the weights array corresponding to the timeseries
         double[] weights = new double[len];
@@ -155,12 +155,14 @@ public class SAXBitmapPrinter {
 
     DataSet completedData = new DataSet(data, Nd4j.create(outcomes));
 
-    MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-        .visibleUnit(RBM.VisibleUnit.GAUSSIAN).layer(new org.deeplearning4j.nn.conf.layers.RBM())
-        .hiddenUnit(RBM.HiddenUnit.RECTIFIED).weightInit(WeightInit.DISTRIBUTION)
-        .dist(new UniformDistribution(0, 1)).lossFunction(LossFunctions.LossFunction.RMSE_XENT)
-        .learningRate(1e-3f).nIn(len).nOut(sampleCounter).list(4)
-        .hiddenLayerSizes(new int[] { 600, 250, 200 }).override(new ClassifierOverride(3)).build();
+    MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().momentum(0.9)
+        .layer(new org.deeplearning4j.nn.conf.layers.RBM())
+        .momentumAfter(Collections.singletonMap(3, 0.9))
+        .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT).iterations(50)
+        .weightInit(WeightInit.DISTRIBUTION).dist(new NormalDistribution(0, 1))
+        .lossFunction(LossFunctions.LossFunction.RMSE_XENT).learningRate(0.01).nIn(len).nOut(3)
+        .list(4).hiddenLayerSizes(new int[] { 500, 400, 100 }).override(new ClassifierOverride(3))
+        .build();
 
     MultiLayerNetwork d = new MultiLayerNetwork(conf);
     d.init();
