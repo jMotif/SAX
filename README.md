@@ -5,7 +5,7 @@ This library implements Symbolic Aggregate Approximation for time series in Java
 
 The library is **[available through Maven](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22)**.
 
-Here is the SAX transform in a nutshell, a time series of 128 points into the word of 8 letters:
+SAX transform in a nutshell: a time series of 128 points converted into the word of 8 letters:
 
 ![SAX in a nutshell](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/sax.png)
 
@@ -17,7 +17,7 @@ The key publications introducing SAX:
 
 [2] Patel, P., Keogh, E., Lin, J., Lonardi, S., [*Mining Motifs in Massive Time Series Databases*](http://www.cs.gmu.edu/~jessica/publications/motif_icdm02.pdf), In Proc. ICDM (2002)
 
-If you are using this implementation for you academic work, please cite this paper (it may seems odd, but that work made me working on this lib):
+_If you are using this implementation for you academic work, please cite this paper (it may seems odd, but performance issues with [Grammarviz 2.0](http://grammarviz2.github.io/grammarviz2_site/) made me working on this lib):_
 
 [Citation] Senin, P., Lin, J., Wang, X., Oates, T., Gandhi, S., Boedihardjo, A.P., Chen, C., Frankenstein, S., Lerner, M.,  [**GrammarViz 2.0: a tool for grammar-based pattern discovery in time series**](http://www2.hawaii.edu/~senin/assets/papers/grammarviz2.pdf), ECML/PKDD Conference, 2014.
 
