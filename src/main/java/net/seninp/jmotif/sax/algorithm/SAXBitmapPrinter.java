@@ -14,6 +14,7 @@ import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
+import net.seninp.jmotif.sax.datastructures.SaxRecord;
 import net.seninp.util.UCRUtils;
 
 public class SAXBitmapPrinter {
@@ -32,33 +33,43 @@ public class SAXBitmapPrinter {
     SAXProcessor sp = new SAXProcessor();
     NormalAlphabet na = new NormalAlphabet();
 
-    Map<String, List<double[]>> train = UCRUtils.readUCRData("src/main/resources/data/CBF/CBF_TRAIN");
+    // read the training data
+    //
+    Map<String, List<double[]>> train = UCRUtils.readUCRData("src/resources/dataset/CBF/CBF_TRAIN");
+    Map<String, List<double[]>> shingledData = new HashMap<String, List<double[]>>();
 
+    // build all shingles
+    //
     String[] allStrings = getAllLists(ALPHABET, SHINGLE_SIZE);
+    //
+    // and make an index table
+    int len = allStrings.length;
+    HashMap<String, Integer> indexTable = new HashMap<String, Integer>();
+    for (int i = 0; i < allStrings.length; i++) {
+      indexTable.put(String.valueOf(allStrings[i]), i);
+    }
+
+    // some info printout
     System.out.println("Using words: " + Arrays.toString(allStrings).replace(", ", "\", \""));
 
+    // iterate ofer all training series
+    //
     for (Entry<String, List<double[]>> e : train.entrySet()) {
       System.out.println(e.getKey());
       for (double[] series : e.getValue()) {
 
+        // discretize the timeseries
         SAXRecords saxData = sp.ts2saxViaWindow(series, 40, 6, na.getCuts(ALPHABET.length),
             NumerosityReductionStrategy.NONE, 0.001);
 
-        int len = allStrings.length;
-        HashMap<String, Integer> hp = new HashMap<String, Integer>();
-        for (int i = 0; i < allStrings.length; i++) {
-          hp.put(String.valueOf(allStrings[i]), i);
-        }
-
+        // allocate the weights array corresponding to the timeseries
         double[] weights = new double[len];
 
-        for (Integer idx : saxData.getIndexes()) {
-          char[] word = saxData.getByIndex(idx).getPayload();
-          for (int k = 0; k < word.length - SHINGLE_SIZE; k++) {
-            String str = String.valueOf(Arrays.copyOfRange(word, k, k + SHINGLE_SIZE));
-            Integer i = hp.get(str);
-            weights[i] = weights[i] + 1;
-          }
+        // fill in the counts
+        for (SaxRecord sr : saxData) {
+          String word = String.valueOf(sr.getPayload());
+          Integer idx = indexTable.get(word);
+          weights[idx] = sr.getIndexes().size();
         }
 
         // get max value
@@ -74,6 +85,9 @@ public class SAXBitmapPrinter {
           weights[i] = weights[i] / max;
         }
 
+        // save that
+        shingledData.get(e.getKey()).add(weights);
+
         // printout weights
         StringBuffer sb = new StringBuffer(len * len * 8);
         for (int i = 0; i < len; i++) {
@@ -86,8 +100,13 @@ public class SAXBitmapPrinter {
         }
         sb.append(CR);
         System.out.print(sb.toString());
+
       }
     }
+
+    // here we need to train the NN
+    //
+
   }
 
   public static String[] getAllLists(String[] elements, int lengthOfList) {
