@@ -98,12 +98,12 @@ public class SAXRecords implements Iterable<SaxRecord> {
    */
   public void dropByIndex(int idx) {
     SaxRecord entry = realTSindex.get(idx);
-    if (null == entry) {
-      return;
-    }
-    realTSindex.remove(idx);
-    if (entry.getIndexes().isEmpty()) {
-      records.remove(String.valueOf(entry.getPayload()));
+    if (null != entry) {
+      realTSindex.remove(idx);
+      entry.removeIndex(idx);
+      if (entry.getIndexes().isEmpty()) {
+        records.remove(String.valueOf(entry.getPayload()));
+      }
     }
   }
 
