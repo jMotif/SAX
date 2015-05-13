@@ -3,7 +3,9 @@ package net.seninp.jmotif.sax.algorithm;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +18,23 @@ import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.datastructures.SaxRecord;
 import net.seninp.util.UCRUtils;
+import org.deeplearning4j.eval.Evaluation;
+import org.deeplearning4j.nn.api.OptimizationAlgorithm;
+import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
+import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.distribution.NormalDistribution;
+import org.deeplearning4j.nn.conf.distribution.UniformDistribution;
+import org.deeplearning4j.nn.conf.override.ClassifierOverride;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.optimize.api.IterationListener;
+import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.nd4j.linalg.api.buffer.DataBuffer;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.lossfunctions.LossFunctions;
+import org.deeplearning4j.nn.conf.layers.RBM;
 
 public class SAXBitmapPrinter {
 
@@ -46,7 +65,7 @@ public class SAXBitmapPrinter {
     int len = allStrings.length;
     HashMap<String, Integer> indexTable = new HashMap<String, Integer>();
     for (int i = 0; i < allStrings.length; i++) {
-      indexTable.put(String.valueOf(allStrings[i]), i);
+      indexTable.put(allStrings[i], i);
     }
 
     // some info printout
@@ -54,12 +73,13 @@ public class SAXBitmapPrinter {
 
     // iterate ofer all training series
     //
+    int sampleCounter = 0;
     for (Entry<String, List<double[]>> e : train.entrySet()) {
       System.out.println(e.getKey());
       for (double[] series : e.getValue()) {
 
         // discretize the timeseries
-        SAXRecords saxData = sp.ts2saxViaWindow(series, 40, 6, na.getCuts(ALPHABET.length),
+        SAXRecords saxData = sp.ts2saxViaWindow(series, 40, 3, na.getCuts(ALPHABET.length),
             NumerosityReductionStrategy.NONE, 0.001);
 
         // allocate the weights array corresponding to the timeseries
@@ -69,6 +89,9 @@ public class SAXBitmapPrinter {
         for (SaxRecord sr : saxData) {
           String word = String.valueOf(sr.getPayload());
           Integer idx = indexTable.get(word);
+          if (null == idx) {
+            System.out.println(word);
+          }
           weights[idx] = sr.getIndexes().size();
         }
 
@@ -86,6 +109,9 @@ public class SAXBitmapPrinter {
         }
 
         // save that
+        if (!shingledData.containsKey(e.getKey())) {
+          shingledData.put(e.getKey(), new ArrayList<double[]>());
+        }
         shingledData.get(e.getKey()).add(weights);
 
         // printout weights
@@ -101,11 +127,51 @@ public class SAXBitmapPrinter {
         sb.append(CR);
         System.out.print(sb.toString());
 
+        sampleCounter++;
       }
     }
 
     // here we need to train the NN
     //
+    List<String> outcomeTypes = new ArrayList<String>();
+    double[][] outcomes = new double[sampleCounter][3];
+
+    INDArray data = Nd4j.ones(sampleCounter, len);
+    sampleCounter = 0;
+    for (Entry<String, List<double[]>> e : shingledData.entrySet()) {
+      if (!outcomeTypes.contains(e.getKey()))
+        outcomeTypes.add(e.getKey());
+
+      for (double[] series : e.getValue()) {
+        data.putRow(sampleCounter, Nd4j.create(series));
+
+        double[] rowOutcome = new double[3];
+        rowOutcome[outcomeTypes.indexOf(e.getKey())] = 1;
+        outcomes[sampleCounter] = rowOutcome;
+
+        sampleCounter++;
+      }
+    }
+
+    DataSet completedData = new DataSet(data, Nd4j.create(outcomes));
+
+    MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+        .visibleUnit(RBM.VisibleUnit.GAUSSIAN).layer(new org.deeplearning4j.nn.conf.layers.RBM())
+        .hiddenUnit(RBM.HiddenUnit.RECTIFIED).weightInit(WeightInit.DISTRIBUTION)
+        .dist(new UniformDistribution(0, 1)).lossFunction(LossFunctions.LossFunction.RMSE_XENT)
+        .learningRate(1e-3f).nIn(len).nOut(sampleCounter).list(4)
+        .hiddenLayerSizes(new int[] { 600, 250, 200 }).override(new ClassifierOverride(3)).build();
+
+    MultiLayerNetwork d = new MultiLayerNetwork(conf);
+    d.init();
+    d.setListeners(Arrays.asList((IterationListener) new ScoreIterationListener(1)));
+
+    d.fit(completedData);
+
+    Evaluation eval = new Evaluation();
+    INDArray output = d.output(completedData.getFeatureMatrix());
+    eval.eval(completedData.getLabels(), output);
+    System.out.println("Score " + eval.stats());
 
   }
 
