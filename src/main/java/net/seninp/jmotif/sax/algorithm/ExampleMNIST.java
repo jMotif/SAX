@@ -25,11 +25,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by agibsonccc on 9/11/14.
  */
-public class DBNExample {
+public class ExampleMNIST {
 
-  private static Logger log = LoggerFactory.getLogger(DBNExample.class);
+  private static Logger log = LoggerFactory.getLogger(ExampleMNIST.class);
 
   public static void main(String[] args) throws Exception {
+    
     Nd4j.dtype = DataBuffer.Type.FLOAT;
 
     MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().momentum(0.5)
@@ -45,10 +46,10 @@ public class DBNExample {
     d.init();
     d.setListeners(Arrays.asList((IterationListener) new ScoreIterationListener(1)));
     DataSetIterator iter = new MnistDataSetIterator(100, 60000);
+
     while (iter.hasNext()) {
       DataSet next = iter.next();
       d.fit(next);
-
     }
 
     iter.reset();
