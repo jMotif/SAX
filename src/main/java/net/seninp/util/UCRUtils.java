@@ -1,10 +1,13 @@
 package net.seninp.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +20,8 @@ import java.util.Map.Entry;
  * 
  */
 public class UCRUtils {
+
+  private static final String CR = "\n";
 
   /**
    * Reads bunch of series from file. First column treats as a class label. Rest as a real-valued
@@ -107,6 +112,29 @@ public class UCRUtils {
       assert true;
     }
     return res;
+  }
+
+  /**
+   * Saves the dataset.
+   * 
+   * @param data the dataset.
+   * @param outFilename the filename.
+   * @throws IOException if error occurs.
+   */
+  public static void saveData(Map<String, ArrayList<double[]>> data, String outFilename)
+      throws IOException {
+
+    BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outFilename)));
+
+    for (Entry<String, ArrayList<double[]>> classEntry : data.entrySet()) {
+      String classLabel = classEntry.getKey();
+      for (double[] arr : classEntry.getValue()) {
+        String arrStr = Arrays.toString(arr).replaceAll("[\\]\\[\\s]+", "");
+        bw.write(classLabel + "," + arrStr + CR);
+      }
+    }
+
+    bw.close();
   }
 
 }

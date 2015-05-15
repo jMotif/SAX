@@ -24,41 +24,47 @@ import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.distribution.NormalDistribution;
-import org.deeplearning4j.nn.conf.distribution.UniformDistribution;
 import org.deeplearning4j.nn.conf.override.ClassifierOverride;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.api.IterationListener;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
-import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
-import org.deeplearning4j.nn.conf.layers.RBM;
 
 public class SAXBitmapPrinter {
 
+  // formatting parameters
+  //
   private static final DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
   private static DecimalFormat df = new DecimalFormat("0.000000", otherSymbols);
+  // and some constants
+  private static final String COMMA = ", ";
+  private static final String CR = "\n";
 
-  private static final String[] ALPHABET = { "a", "b", "c", "d" };
+  // classes needed for the workflow
+  //
+  private static final TSProcessor tsp = new TSProcessor();
+  private static final SAXProcessor sp = new SAXProcessor();
+  private static final NormalAlphabet na = new NormalAlphabet();
+
+  // discretization parameters
+  //
+  private static final int WINDOW_SIZE = 64;
   private static final int SHINGLE_SIZE = 4;
 
-  private static final Object COMMA = ", ";
-  private static final Object CR = "\n";
+  private static final String[] ALPHABET = { "a", "b", "c", "d" };
 
   public static void main(String[] args) throws SAXException, IOException {
-
-    TSProcessor tsp = new TSProcessor();
-    SAXProcessor sp = new SAXProcessor();
-    NormalAlphabet na = new NormalAlphabet();
 
     // read the training data
     //
     // Map<String, List<double[]>> train =
     // UCRUtils.readUCRData("src/resources/dataset/CBF/CBF_TRAIN");
     Map<String, ArrayList<double[]>> train = makeSet(600);
+    UCRUtils.saveData(train, "currentCBF.csv");
 
     Map<String, List<double[]>> shingledData = new HashMap<String, List<double[]>>();
 
@@ -85,7 +91,7 @@ public class SAXBitmapPrinter {
       for (double[] series : e.getValue()) {
 
         // discretize the timeseries
-        SAXRecords saxData = sp.ts2saxViaWindow(series, 60, SHINGLE_SIZE,
+        SAXRecords saxData = sp.ts2saxViaWindow(series, WINDOW_SIZE, SHINGLE_SIZE,
             na.getCuts(ALPHABET.length), NumerosityReductionStrategy.EXACT, 0.001);
 
         // allocate the weights array corresponding to the timeseries
@@ -163,11 +169,11 @@ public class SAXBitmapPrinter {
 
     MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().momentum(0.5)
         .layer(new org.deeplearning4j.nn.conf.layers.RBM())
-        .momentumAfter(Collections.singletonMap(5, 0.5))
-        .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT).iterations(8)
+        .momentumAfter(Collections.singletonMap(5, 0.9))
+        .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT).iterations(50)
         .weightInit(WeightInit.DISTRIBUTION).dist(new NormalDistribution(0, 1))
-        .lossFunction(LossFunctions.LossFunction.SQUARED_LOSS).learningRate(1e-1f).nIn(len).nOut(3)
-        .list(2).hiddenLayerSizes(new int[] { 60 }).override(new ClassifierOverride(3))
+        .lossFunction(LossFunctions.LossFunction.RMSE_XENT).learningRate(1e-1f).nIn(len).nOut(3)
+        .list(4).hiddenLayerSizes(new int[] { 128, 64, 32 }).override(new ClassifierOverride(3))
         .build();
 
     MultiLayerNetwork d = new MultiLayerNetwork(conf);
