@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
+import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.datastructures.SaxRecord;
@@ -41,20 +42,24 @@ public class SAXBitmapPrinter {
   private static final DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
   private static DecimalFormat df = new DecimalFormat("0.000000", otherSymbols);
 
-  private static final String[] ALPHABET = { "a", "b", "c", "d", "e", "f" };
-  private static final int SHINGLE_SIZE = 6;
+  private static final String[] ALPHABET = { "a", "b", "c", "d" };
+  private static final int SHINGLE_SIZE = 4;
 
   private static final Object COMMA = ", ";
   private static final Object CR = "\n";
 
   public static void main(String[] args) throws SAXException, IOException {
 
+    TSProcessor tsp = new TSProcessor();
     SAXProcessor sp = new SAXProcessor();
     NormalAlphabet na = new NormalAlphabet();
 
     // read the training data
     //
-    Map<String, List<double[]>> train = UCRUtils.readUCRData("src/resources/dataset/CBF/CBF_TRAIN");
+    // Map<String, List<double[]>> train =
+    // UCRUtils.readUCRData("src/resources/dataset/CBF/CBF_TRAIN");
+    Map<String, ArrayList<double[]>> train = makeSet(600);
+
     Map<String, List<double[]>> shingledData = new HashMap<String, List<double[]>>();
 
     // build all shingles
@@ -69,12 +74,13 @@ public class SAXBitmapPrinter {
     }
 
     // some info printout
-    System.out.println("Using words: " + Arrays.toString(allStrings).replace(", ", "\", \""));
+    System.out.println("Using " + allStrings.length + " words: "
+        + Arrays.toString(allStrings).replace(", ", "\", \""));
 
     // iterate ofer all training series
     //
     int sampleCounter = 0;
-    for (Entry<String, List<double[]>> e : train.entrySet()) {
+    for (Entry<String, ArrayList<double[]>> e : train.entrySet()) {
       System.out.println(e.getKey());
       for (double[] series : e.getValue()) {
 
@@ -112,20 +118,20 @@ public class SAXBitmapPrinter {
         if (!shingledData.containsKey(e.getKey())) {
           shingledData.put(e.getKey(), new ArrayList<double[]>());
         }
-        shingledData.get(e.getKey()).add(weights);
+        shingledData.get(e.getKey()).add(tsp.znorm(weights, 0.001));
 
         // printout weights
-        StringBuffer sb = new StringBuffer(len * len * 8);
-        for (int i = 0; i < len; i++) {
-          if (i < len - 1) {
-            sb.append(df.format(weights[i])).append(COMMA);
-          }
-          else {
-            sb.append(df.format(weights[i]));
-          }
-        }
-        sb.append(CR);
-        System.out.print(sb.toString());
+        // StringBuffer sb = new StringBuffer(len * len * 8);
+        // for (int i = 0; i < len; i++) {
+        // if (i < len - 1) {
+        // sb.append(df.format(weights[i])).append(COMMA);
+        // }
+        // else {
+        // sb.append(df.format(weights[i]));
+        // }
+        // }
+        // sb.append(CR);
+        // System.out.print(sb.toString());
 
         sampleCounter++;
       }
@@ -155,13 +161,13 @@ public class SAXBitmapPrinter {
 
     DataSet completedData = new DataSet(data, Nd4j.create(outcomes));
 
-    MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().momentum(0.9)
+    MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().momentum(0.5)
         .layer(new org.deeplearning4j.nn.conf.layers.RBM())
-        .momentumAfter(Collections.singletonMap(3, 0.9))
-        .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT).iterations(50)
+        .momentumAfter(Collections.singletonMap(5, 0.5))
+        .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT).iterations(8)
         .weightInit(WeightInit.DISTRIBUTION).dist(new NormalDistribution(0, 1))
-        .lossFunction(LossFunctions.LossFunction.RMSE_XENT).learningRate(0.01).nIn(len).nOut(3)
-        .list(4).hiddenLayerSizes(new int[] { 500, 400, 100 }).override(new ClassifierOverride(3))
+        .lossFunction(LossFunctions.LossFunction.SQUARED_LOSS).learningRate(1e-1f).nIn(len).nOut(3)
+        .list(2).hiddenLayerSizes(new int[] { 60 }).override(new ClassifierOverride(3))
         .build();
 
     MultiLayerNetwork d = new MultiLayerNetwork(conf);
@@ -201,5 +207,37 @@ public class SAXBitmapPrinter {
 
       return allLists;
     }
+  }
+
+  private static Map<String, ArrayList<double[]>> makeSet(int num) {
+
+    // ticks - i.e. time
+    int[] t = new int[128];
+    for (int i = 0; i < 128; i++) {
+      t[i] = i;
+    }
+
+    Map<String, ArrayList<double[]>> set = new HashMap<String, ArrayList<double[]>>();
+
+    ArrayList<double[]> c = new ArrayList<double[]>();
+    for (int i = 0; i < num; i++) {
+      c.add(CBFGenerator.cylinder(t));
+    }
+
+    ArrayList<double[]> b = new ArrayList<double[]>();
+    for (int i = 0; i < num; i++) {
+      b.add(CBFGenerator.bell(t));
+    }
+
+    ArrayList<double[]> f = new ArrayList<double[]>();
+    for (int i = 0; i < num; i++) {
+      f.add(CBFGenerator.funnel(t));
+    }
+
+    set.put("1", c);
+    set.put("2", b);
+    set.put("3", f);
+
+    return set;
   }
 }
