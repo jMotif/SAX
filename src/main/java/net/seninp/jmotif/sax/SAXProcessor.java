@@ -3,7 +3,13 @@ package net.seninp.jmotif.sax;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
+import net.seninp.jmotif.sax.datastructures.SaxRecord;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -17,6 +23,7 @@ import org.joda.time.format.PeriodFormatterBuilder;
 public final class SAXProcessor {
 
   private final TSProcessor tsProcessor;
+  private final NormalAlphabet na;
 
   /**
    * Constructor.
@@ -24,6 +31,7 @@ public final class SAXProcessor {
   public SAXProcessor() {
     super();
     this.tsProcessor = new TSProcessor();
+    this.na = new NormalAlphabet();
   }
 
   /**
@@ -301,6 +309,102 @@ public final class SAXProcessor {
     }
     else {
       throw new SAXException("Data arrays lengths are not equal!");
+    }
+  }
+
+  public Map<String, List<double[]>> toShingles(Map<String, ArrayList<double[]>> train,
+      int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
+      double normalizationThreshold) throws SAXException {
+
+    HashMap<String, List<double[]>> res = new HashMap<String, List<double[]>>();
+
+    // build all shingles
+    //
+    String[] alphabet = new String[alphabetSize];
+    for (int i = 0; i < alphabetSize; i++) {
+      alphabet[i] = String.valueOf(TSProcessor.ALPHABET[i]);
+    }
+    String[] allStrings = getAllLists(alphabet, paaSize);
+
+    // and make an index table
+    //
+    int len = allStrings.length;
+    HashMap<String, Integer> indexTable = new HashMap<String, Integer>();
+    for (int i = 0; i < allStrings.length; i++) {
+      indexTable.put(allStrings[i], i);
+    }
+
+    // // some info printout
+    // System.out.println("Using " + allStrings.length + " words: "
+    // + Arrays.toString(allStrings).replace(", ", "\", \""));
+
+    // iterate ofer all training series
+    //
+    for (Entry<String, ArrayList<double[]>> e : train.entrySet()) {
+      System.out.println(e.getKey());
+      for (double[] series : e.getValue()) {
+
+        // discretize the timeseries
+        SAXRecords saxData = ts2saxViaWindow(series, windowSize, paaSize, na.getCuts(alphabetSize),
+            strategy, normalizationThreshold);
+
+        // allocate the weights array corresponding to the timeseries
+        double[] weights = new double[len];
+
+        // fill in the counts
+        for (SaxRecord sr : saxData) {
+          String word = String.valueOf(sr.getPayload());
+          Integer idx = indexTable.get(word);
+          if (null == idx) {
+            System.out.println(word);
+          }
+          weights[idx] = sr.getIndexes().size();
+        }
+
+        // normalize and save that series shingle
+        if (!res.containsKey(e.getKey())) {
+          res.put(e.getKey(), new ArrayList<double[]>());
+        }
+        res.get(e.getKey()).add(tsProcessor.znorm(weights, normalizationThreshold));
+
+      }
+    }
+
+    return res;
+
+  }
+
+  /**
+   * Get all permutations of the given alphabet of given length.
+   * 
+   * @param alphabet the alphabet to use.
+   * @param wordLength the word length.
+   * @return set of permutation.
+   */
+  public static String[] getAllLists(String[] alphabet, int wordLength) {
+
+    // initialize our returned list with the number of elements calculated above
+    String[] allLists = new String[(int) Math.pow(alphabet.length, wordLength)];
+
+    // lists of length 1 are just the original elements
+    if (wordLength == 1)
+      return alphabet;
+    else {
+      // the recursion--get all lists of length 3, length 2, all the way up to 1
+      String[] allSublists = getAllLists(alphabet, wordLength - 1);
+
+      // append the sublists to each element
+      int arrayIndex = 0;
+
+      for (int i = 0; i < alphabet.length; i++) {
+        for (int j = 0; j < allSublists.length; j++) {
+          // add the newly appended combination to the list
+          allLists[arrayIndex] = alphabet[i] + allSublists[j];
+          arrayIndex++;
+        }
+      }
+
+      return allLists;
     }
   }
 

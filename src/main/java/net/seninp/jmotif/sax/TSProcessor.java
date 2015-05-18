@@ -30,7 +30,7 @@ public class TSProcessor {
   private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
   /** The latin alphabet, lower case letters a-z. */
-  private static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+  public static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
       'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
   // logging stuff
