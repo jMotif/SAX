@@ -150,14 +150,15 @@ public class TSProcessor {
    * @return The median value.
    */
   public double median(double[] series) {
-    Arrays.sort(series);
+    double [] clonedSeries = series.clone();
+	  Arrays.sort(clonedSeries);
     
     double median;
-    if (series.length % 2 == 0)
+    if (clonedSeries.length % 2 == 0)
     {
-        median = (series[series.length/2] + (double)series[series.length/2 - 1])/2;
+        median = (clonedSeries[clonedSeries.length/2] + (double)clonedSeries[clonedSeries.length/2 - 1])/2;
     } else {
-        median = series[series.length/2];
+        median = clonedSeries[clonedSeries.length/2];
     }
     return median;
   }
