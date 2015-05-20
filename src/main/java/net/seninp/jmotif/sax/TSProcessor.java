@@ -142,6 +142,25 @@ public class TSProcessor {
     }
     return Double.NaN;
   }
+  
+  /**
+   * Computes the median value of timeseries.
+   * 
+   * @param series The timeseries.
+   * @return The median value.
+   */
+  public double median(double[] series) {
+    Arrays.sort(series);
+    
+    double median;
+    if (series.length % 2 == 0)
+    {
+        median = (series[series.length/2] + (double)series[series.length/2 - 1])/2;
+    } else {
+        median = series[series.length/2];
+    }
+    return median;
+  }
 
   /**
    * Compute the variance of timeseries.
