@@ -51,11 +51,11 @@ public class SAXBitmapPrinter {
   // discretization parameters
   //
   private static int INSTANCE_SIZE = 128;
-  private static final int DATASET_SIZE = 1800;
+  private static final int DATASET_SIZE = 9000;
 
-  private static final int WINDOW_SIZE = 50;
-  private static final int SHINGLE_SIZE = 5;
-  private static final int ALPHABET_SIZE = 3;
+  private static final int WINDOW_SIZE = 60;
+  private static final int SHINGLE_SIZE = 6;
+  private static final int ALPHABET_SIZE = 4;
   private static final NumerosityReductionStrategy STRATEGY = NumerosityReductionStrategy.NONE;
   private static final double THRESHOLD = 0.001;
 
@@ -73,8 +73,9 @@ public class SAXBitmapPrinter {
     Map<String, List<double[]>> shingledData = sp.toShingles(train, WINDOW_SIZE, SHINGLE_SIZE,
         ALPHABET_SIZE, STRATEGY, THRESHOLD);
 
-    INSTANCE_SIZE = shingledData.get("1").iterator().next().length; 
-        
+    INSTANCE_SIZE = shingledData.get("1").iterator().next().length;
+    System.out.println("Shingles table size: " + INSTANCE_SIZE);
+
     // here we need to train the NN
     //
     List<String> outcomeTypes = new ArrayList<String>();
@@ -99,13 +100,13 @@ public class SAXBitmapPrinter {
 
     DataSet completedData = new DataSet(data, Nd4j.create(outcomes));
 
-    MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().momentum(0.5)
+    MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().momentum(0.9)
         .layer(new org.deeplearning4j.nn.conf.layers.RBM())
-        .momentumAfter(Collections.singletonMap(5, 0.9))
+        .momentumAfter(Collections.singletonMap(20, 0.7))
         .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT).iterations(50)
         .weightInit(WeightInit.DISTRIBUTION).dist(new NormalDistribution(0, 1))
         .lossFunction(LossFunctions.LossFunction.RMSE_XENT).learningRate(1e-1f).nIn(INSTANCE_SIZE)
-        .nOut(3).list(4).hiddenLayerSizes(new int[] { 128, 64, 32 })
+        .nOut(3).list(4).hiddenLayerSizes(new int[] { 5000, 2048, 128 })
         .override(new ClassifierOverride(3)).build();
 
     MultiLayerNetwork d = new MultiLayerNetwork(conf);

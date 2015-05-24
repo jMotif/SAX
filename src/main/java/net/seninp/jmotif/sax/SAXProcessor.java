@@ -365,7 +365,7 @@ public final class SAXProcessor {
         if (!res.containsKey(e.getKey())) {
           res.put(e.getKey(), new ArrayList<double[]>());
         }
-        res.get(e.getKey()).add(tsProcessor.znorm(weights, normalizationThreshold));
+        res.get(e.getKey()).add(tsProcessor.normOne(weights));
 
       }
     }

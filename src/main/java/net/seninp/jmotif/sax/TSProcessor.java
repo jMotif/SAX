@@ -499,4 +499,19 @@ public class TSProcessor {
     return new double[0];
   }
 
+  /**
+   * Normalizes data in interval 0-1.
+   * 
+   * @param data the dataset.
+   * @return normalized dataset.
+   */
+  public double[] normOne(double[] data) {
+    double[] res = new double[data.length];
+    double max = max(data);
+    for (int i = 0; i < data.length; i++) {
+      res[i] = data[i] / max;
+    }
+    return res;
+  }
+
 }
