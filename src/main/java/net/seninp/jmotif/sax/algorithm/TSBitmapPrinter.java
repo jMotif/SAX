@@ -88,6 +88,8 @@ public class TSBitmapPrinter {
           BitmapParameters.SAX_WINDOW_SIZE, BitmapParameters.SAX_PAA_SIZE, BitmapParameters.SAX_ALPHABET_SIZE,
           BitmapParameters.SAX_NR_STRATEGY, BitmapParameters.SAX_NORM_THRESHOLD,
           BitmapParameters.SHINGLE_SIZE);
+      
+      consoleLogger.info("writing output...");
 
       StringBuffer shingles = new StringBuffer(BitmapParameters.SHINGLE_SIZE*(shingledData.size()+2));
       StringBuffer freqs = new StringBuffer(BitmapParameters.SHINGLE_SIZE*(shingledData.size()+2));
@@ -103,6 +105,8 @@ public class TSBitmapPrinter {
       bw.write(freqs.delete(freqs.length()-1, freqs.length()).toString());
       bw.write(CR);
       bw.close();
+      
+      consoleLogger.info("done!");
       
     }
 

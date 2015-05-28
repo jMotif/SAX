@@ -4,11 +4,17 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeSet;
 import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
+import net.seninp.util.UCRUtils;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -81,29 +87,67 @@ public class UCRdataBitmapPrinter {
 
       // read the file
       //
-      double[] data = tsp.readTS(BitmapParameters.IN_FILE, 0);
-      consoleLogger.info("read " + data.length + " points from " + BitmapParameters.IN_FILE);
+      Map<String, List<double[]>> data = UCRUtils.readUCRData(BitmapParameters.IN_FILE);
+      
+      consoleLogger.info("read from " + BitmapParameters.IN_FILE);
+      consoleLogger.info(UCRUtils.datasetStats(data, ""));
 
-      Map<String, Integer> shingledData = sp.ts2Shingles(data, 
-          BitmapParameters.SAX_WINDOW_SIZE, BitmapParameters.SAX_PAA_SIZE, BitmapParameters.SAX_ALPHABET_SIZE,
-          BitmapParameters.SAX_NR_STRATEGY, BitmapParameters.SAX_NORM_THRESHOLD,
-          BitmapParameters.SHINGLE_SIZE);
-
-      StringBuffer shingles = new StringBuffer(BitmapParameters.SHINGLE_SIZE*(shingledData.size()+2));
-      StringBuffer freqs = new StringBuffer(BitmapParameters.SHINGLE_SIZE*(shingledData.size()+2));
-      TreeSet<String> keys = new TreeSet<String>(shingledData.keySet());
-      for(String shingle : keys){
-        shingles.append(QUOTE).append(shingle).append(QUOTE).append(COMMA);
-        freqs.append(shingledData.get(shingle)).append(COMMA);
+      Map<String, List<Integer[]>> res = new HashMap<String, List<Integer[]>>();
+      TreeSet<String> keys = null;
+      
+      for(Entry<String, List<double[]>> e : data.entrySet()){
+        String classLabel = e.getKey();
+        for(double[] series : e.getValue()){
+          
+          Map<String, Integer> shingledData = sp.ts2Shingles(series, 
+              BitmapParameters.SAX_WINDOW_SIZE, BitmapParameters.SAX_PAA_SIZE, BitmapParameters.SAX_ALPHABET_SIZE,
+              BitmapParameters.SAX_NR_STRATEGY, BitmapParameters.SAX_NORM_THRESHOLD,
+              BitmapParameters.SHINGLE_SIZE);
+          
+          if(!(res.containsKey(classLabel))){
+            res.put(classLabel, new ArrayList<Integer[]>());
+          }
+          
+          if(null == keys){
+            keys = new TreeSet<String>(shingledData.keySet());
+          }
+          
+          Integer[] arr = new Integer[keys.size()];
+          int i=0;
+          for(String shingle : keys){
+            arr[i] = shingledData.get(shingle);
+            i++;
+          }
+          
+          res.get(classLabel).add(arr);
+          
+        }
+        
       }
       
-      BufferedWriter bw = new BufferedWriter(new FileWriter(new File(BitmapParameters.OUT_FILE)));
-      bw.write(shingles.delete(shingles.length()-1, shingles.length()).toString());
-      bw.write(CR);
-      bw.write(freqs.delete(freqs.length()-1, freqs.length()).toString());
-      bw.write(CR);
-      bw.close();
+      consoleLogger.info("writing output...");
       
+      
+      StringBuffer shingles = new StringBuffer(BitmapParameters.SHINGLE_SIZE * (keys.size() + 2));
+      for (String shingle : keys) {
+        shingles.append(QUOTE).append(shingle).append(QUOTE).append(COMMA);
+      }
+
+      BufferedWriter bw = new BufferedWriter(new FileWriter(new File(BitmapParameters.OUT_FILE)));
+      bw.write("\'class_label\',"
+          + shingles.delete(shingles.length() - 1, shingles.length()).toString());
+      bw.write(CR);
+      for (Entry<String, List<Integer[]>> e : res.entrySet()) {
+        String classLabel = e.getKey();
+        for (Integer[] arr : e.getValue()) {
+          String str = Arrays.toString(arr).replaceAll("[\\[\\]\\s]", "");
+          bw.write("\'" + classLabel + "\'" + COMMA + str + CR);
+        }
+      }
+      bw.close();
+
+      consoleLogger.info("done!");
+
     }
 
   }

@@ -89,7 +89,7 @@ public class UCRUtils {
     }
     StringBuffer sb = new StringBuffer();
 
-    sb.append(prefix).append(" classes: ").append(data.size());
+    sb.append(prefix).append("classes: ").append(data.size());
     sb.append(", series length min: ").append(globalMinLength);
     sb.append(", max: ").append(globalMaxLength);
     sb.append(", min value: ").append(globalMinValue);
