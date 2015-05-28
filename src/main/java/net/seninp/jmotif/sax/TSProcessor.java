@@ -30,7 +30,7 @@ public class TSProcessor {
   private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
   /** The latin alphabet, lower case letters a-z. */
-  private static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+  public static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
       'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
   // logging stuff
@@ -497,6 +497,21 @@ public class TSProcessor {
       return ts;
     }
     return new double[0];
+  }
+
+  /**
+   * Normalizes data in interval 0-1.
+   * 
+   * @param data the dataset.
+   * @return normalized dataset.
+   */
+  public double[] normOne(double[] data) {
+    double[] res = new double[data.length];
+    double max = max(data);
+    for (int i = 0; i < data.length; i++) {
+      res[i] = data[i] / max;
+    }
+    return res;
   }
 
 }
