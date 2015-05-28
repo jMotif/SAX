@@ -312,6 +312,53 @@ public final class SAXProcessor {
     }
   }
 
+  /**
+   * Converts a single time-series into map of shingle frequencies.
+   * 
+   * @param series
+   * @param windowSize
+   * @param paaSize
+   * @param alphabetSize
+   * @param strategy
+   * @param nrThreshold
+   * @param
+   * 
+   * @return map of shingle frequencies.
+   * @throws SAXException if error occurs.
+   */
+  public Map<String, Integer> ts2Shingles(double[] series, int windowSize, int paaSize,
+      int alphabetSize, NumerosityReductionStrategy strategy, double nrThreshold, int shingleSize)
+      throws SAXException {
+
+    // build all shingles
+    String[] alphabet = new String[alphabetSize];
+    for (int i = 0; i < alphabetSize; i++) {
+      alphabet[i] = String.valueOf(TSProcessor.ALPHABET[i]);
+    }
+    String[] allShingles = getAllLists(alphabet, shingleSize);
+
+    // result
+    HashMap<String, Integer> res = new HashMap<String, Integer>(allShingles.length);
+    for (String s : allShingles) {
+      res.put(s, 0);
+    }
+
+    // discretize
+    SAXRecords saxData = ts2saxViaWindow(series, windowSize, paaSize, na.getCuts(alphabetSize),
+        strategy, nrThreshold);
+
+    // fill in the counts
+    for (SaxRecord sr : saxData) {
+      String word = String.valueOf(sr.getPayload());
+      for (int i = 0; i < word.length() - shingleSize; i++) {
+        String shingle = word.substring(i, i + shingleSize);
+        res.put(shingle, res.get(shingle) + 1);
+      }
+    }
+
+    return res;
+  }
+
   public Map<String, List<double[]>> toShingles(Map<String, ArrayList<double[]>> train,
       int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
       double normalizationThreshold) throws SAXException {
