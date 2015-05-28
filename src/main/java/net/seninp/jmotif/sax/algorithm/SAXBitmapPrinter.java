@@ -18,20 +18,6 @@ import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.util.UCRUtils;
-import org.deeplearning4j.eval.Evaluation;
-import org.deeplearning4j.nn.api.OptimizationAlgorithm;
-import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
-import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
-import org.deeplearning4j.nn.conf.distribution.NormalDistribution;
-import org.deeplearning4j.nn.conf.override.ClassifierOverride;
-import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.optimize.api.IterationListener;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.dataset.DataSet;
-import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 public class SAXBitmapPrinter {
 
@@ -79,47 +65,6 @@ public class SAXBitmapPrinter {
 
     // here we need to train the NN
     //
-    List<String> outcomeTypes = new ArrayList<String>();
-    double[][] outcomes = new double[DATASET_SIZE][3];
-
-    INDArray data = Nd4j.ones(DATASET_SIZE, INSTANCE_SIZE);
-    int sampleCounter = 0;
-    for (Entry<String, List<double[]>> e : shingledData.entrySet()) {
-      if (!outcomeTypes.contains(e.getKey()))
-        outcomeTypes.add(e.getKey());
-
-      for (double[] series : e.getValue()) {
-        data.putRow(sampleCounter, Nd4j.create(series));
-
-        double[] rowOutcome = new double[3];
-        rowOutcome[outcomeTypes.indexOf(e.getKey())] = 1;
-        outcomes[sampleCounter] = rowOutcome;
-
-        sampleCounter++;
-      }
-    }
-
-    DataSet completedData = new DataSet(data, Nd4j.create(outcomes));
-
-    MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().momentum(0.9)
-        .layer(new org.deeplearning4j.nn.conf.layers.RBM())
-        .momentumAfter(Collections.singletonMap(5, 0.5))
-        .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT).iterations(50)
-        .weightInit(WeightInit.DISTRIBUTION).dist(new NormalDistribution(0, 1))
-        .lossFunction(LossFunctions.LossFunction.RMSE_XENT).learningRate(0.0001).nIn(INSTANCE_SIZE)
-        .nOut(3).list(4).hiddenLayerSizes(new int[] { 1024, 512, 256 })
-        .override(new ClassifierOverride(3)).build();
-
-    MultiLayerNetwork d = new MultiLayerNetwork(conf);
-    d.init();
-    d.setListeners(Arrays.asList((IterationListener) new ScoreIterationListener(1)));
-
-    d.fit(completedData);
-
-    Evaluation eval = new Evaluation();
-    INDArray output = d.output(completedData.getFeatureMatrix());
-    eval.eval(completedData.getLabels(), output);
-    System.out.println("Score " + eval.stats());
 
   }
 
