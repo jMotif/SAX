@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.TreeSet;
 import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
-import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.util.UCRUtils;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -40,7 +39,6 @@ public class UCRdataBitmapPrinter {
 
   // classes needed for the workflow
   //
-  private static final TSProcessor tsp = new TSProcessor();
   private static final SAXProcessor sp = new SAXProcessor();
 
   // private static final NormalAlphabet na = new NormalAlphabet();
