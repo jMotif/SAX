@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.seninp.jmotif.cbf.CBFGenerator;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
@@ -51,10 +52,10 @@ public class SAXBitmapPrinter {
   // discretization parameters
   //
   private static int INSTANCE_SIZE = 128;
-  private static final int DATASET_SIZE = 9000;
+  private static final int DATASET_SIZE = 90;
 
-  private static final int WINDOW_SIZE = 60;
-  private static final int SHINGLE_SIZE = 6;
+  private static final int WINDOW_SIZE = 40;
+  private static final int SHINGLE_SIZE = 5;
   private static final int ALPHABET_SIZE = 4;
   private static final NumerosityReductionStrategy STRATEGY = NumerosityReductionStrategy.NONE;
   private static final double THRESHOLD = 0.001;
@@ -102,11 +103,11 @@ public class SAXBitmapPrinter {
 
     MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().momentum(0.9)
         .layer(new org.deeplearning4j.nn.conf.layers.RBM())
-        .momentumAfter(Collections.singletonMap(20, 0.7))
+        .momentumAfter(Collections.singletonMap(5, 0.5))
         .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT).iterations(50)
         .weightInit(WeightInit.DISTRIBUTION).dist(new NormalDistribution(0, 1))
-        .lossFunction(LossFunctions.LossFunction.RMSE_XENT).learningRate(1e-1f).nIn(INSTANCE_SIZE)
-        .nOut(3).list(4).hiddenLayerSizes(new int[] { 5000, 2048, 128 })
+        .lossFunction(LossFunctions.LossFunction.RMSE_XENT).learningRate(0.0001).nIn(INSTANCE_SIZE)
+        .nOut(3).list(4).hiddenLayerSizes(new int[] { 1024, 512, 256 })
         .override(new ClassifierOverride(3)).build();
 
     MultiLayerNetwork d = new MultiLayerNetwork(conf);
