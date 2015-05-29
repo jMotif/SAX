@@ -6,7 +6,7 @@ jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
                      "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
 #
 #
-dat = read.table("../../out.txt",sep=",",quote="\'",header=T)
+dat = read.table("../resources/bitmap/normal_16_shingled.txt",sep=",",quote="\'",header=T)
 mat = matrix(unlist(dat),ncol=4,byrow=F)
 mat.m = melt(rescale(mat))
 p2 <- ggplot(mat.m, aes(X1, X2, fill=value)) + geom_tile() +

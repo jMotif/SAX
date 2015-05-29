@@ -1,0 +1,6 @@
+data = read.table("../resources/bitmap/ECGData/normal/normal4.txt", skip=2)
+par(mfrow=c(3,1))
+plot(data$V1,type="l")
+plot(data$V2,type="l")
+plot(data$V3,type="l")
+write.table(data$V2,"../resources/bitmap/normal_4.txt",col.names=F,row.names=F)
