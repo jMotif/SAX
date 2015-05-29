@@ -42,6 +42,6 @@ p4
 grid.arrange(p16,p18,p2,p4,ncol=2)
 
 
-png("TEK14_shingled.png", width=600, height=600)
-print(p2)
+png("ECG_shingled.png", width=600, height=600)
+grid.arrange(p16,p18,p2,p4,ncol=2)
 dev.off()   
