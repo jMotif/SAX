@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
+import net.seninp.util.HeatChart;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -68,14 +69,18 @@ public class TSBitmapPrinter {
 
       sb.append("  input file:                  ").append(BitmapParameters.IN_FILE).append(CR);
       sb.append("  output file:                 ").append(BitmapParameters.OUT_FILE).append(CR);
-      sb.append("  SAX sliding window size:     ").append(BitmapParameters.SAX_WINDOW_SIZE).append(CR);
+      sb.append("  SAX sliding window size:     ").append(BitmapParameters.SAX_WINDOW_SIZE)
+          .append(CR);
       sb.append("  SAX PAA size:                ").append(BitmapParameters.SAX_PAA_SIZE).append(CR);
-      sb.append("  SAX alphabet size:           ").append(BitmapParameters.SAX_ALPHABET_SIZE).append(CR);
-      sb.append("  SAX numerosity reduction:    ").append(BitmapParameters.SAX_NR_STRATEGY).append(CR);
-      sb.append("  SAX normalization threshold: ").append(BitmapParameters.SAX_NORM_THRESHOLD).append(CR);
+      sb.append("  SAX alphabet size:           ").append(BitmapParameters.SAX_ALPHABET_SIZE)
+          .append(CR);
+      sb.append("  SAX numerosity reduction:    ").append(BitmapParameters.SAX_NR_STRATEGY)
+          .append(CR);
+      sb.append("  SAX normalization threshold: ").append(BitmapParameters.SAX_NORM_THRESHOLD)
+          .append(CR);
 
       sb.append("  Bitmap shingle size:         ").append(BitmapParameters.SHINGLE_SIZE).append(CR);
-      
+
       sb.append(CR);
       System.out.println(sb.toString());
 
@@ -84,30 +89,55 @@ public class TSBitmapPrinter {
       double[] data = tsp.readTS(BitmapParameters.IN_FILE, 0);
       consoleLogger.info("read " + data.length + " points from " + BitmapParameters.IN_FILE);
 
-      Map<String, Integer> shingledData = sp.ts2Shingles(data, 
-          BitmapParameters.SAX_WINDOW_SIZE, BitmapParameters.SAX_PAA_SIZE, BitmapParameters.SAX_ALPHABET_SIZE,
+      Map<String, Integer> shingledData = sp.ts2Shingles(data, BitmapParameters.SAX_WINDOW_SIZE,
+          BitmapParameters.SAX_PAA_SIZE, BitmapParameters.SAX_ALPHABET_SIZE,
           BitmapParameters.SAX_NR_STRATEGY, BitmapParameters.SAX_NORM_THRESHOLD,
           BitmapParameters.SHINGLE_SIZE);
-      
+
       consoleLogger.info("writing output...");
 
-      StringBuffer shingles = new StringBuffer(BitmapParameters.SHINGLE_SIZE*(shingledData.size()+2));
-      StringBuffer freqs = new StringBuffer(BitmapParameters.SHINGLE_SIZE*(shingledData.size()+2));
+      StringBuffer shingles = new StringBuffer(BitmapParameters.SHINGLE_SIZE
+          * (shingledData.size() + 2));
+      StringBuffer freqs = new StringBuffer(BitmapParameters.SHINGLE_SIZE
+          * (shingledData.size() + 2));
       TreeSet<String> keys = new TreeSet<String>(shingledData.keySet());
-      for(String shingle : keys){
+      for (String shingle : keys) {
         shingles.append(QUOTE).append(shingle).append(QUOTE).append(COMMA);
         freqs.append(shingledData.get(shingle)).append(COMMA);
       }
-      
+
       BufferedWriter bw = new BufferedWriter(new FileWriter(new File(BitmapParameters.OUT_FILE)));
-      bw.write(shingles.delete(shingles.length()-1, shingles.length()).toString());
+      bw.write(shingles.delete(shingles.length() - 1, shingles.length()).toString());
       bw.write(CR);
-      bw.write(freqs.delete(freqs.length()-1, freqs.length()).toString());
+      bw.write(freqs.delete(freqs.length() - 1, freqs.length()).toString());
       bw.write(CR);
       bw.close();
-      
+
+      if (16 == shingledData.size()) {
+        // Create some dummy data.
+        double[][] heatmapData = new double[4][4];
+
+        int counter = 0;
+        for (String shingle : keys) {
+          Integer value = shingledData.get(shingle);
+          heatmapData[counter / 4][counter % 4] = value;
+          counter++;
+        }
+
+        // Create our heat chart using our data.
+        HeatChart chart = new HeatChart(heatmapData);
+
+        // Customise the chart.
+        chart.setTitle("This is my chart title");
+        chart.setXAxisLabel("X Axis");
+        chart.setYAxisLabel("Y Axis");
+
+        // Output the chart to a file.
+        chart.saveToFile(new File("my-chart.png"));
+      }
+
       consoleLogger.info("done!");
-      
+
     }
 
   }
