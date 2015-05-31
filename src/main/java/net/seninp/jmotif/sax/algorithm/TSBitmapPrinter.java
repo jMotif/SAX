@@ -82,6 +82,13 @@ public class TSBitmapPrinter {
 
       sb.append("  Bitmap shingle size:         ").append(BitmapParameters.SHINGLE_SIZE).append(CR);
 
+      if (null == BitmapParameters.BITMAP_FILE) {
+        sb.append("  No bitmap will be produced").append(BitmapParameters.SHINGLE_SIZE).append(CR);
+      }
+      else {
+        sb.append("  Bitmap filename specified: ").append(BitmapParameters.BITMAP_FILE).append(CR);
+      }
+
       sb.append(CR);
       System.out.println(sb.toString());
 
@@ -114,6 +121,10 @@ public class TSBitmapPrinter {
       bw.write(CR);
       bw.close();
 
+      if (null == BitmapParameters.BITMAP_FILE) {
+        System.exit(10);
+      }
+
       if (16 == shingledData.size()) {
         double[][] heatmapData = new double[4][4];
         int counter = 0;
@@ -140,7 +151,10 @@ public class TSBitmapPrinter {
         chart.setAxisThickness(0);
         chart.setTitle(BitmapParameters.IN_FILE);
         chart.setCellSize(new Dimension(32, 32));
-        chart.saveToFile(new File("my-chart.png"));
+        chart.saveToFile(new File(BitmapParameters.BITMAP_FILE));
+      }
+      else {
+        System.err.println("Bitmap is produced for 16 or 64 shingles only.");
       }
 
       consoleLogger.info("done!");

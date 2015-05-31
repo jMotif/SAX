@@ -87,6 +87,13 @@ public class UCRdataBitmapPrinter {
 
       sb.append("  Bitmap shingle size:         ").append(BitmapParameters.SHINGLE_SIZE).append(CR);
 
+      if (null == BitmapParameters.BITMAP_FILE) {
+        sb.append("  No bitmap will be produced").append(BitmapParameters.SHINGLE_SIZE).append(CR);
+      }
+      else {
+        sb.append("  Bitmap filename specified: ").append(BitmapParameters.BITMAP_FILE).append(CR);
+      }
+
       sb.append(CR);
       System.out.println(sb.toString());
 
@@ -152,6 +159,10 @@ public class UCRdataBitmapPrinter {
 
       consoleLogger.info("done!");
 
+      if (null == BitmapParameters.BITMAP_FILE) {
+        System.exit(10);
+      }
+
       int rows = 0;
       for (Entry<String, List<Integer[]>> e : res.entrySet()) {
         rows = rows + e.getValue().size();
@@ -185,7 +196,7 @@ public class UCRdataBitmapPrinter {
 
       chart.setTitle(BitmapParameters.IN_FILE);
       chart.setCellSize(new Dimension(10, 10));
-      chart.saveToFile(new File("my-chart.png"));
+      chart.saveToFile(new File(BitmapParameters.BITMAP_FILE));
 
     }
 

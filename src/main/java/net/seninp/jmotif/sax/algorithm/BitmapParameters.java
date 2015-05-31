@@ -34,6 +34,9 @@ public class BitmapParameters {
   @Parameter(names = { "--data_out", "-o" }, description = "The output file name")
   public static String OUT_FILE;
 
+  @Parameter(names = { "--bitmap_out", "-b" }, description = "The bitmap output file name")
+  public static String BITMAP_FILE;
+
   // discretization parameters
   //
   @Parameter(names = { "--window_size", "-w" }, description = "Sliding window size")
