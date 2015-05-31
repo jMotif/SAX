@@ -1,5 +1,7 @@
 package net.seninp.jmotif.sax.algorithm;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -13,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.TreeSet;
 import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
+import net.seninp.util.HeatChart;
 import net.seninp.util.UCRUtils;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -72,60 +75,63 @@ public class UCRdataBitmapPrinter {
 
       sb.append("  input file:                  ").append(BitmapParameters.IN_FILE).append(CR);
       sb.append("  output file:                 ").append(BitmapParameters.OUT_FILE).append(CR);
-      sb.append("  SAX sliding window size:     ").append(BitmapParameters.SAX_WINDOW_SIZE).append(CR);
+      sb.append("  SAX sliding window size:     ").append(BitmapParameters.SAX_WINDOW_SIZE)
+          .append(CR);
       sb.append("  SAX PAA size:                ").append(BitmapParameters.SAX_PAA_SIZE).append(CR);
-      sb.append("  SAX alphabet size:           ").append(BitmapParameters.SAX_ALPHABET_SIZE).append(CR);
-      sb.append("  SAX numerosity reduction:    ").append(BitmapParameters.SAX_NR_STRATEGY).append(CR);
-      sb.append("  SAX normalization threshold: ").append(BitmapParameters.SAX_NORM_THRESHOLD).append(CR);
+      sb.append("  SAX alphabet size:           ").append(BitmapParameters.SAX_ALPHABET_SIZE)
+          .append(CR);
+      sb.append("  SAX numerosity reduction:    ").append(BitmapParameters.SAX_NR_STRATEGY)
+          .append(CR);
+      sb.append("  SAX normalization threshold: ").append(BitmapParameters.SAX_NORM_THRESHOLD)
+          .append(CR);
 
       sb.append("  Bitmap shingle size:         ").append(BitmapParameters.SHINGLE_SIZE).append(CR);
-      
+
       sb.append(CR);
       System.out.println(sb.toString());
 
       // read the file
       //
       Map<String, List<double[]>> data = UCRUtils.readUCRData(BitmapParameters.IN_FILE);
-      
+
       consoleLogger.info("read from " + BitmapParameters.IN_FILE);
       consoleLogger.info(UCRUtils.datasetStats(data, ""));
 
       Map<String, List<Integer[]>> res = new HashMap<String, List<Integer[]>>();
       TreeSet<String> keys = null;
-      
-      for(Entry<String, List<double[]>> e : data.entrySet()){
+
+      for (Entry<String, List<double[]>> e : data.entrySet()) {
         String classLabel = e.getKey();
-        for(double[] series : e.getValue()){
-          
-          Map<String, Integer> shingledData = sp.ts2Shingles(series, 
-              BitmapParameters.SAX_WINDOW_SIZE, BitmapParameters.SAX_PAA_SIZE, BitmapParameters.SAX_ALPHABET_SIZE,
-              BitmapParameters.SAX_NR_STRATEGY, BitmapParameters.SAX_NORM_THRESHOLD,
-              BitmapParameters.SHINGLE_SIZE);
-          
-          if(!(res.containsKey(classLabel))){
+        for (double[] series : e.getValue()) {
+
+          Map<String, Integer> shingledData = sp.ts2Shingles(series,
+              BitmapParameters.SAX_WINDOW_SIZE, BitmapParameters.SAX_PAA_SIZE,
+              BitmapParameters.SAX_ALPHABET_SIZE, BitmapParameters.SAX_NR_STRATEGY,
+              BitmapParameters.SAX_NORM_THRESHOLD, BitmapParameters.SHINGLE_SIZE);
+
+          if (!(res.containsKey(classLabel))) {
             res.put(classLabel, new ArrayList<Integer[]>());
           }
-          
-          if(null == keys){
+
+          if (null == keys) {
             keys = new TreeSet<String>(shingledData.keySet());
           }
-          
+
           Integer[] arr = new Integer[keys.size()];
-          int i=0;
-          for(String shingle : keys){
+          int i = 0;
+          for (String shingle : keys) {
             arr[i] = shingledData.get(shingle);
             i++;
           }
-          
+
           res.get(classLabel).add(arr);
-          
+
         }
-        
+
       }
-      
+
       consoleLogger.info("writing output...");
-      
-      
+
       StringBuffer shingles = new StringBuffer(BitmapParameters.SHINGLE_SIZE * (keys.size() + 2));
       for (String shingle : keys) {
         shingles.append(QUOTE).append(shingle).append(QUOTE).append(COMMA);
@@ -146,8 +152,50 @@ public class UCRdataBitmapPrinter {
 
       consoleLogger.info("done!");
 
+      int rows = 0;
+      for (Entry<String, List<Integer[]>> e : res.entrySet()) {
+        rows = rows + e.getValue().size();
+      }
+
+      double[][] heatmapData = new double[rows][keys.size()];
+
+      ArrayList<String> yLabels = new ArrayList<String>();
+      int row = 0;
+      for (Entry<String, List<Integer[]>> e : res.entrySet()) {
+        int i = 0;
+        for (Integer[] arr : e.getValue()) {
+          yLabels.add(e.getKey() + "_" + i);
+          heatmapData[row] = toDoubleAray(arr);
+          row++;
+          i++;
+        }
+      }
+
+      HeatChart chart = new HeatChart(heatmapData);
+
+      chart.setAxisColour(Color.WHITE);
+      chart.setAxisThickness(2);
+
+      chart.setYValues(yLabels.toArray(new String[yLabels.size()]));
+      chart.setShowYAxisValues(true);
+
+      chart.setXValues(keys.toArray());
+      chart.setShowXAxisValues(true);
+      chart.setXValuesHorizontal(false);
+
+      chart.setTitle(BitmapParameters.IN_FILE);
+      chart.setCellSize(new Dimension(10, 10));
+      chart.saveToFile(new File("my-chart.png"));
+
     }
 
   }
 
+  private static double[] toDoubleAray(Integer[] arr) {
+    double[] res = new double[arr.length];
+    for (int i = 0; i < arr.length; i++) {
+      res[i] = arr[i].doubleValue();
+    }
+    return res;
+  }
 }

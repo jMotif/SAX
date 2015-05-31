@@ -1,5 +1,6 @@
 package net.seninp.jmotif.sax.algorithm;
 
+import java.awt.Dimension;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -64,7 +65,7 @@ public class TSBitmapPrinter {
       // get params printed
       //
       StringBuffer sb = new StringBuffer(1024);
-      sb.append("SAXBitmap CLI converter v.1").append(CR);
+      sb.append("SAXBitmap CLI converter v.0.1").append(CR);
       sb.append("parameters:").append(CR);
 
       sb.append("  input file:                  ").append(BitmapParameters.IN_FILE).append(CR);
@@ -114,25 +115,31 @@ public class TSBitmapPrinter {
       bw.close();
 
       if (16 == shingledData.size()) {
-        // Create some dummy data.
         double[][] heatmapData = new double[4][4];
-
         int counter = 0;
         for (String shingle : keys) {
           Integer value = shingledData.get(shingle);
           heatmapData[counter / 4][counter % 4] = value;
           counter++;
         }
-
-        // Create our heat chart using our data.
         HeatChart chart = new HeatChart(heatmapData);
-
-        // Customise the chart.
-        chart.setTitle("This is my chart title");
-        chart.setXAxisLabel("X Axis");
-        chart.setYAxisLabel("Y Axis");
-
-        // Output the chart to a file.
+        chart.setAxisThickness(0);
+        chart.setTitle(BitmapParameters.IN_FILE);
+        chart.setCellSize(new Dimension(64, 64));
+        chart.saveToFile(new File("my-chart.png"));
+      }
+      else if (64 == shingledData.size()) {
+        double[][] heatmapData = new double[8][8];
+        int counter = 0;
+        for (String shingle : keys) {
+          Integer value = shingledData.get(shingle);
+          heatmapData[counter / 8][counter % 8] = value;
+          counter++;
+        }
+        HeatChart chart = new HeatChart(heatmapData);
+        chart.setAxisThickness(0);
+        chart.setTitle(BitmapParameters.IN_FILE);
+        chart.setCellSize(new Dimension(32, 32));
         chart.saveToFile(new File("my-chart.png"));
       }
 
