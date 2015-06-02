@@ -88,7 +88,7 @@ public class UCRdataBitmapPrinter {
         sb.append("  No bitmap will be produced").append(BitmapParameters.SHINGLE_SIZE).append(CR);
       }
       else {
-        sb.append("  Bitmap filename specified: ").append(BitmapParameters.BITMAP_FILE).append(CR);
+        sb.append("  Bitmap filename specified:   ").append(BitmapParameters.BITMAP_FILE).append(CR);
       }
 
       sb.append(CR);
@@ -101,8 +101,10 @@ public class UCRdataBitmapPrinter {
       consoleLogger.info("read from " + BitmapParameters.IN_FILE);
       consoleLogger.info(UCRUtils.datasetStats(data, ""));
 
+      // resulting shingle frequencies and the keys array
+      //
       Map<String, List<Integer[]>> res = new HashMap<String, List<Integer[]>>();
-      TreeSet<String> keys = null;
+      TreeSet<String> shinglesSet = null;
 
       for (Entry<String, List<double[]>> e : data.entrySet()) {
         String classLabel = e.getKey();
@@ -117,13 +119,13 @@ public class UCRdataBitmapPrinter {
             res.put(classLabel, new ArrayList<Integer[]>());
           }
 
-          if (null == keys) {
-            keys = new TreeSet<String>(shingledData.keySet());
+          if (null == shinglesSet) {
+            shinglesSet = new TreeSet<String>(shingledData.keySet());
           }
 
-          Integer[] arr = new Integer[keys.size()];
+          Integer[] arr = new Integer[shinglesSet.size()];
           int i = 0;
-          for (String shingle : keys) {
+          for (String shingle : shinglesSet) {
             arr[i] = shingledData.get(shingle);
             i++;
           }
@@ -134,16 +136,18 @@ public class UCRdataBitmapPrinter {
 
       }
 
+      // produce the output
+      //
       consoleLogger.info("writing shingled output...");
 
-      StringBuffer shingles = new StringBuffer(BitmapParameters.SHINGLE_SIZE * (keys.size() + 2));
-      for (String shingle : keys) {
-        shingles.append(QUOTE).append(shingle).append(QUOTE).append(COMMA);
+      StringBuffer shinglesStr = new StringBuffer(BitmapParameters.SHINGLE_SIZE * (shinglesSet.size() + 2));
+      for (String shingle : shinglesSet) {
+        shinglesStr.append(QUOTE).append(shingle).append(QUOTE).append(COMMA);
       }
 
       BufferedWriter bw = new BufferedWriter(new FileWriter(new File(BitmapParameters.OUT_FILE)));
       bw.write("\'class_label\',"
-          + shingles.delete(shingles.length() - 1, shingles.length()).toString());
+          + shinglesStr.delete(shinglesStr.length() - 1, shinglesStr.length()).toString());
       bw.write(CR);
       for (Entry<String, List<Integer[]>> e : res.entrySet()) {
         String classLabel = e.getKey();
@@ -156,6 +160,8 @@ public class UCRdataBitmapPrinter {
 
       consoleLogger.info("done!");
 
+      // produce the bitmap
+      //
       if (null == BitmapParameters.BITMAP_FILE) {
         System.exit(10);
       }
@@ -164,8 +170,8 @@ public class UCRdataBitmapPrinter {
 
       // remove the columns which are all zeros, build an index of those
       //
-      HashSet<Integer> zeroIndices = new HashSet<Integer>(keys.size());
-      for(int i = 0;i<keys.size();i++){
+      HashSet<Integer> zeroIndices = new HashSet<Integer>(shinglesSet.size());
+      for(int i = 0;i<shinglesSet.size();i++){
         zeroIndices.add(i);
       }
       
@@ -185,9 +191,20 @@ public class UCRdataBitmapPrinter {
         }
       }
 
+      ArrayList<String> prunedShingles = new ArrayList<String>();
+      int counter = 0;
+      for(String shingle : shinglesSet){
+        if(zeroIndices.contains(counter)){
+          prunedShingles.add(shingle);
+        }
+        counter++;
+      }
+      consoleLogger.info("dropped zero-column shingles: "
+          + Arrays.toString(prunedShingles.toArray(new String[prunedShingles.size()])));
+
       // future heatmap datastructure
       //
-      double[][] heatmapData = new double[rows][keys.size()-zeroIndices.size()];
+      double[][] heatmapData = new double[rows][shinglesSet.size() - zeroIndices.size()];
 
       // make the Y labels data
       //
@@ -215,7 +232,8 @@ public class UCRdataBitmapPrinter {
       chart.setYValues(yLabels.toArray(new String[yLabels.size()]));
       chart.setShowYAxisValues(true);
 
-      chart.setXValues(toShingleLabelsArray(keys.toArray(new String[keys.size()]), zeroIndices));
+      chart.setXValues(toShingleLabelsArray(shinglesSet.toArray(new String[shinglesSet.size()]),
+          zeroIndices));
       chart.setShowXAxisValues(true);
       chart.setXValuesHorizontal(false);
 
@@ -228,14 +246,14 @@ public class UCRdataBitmapPrinter {
   }
 
   private static String[] toShingleLabelsArray(String[] array, HashSet<Integer> zeroIndices) {
-    String[] res = new String[array.length-zeroIndices.size()];
-    int skip=0;
+    String[] res = new String[array.length - zeroIndices.size()];
+    int skip = 0;
     for (int i = 0; i < array.length; i++) {
-      if(zeroIndices.contains(i)){
+      if (zeroIndices.contains(i)) {
         skip++;
         continue;
       }
-      res[i-skip] = array[i];
+      res[i - skip] = array[i];
     }
     return res;
   }
@@ -248,14 +266,14 @@ public class UCRdataBitmapPrinter {
    * @return array of doubles.
    */
   private static double[] toDoubleAray(Integer[] intArray, HashSet<Integer> skipIndex) {
-    double[] res = new double[intArray.length-skipIndex.size()];
-    int skip=0;
+    double[] res = new double[intArray.length - skipIndex.size()];
+    int skip = 0;
     for (int i = 0; i < intArray.length; i++) {
-      if(skipIndex.contains(i)){
+      if (skipIndex.contains(i)) {
         skip++;
         continue;
       }
-      res[i-skip] = intArray[i].doubleValue();
+      res[i - skip] = intArray[i].doubleValue();
     }
     return res;
   }
