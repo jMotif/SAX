@@ -57,12 +57,11 @@ public class TSProcessor {
    * @param columnIdx The column index.
    * @param sizeLimit The number of lines to read, 0 == all.
    * @return data.
-   * @throws NumberFormatException if error occurs.
    * @throws IOException if error occurs.
    * @throws SAXException if error occurs.
    */
   public static double[] readFileColumn(String filename, int columnIdx, int sizeLimit)
-      throws NumberFormatException, IOException, SAXException {
+      throws IOException, SAXException {
     BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filename),
         "UTF-8"));
 
@@ -77,7 +76,16 @@ public class TSProcessor {
         br.close();
         throw new SAXException(message);
       }
-      preRes.add(Double.valueOf(line));
+      String str = split[columnIdx];
+      double num = Double.NaN;
+      try {
+        num = Double.valueOf(str);
+      }
+      catch (NumberFormatException e) {
+        consoleLogger.info("Skipping the row " + lineCounter + " with value \"" + str + "\"");
+        continue;
+      }
+      preRes.add(num);
       lineCounter++;
       if ((0 != sizeLimit) && (lineCounter >= sizeLimit)) {
         break;
@@ -142,7 +150,7 @@ public class TSProcessor {
     }
     return Double.NaN;
   }
-  
+
   /**
    * Computes the median value of timeseries.
    * 
@@ -150,15 +158,15 @@ public class TSProcessor {
    * @return The median value.
    */
   public double median(double[] series) {
-    double [] clonedSeries = series.clone();
-	  Arrays.sort(clonedSeries);
-    
+    double[] clonedSeries = series.clone();
+    Arrays.sort(clonedSeries);
+
     double median;
-    if (clonedSeries.length % 2 == 0)
-    {
-        median = (clonedSeries[clonedSeries.length/2] + (double)clonedSeries[clonedSeries.length/2 - 1])/2;
-    } else {
-        median = clonedSeries[clonedSeries.length/2];
+    if (clonedSeries.length % 2 == 0) {
+      median = (clonedSeries[clonedSeries.length / 2] + (double) clonedSeries[clonedSeries.length / 2 - 1]) / 2;
+    }
+    else {
+      median = clonedSeries[clonedSeries.length / 2];
     }
     return median;
   }
