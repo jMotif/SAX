@@ -56,7 +56,7 @@ public class BitmapParameters {
 
   // shingling parameter
   //
-  @Parameter(names = { "--shingle_size", "-s" }, description = "Shingle size (i.e. Level in terms of original article)")
+  @Parameter(names = { "--shingle_size", "-s" }, description = "Shingle size (i.e. Level in terms of the original article)")
   public static int SHINGLE_SIZE = 2;
 
 }
