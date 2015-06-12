@@ -70,7 +70,7 @@ public class TSProcessor {
 
     String line = null;
     while ((line = br.readLine()) != null) {
-      String[] split = line.split("\\s+");
+      String[] split = line.trim().split("\\s+");
       if (split.length < columnIdx) {
         String message = "Unable to read data from column " + columnIdx + " of file " + filename;
         br.close();
@@ -82,7 +82,7 @@ public class TSProcessor {
         num = Double.valueOf(str);
       }
       catch (NumberFormatException e) {
-        consoleLogger.info("Skipping the row " + lineCounter + " with value \"" + str + "\"");
+        // consoleLogger.info("Skipping the row " + lineCounter + " with value \"" + str + "\"");
         continue;
       }
       preRes.add(num);
