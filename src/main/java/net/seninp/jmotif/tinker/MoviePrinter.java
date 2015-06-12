@@ -20,7 +20,6 @@ import java.util.TreeSet;
 import javax.imageio.ImageIO;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
-import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.util.HeatChart;
