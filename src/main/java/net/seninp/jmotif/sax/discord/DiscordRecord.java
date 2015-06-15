@@ -8,6 +8,9 @@ package net.seninp.jmotif.sax.discord;
  */
 public class DiscordRecord implements Comparable<DiscordRecord> {
 
+  /** The discord id (used when wrapped by RRA). */
+  private int ruleId;
+  
   /** The discord position. */
   private int position;
 
@@ -204,6 +207,16 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
       return false;
     }
     return true;
+  }
+  
+  
+
+  public int getRuleId() {
+    return ruleId;
+  }
+
+  public void setRuleId(int ruleId) {
+    this.ruleId = ruleId;
   }
 
   /**
