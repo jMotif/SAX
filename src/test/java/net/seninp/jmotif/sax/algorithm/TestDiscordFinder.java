@@ -1,6 +1,7 @@
 package net.seninp.jmotif.sax.algorithm;
 
 import static org.junit.Assert.*;
+import net.seninp.jmotif.sax.discord.BruteForceDiscord;
 import net.seninp.jmotif.sax.discord.DiscordRecord;
 import net.seninp.jmotif.sax.registry.VisitRegistry;
 import net.seninp.util.StackTrace;
@@ -10,11 +11,11 @@ import org.junit.Test;
 
 public class TestDiscordFinder {
 
-  private DiscordFinder df;
+  private BruteForceDiscord df;
 
   @Before
   public void setUp() throws Exception {
-    df = new DiscordFinder();
+    df = new BruteForceDiscord();
   }
 
   @Test

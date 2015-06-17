@@ -1,4 +1,4 @@
-package net.seninp.jmotif.sax.algorithm;
+package net.seninp.jmotif.sax.discord;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,8 +6,7 @@ import java.util.Date;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
-import net.seninp.jmotif.sax.discord.DiscordRecord;
-import net.seninp.jmotif.sax.discord.DiscordRecords;
+import net.seninp.jmotif.sax.algorithm.LargeWindowAlgorithm;
 import net.seninp.jmotif.sax.registry.VisitRegistry;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -19,21 +18,21 @@ import ch.qos.logback.classic.Logger;
  * @author psenin
  * 
  */
-public class DiscordFinder {
+public class BruteForceDiscord {
 
   // logging stuff
   //
   private static Logger consoleLogger;
   private static Level LOGGING_LEVEL = Level.DEBUG;
   static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(DiscordFinder.class);
+    consoleLogger = (Logger) LoggerFactory.getLogger(BruteForceDiscord.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
   }
 
   private TSProcessor tsProcessor = new TSProcessor();
   private EuclideanDistance ed = new EuclideanDistance();
 
-  public DiscordFinder() {
+  public BruteForceDiscord() {
     super();
   }
 
@@ -111,7 +110,7 @@ public class DiscordFinder {
    * @return the best discord with respect to registry.
    * @throws Exception if error occurs.
    */
-  protected DiscordRecord findBestDiscordBruteForce(double[] series, Integer windowSize,
+  public DiscordRecord findBestDiscordBruteForce(double[] series, Integer windowSize,
       VisitRegistry globalRegistry, LargeWindowAlgorithm marker) throws Exception {
 
     Date start = new Date();
