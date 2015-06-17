@@ -38,6 +38,8 @@ public class MoviePrinter {
   private static final DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
   private static DecimalFormat df = new DecimalFormat("0.00000", otherSymbols);
 
+  private static EuclideanDistance ed = new EuclideanDistance();
+
   private static final String DAT_FNAME = "src/resources/dataset/depth/0890031.dat";
 
   private static final int SAX_WINDOW_SIZE = 10;
@@ -116,7 +118,7 @@ public class MoviePrinter {
 
         targetGraphics.setColor(Color.BLUE);
         targetGraphics.setFont(new Font("monospaced", Font.PLAIN, 24));
-        double dist = EuclideanDistance.distance(toVector(shingledData1), toVector(shingledData2));
+        double dist = ed.distance(toVector(shingledData1), toVector(shingledData2));
         targetGraphics.drawString("ED=" + df.format(dist), 300, 480);
 
         // String fileName = new SimpleDateFormat("yyyyMMddhhmmssSS'.png'").format(new Date());

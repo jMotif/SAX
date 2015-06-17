@@ -11,7 +11,7 @@ public final class EuclideanDistance {
   /**
    * Constructor.
    */
-  private EuclideanDistance() {
+  public EuclideanDistance() {
     super();
   }
 
@@ -23,7 +23,7 @@ public final class EuclideanDistance {
    * @param p2 The second point.
    * @return The Square of Euclidean distance.
    */
-  private static double distance2(double p1, double p2) {
+  private double distance2(double p1, double p2) {
     return (p1 - p2) * (p1 - p2);
   }
 
@@ -36,7 +36,7 @@ public final class EuclideanDistance {
    * @return The Euclidean distance.
    * @throws Exception In the case of error.
    */
-  private static double distance2(double[] point1, double[] point2) throws Exception {
+  private double distance2(double[] point1, double[] point2) throws Exception {
     if (point1.length == point2.length) {
       Double sum = 0D;
       for (int i = 0; i < point1.length; i++) {
@@ -60,7 +60,7 @@ public final class EuclideanDistance {
    * @return The Euclidean distance.
    * @throws Exception In the case of error.
    */
-  private static double distance2(int[] point1, int[] point2) throws Exception {
+  private double distance2(int[] point1, int[] point2) throws Exception {
     if (point1.length == point2.length) {
       Double sum = 0D;
       for (int i = 0; i < point1.length; i++) {
@@ -82,7 +82,7 @@ public final class EuclideanDistance {
    * @param p2 The second point.
    * @return The Euclidean distance.
    */
-  public static double distance(double p1, double p2) {
+  public double distance(double p1, double p2) {
     double d = (p1 - p2) * (p1 - p2);
     return Math.sqrt(d);
   }
@@ -95,7 +95,7 @@ public final class EuclideanDistance {
    * @return The Euclidean distance.
    * @throws Exception In the case of error.
    */
-  public static double distance(double[] point1, double[] point2) throws Exception {
+  public double distance(double[] point1, double[] point2) throws Exception {
     return Math.sqrt(distance2(point1, point2));
   }
 
@@ -107,7 +107,7 @@ public final class EuclideanDistance {
    * @return The Euclidean distance.
    * @throws Exception In the case of error.
    */
-  public static double normalizedDistance(double[] point1, double[] point2) throws Exception {
+  public double normalizedDistance(double[] point1, double[] point2) throws Exception {
     return Math.sqrt(distance2(point1, point2)) / point1.length;
   }
 
@@ -119,7 +119,7 @@ public final class EuclideanDistance {
    * @return The Euclidean distance.
    * @throws Exception In the case of error.
    */
-  public static double distance(int[] point1, int[] point2) throws Exception {
+  public double distance(int[] point1, int[] point2) throws Exception {
     return Math.sqrt(distance2(point1, point2));
   }
 
@@ -131,7 +131,7 @@ public final class EuclideanDistance {
    * @return The eclidean distance.
    * @throws Exception if error occures.
    */
-  public static double seriesDistance(double[] series1, double[] series2) throws Exception {
+  public double seriesDistance(double[] series1, double[] series2) throws Exception {
     if (series1.length == series2.length) {
       Double res = 0D;
       for (int i = 0; i < series1.length; i++) {
@@ -152,7 +152,7 @@ public final class EuclideanDistance {
    * @return The eclidean distance.
    * @throws Exception if error occures.
    */
-  public static double seriesDistance(double[][] series1, double[][] series2) throws Exception {
+  public double seriesDistance(double[][] series1, double[][] series2) throws Exception {
     if (series1.length == series2.length) {
       Double res = 0D;
       for (int i = 0; i < series1.length; i++) {
@@ -175,7 +175,7 @@ public final class EuclideanDistance {
    * 
    * @throws Exception if error occurs.
    */
-  public static Double earlyAbandonedDistance(double[] series1, double[] series2, double cutoff)
+  public Double earlyAbandonedDistance(double[] series1, double[] series2, double cutoff)
       throws Exception {
     double cutOff2 = cutoff * cutoff;
     if (series1.length == series2.length) {

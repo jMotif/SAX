@@ -30,10 +30,11 @@ public class DiscordFinder {
     consoleLogger.setLevel(LOGGING_LEVEL);
   }
 
-  private TSProcessor tsProcessor;
+  private TSProcessor tsProcessor = new TSProcessor();
+  private EuclideanDistance ed = new EuclideanDistance();
 
   public DiscordFinder() {
-    this.tsProcessor = new TSProcessor();
+    super();
   }
 
   /**
@@ -145,8 +146,7 @@ public class DiscordFinder {
 
           double[] currentSubsequence = tsProcessor.subseriesByCopy(series, j, j + windowSize);
 
-          double dist = EuclideanDistance.earlyAbandonedDistance(cw, currentSubsequence,
-              nearestNeighborDistance);
+          double dist = ed.earlyAbandonedDistance(cw, currentSubsequence, nearestNeighborDistance);
 
           distanceCallsCounter++;
 

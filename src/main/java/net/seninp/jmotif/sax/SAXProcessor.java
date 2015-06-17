@@ -25,6 +25,7 @@ public final class SAXProcessor {
 
   private final TSProcessor tsProcessor;
   private final NormalAlphabet na;
+  private EuclideanDistance ed;
 
   /**
    * Constructor.
@@ -33,6 +34,7 @@ public final class SAXProcessor {
     super();
     this.tsProcessor = new TSProcessor();
     this.na = new NormalAlphabet();
+    this.ed = new EuclideanDistance();
   }
 
   /**
@@ -412,7 +414,7 @@ public final class SAXProcessor {
         if (paaIdx >= paaSize) {
           paaIdx = paaSize - 1;
         }
-        resDistance = resDistance + EuclideanDistance.distance(paa[paaIdx], subSection[j]);
+        resDistance = resDistance + ed.distance(paa[paaIdx], subSection[j]);
       }
     }
     return resDistance / (double) windowCounter;
