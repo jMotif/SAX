@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.datastructures.SaxRecord;
@@ -359,7 +360,77 @@ public final class SAXProcessor {
     return res;
   }
 
-  public Map<String, List<double[]>> toShingles(Map<String, ArrayList<double[]>> train,
+  /**
+   * Computes the distance between approximated values and the real TS.
+   * 
+   * @param ts the timeseries.
+   * @param winSize SAX window size.
+   * @param paaSize SAX PAA size.
+   * @param alphabetSize SAX alphabet size.
+   * @param strategy
+   * @param normThreshold the normalization threshold.
+   * @return the distance value.
+   * @throws Exception if error occurs.
+   */
+  public double approximationDistance(double[] ts, int winSize, int paaSize, int alphabetSize,
+      NumerosityReductionStrategy strategy, double normThreshold) throws Exception {
+
+    double resDistance = 0d;
+    int windowCounter = 0;
+
+    NormalAlphabet normalA = new NormalAlphabet();
+    char[] previousString = null;
+
+    int pointsPerSegment = winSize / paaSize;
+    for (int i = 0; i < ts.length - (winSize - 1); i++) {
+      double[] subSection = Arrays.copyOfRange(ts, i, i + winSize);
+      if (tsProcessor.stDev(subSection) > normThreshold) {
+        subSection = tsProcessor.znorm(subSection, normThreshold);
+      }
+      double[] paa = tsProcessor.paa(subSection, paaSize);
+
+      // Convert the PAA to a string.
+      char[] currentString = tsProcessor.ts2String(paa, normalA.getCuts(alphabetSize));
+
+      if (NumerosityReductionStrategy.EXACT.equals(strategy)
+          && Arrays.equals(previousString, currentString)) {
+        continue;
+      }
+      else if ((null != previousString) && NumerosityReductionStrategy.MINDIST.equals(strategy)) {
+        double dist = saxMinDist(previousString, currentString,
+            normalA.getDistanceMatrix(alphabetSize));
+        if (0.0D == dist) {
+          continue;
+        }
+      }
+
+      previousString = currentString;
+      windowCounter++;
+
+      for (int j = 0; j < subSection.length; j++) {
+        int paaIdx = j / pointsPerSegment;
+        if (paaIdx >= paaSize) {
+          paaIdx = paaSize - 1;
+        }
+        resDistance = resDistance + EuclideanDistance.distance(paa[paaIdx], subSection[j]);
+      }
+    }
+    return resDistance / (double) windowCounter;
+  }
+
+  /**
+   * Convert a time series into a shingled representation.
+   * 
+   * @param data the input data.
+   * @param windowSize SAX window size.
+   * @param paaSize SAX paa size.
+   * @param alphabetSize SAX alphabet size.
+   * @param strategy SAX NR strategy.
+   * @param normalizationThreshold SAX normalization threshold.
+   * @return shingled representation.
+   * @throws SAXException if error occurs.
+   */
+  public Map<String, List<double[]>> toShingles(Map<String, ArrayList<double[]>> data,
       int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
       double normalizationThreshold) throws SAXException {
 
@@ -387,7 +458,7 @@ public final class SAXProcessor {
 
     // iterate ofer all training series
     //
-    for (Entry<String, ArrayList<double[]>> e : train.entrySet()) {
+    for (Entry<String, ArrayList<double[]>> e : data.entrySet()) {
       System.out.println(e.getKey());
       for (double[] series : e.getValue()) {
 
