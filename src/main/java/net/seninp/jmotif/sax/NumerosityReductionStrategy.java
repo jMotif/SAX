@@ -71,4 +71,25 @@ public enum NumerosityReductionStrategy {
       throw new RuntimeException("Unknown index:" + this.index);
     }
   }
+
+  /**
+   * Parse the string value into an instance.
+   * 
+   * @param value the string value.
+   * @return new instance.
+   */
+  public static NumerosityReductionStrategy fromString(String value) {
+    if ("none".equalsIgnoreCase(value)) {
+      return NumerosityReductionStrategy.NONE;
+    }
+    else if ("exact".equalsIgnoreCase(value)) {
+      return NumerosityReductionStrategy.EXACT;
+    }
+    else if ("mindist".equalsIgnoreCase(value)) {
+      return NumerosityReductionStrategy.MINDIST;
+    }
+    else {
+      throw new RuntimeException("Unknown index:" + value);
+    }
+  }
 }

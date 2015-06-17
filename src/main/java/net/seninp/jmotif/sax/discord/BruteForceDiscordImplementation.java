@@ -18,21 +18,21 @@ import ch.qos.logback.classic.Logger;
  * @author psenin
  * 
  */
-public class BruteForceDiscord {
+public class BruteForceDiscordImplementation {
 
   // logging stuff
   //
   private static Logger consoleLogger;
   private static Level LOGGING_LEVEL = Level.DEBUG;
   static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(BruteForceDiscord.class);
+    consoleLogger = (Logger) LoggerFactory.getLogger(BruteForceDiscordImplementation.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
   }
 
-  private TSProcessor tsProcessor = new TSProcessor();
-  private EuclideanDistance ed = new EuclideanDistance();
+  private static TSProcessor tsProcessor = new TSProcessor();
+  private static EuclideanDistance ed = new EuclideanDistance();
 
-  public BruteForceDiscord() {
+  public BruteForceDiscordImplementation() {
     super();
   }
 
@@ -46,7 +46,7 @@ public class BruteForceDiscord {
    * @return discords.
    * @throws Exception if error occurs.
    */
-  public DiscordRecords series2BruteForceDiscords(double[] series, Integer windowSize,
+  public static DiscordRecords series2BruteForceDiscords(double[] series, Integer windowSize,
       int discordCollectionSize, LargeWindowAlgorithm marker) throws Exception {
 
     DiscordRecords discords = new DiscordRecords();
@@ -110,7 +110,7 @@ public class BruteForceDiscord {
    * @return the best discord with respect to registry.
    * @throws Exception if error occurs.
    */
-  public DiscordRecord findBestDiscordBruteForce(double[] series, Integer windowSize,
+  public static DiscordRecord findBestDiscordBruteForce(double[] series, Integer windowSize,
       VisitRegistry globalRegistry, LargeWindowAlgorithm marker) throws Exception {
 
     Date start = new Date();
