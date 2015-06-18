@@ -3,7 +3,7 @@ Time series discretization with SAX.
 
 This library implements Symbolic Aggregate Approximation for time series in Java. The code and API are aiming at performance implementing a multi-threaded SAX discretization. 
 
-The library is **[available through Maven](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22)**.
+The library is **[available through Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22)**.
 
 SAX transform in a nutshell: a time series of 128 points converted into the word of 8 letters:
 
@@ -22,10 +22,6 @@ _If you are using this implementation for you academic work, please cite this pa
 [Citation] Senin, P., Lin, J., Wang, X., Oates, T., Gandhi, S., Boedihardjo, A.P., Chen, C., Frankenstein, S., Lerner, M.,  [**GrammarViz 2.0: a tool for grammar-based pattern discovery in time series**](http://www2.hawaii.edu/~senin/assets/papers/grammarviz2.pdf), ECML/PKDD Conference, 2014.
 
 _If you are interested in the time series motif and discord discovery, please check out our new tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html) -- it is based on SAX and enables variable-length time series recurrent and anomalous patterns detection._
-
-0.0 Javadocs
-------------
-[http://jmotif.github.io/SAX](http://jmotif.github.io/SAX)
 
 1.0 Building
 ------------
