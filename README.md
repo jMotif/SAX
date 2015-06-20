@@ -92,13 +92,10 @@ There two classes which implement sequential end-to-end workflow for SAX and a p
 	double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
 	
 	// perform the discretization
-	SAXRecords res = sp.ts2saxByChunking(ts, paaSize, na.getCuts(alphabetSize), nThreshold);
+	String str = sp.ts2saxByChunking(ts, paaSize, na.getCuts(alphabetSize), nThreshold);
 
 	// print the output
-	Set<Integer> index = res.getIndexes();
-	for (Integer idx : index) {
-		System.out.println(idx + ", " + String.valueOf(res.getByIndex(idx).getPayload()));
-	}
+	System.out.println(str);
 
 ##### Discretizing time-series *via sliding window*:
 
