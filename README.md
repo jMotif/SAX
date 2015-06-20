@@ -82,7 +82,25 @@ When run, it prints the time series index and a corresponding word:
 ------------	
 There two classes which implement sequential end-to-end workflow for SAX and a parallel implementation of the discretization. These are [TSProcessor](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/TSProcessor.java) and [SAXProcessor](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/SAXProcessor.java).
 
-Discretizing time-series via sliding window sequentially:
+##### Discretizing time-series *by chunking*:
+
+	// instantiate needed classes
+	NormalAlphabet na = new NormalAlphabet();
+	SAXProcessor sp = new SAXProcessor();
+	
+	// read the input file
+	double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
+	
+	// perform the discretization
+	SAXRecords res = sp.ts2saxByChunking(ts, paaSize, na.getCuts(alphabetSize), nThreshold);
+
+	// print the output
+	Set<Integer> index = res.getIndexes();
+	for (Integer idx : index) {
+		System.out.println(idx + ", " + String.valueOf(res.getByIndex(idx).getPayload()));
+	}
+
+##### Discretizing time-series *via sliding window*:
 
 	// instantiate needed classes
 	NormalAlphabet na = new NormalAlphabet();
@@ -101,7 +119,7 @@ Discretizing time-series via sliding window sequentially:
 		System.out.println(idx + ", " + String.valueOf(res.getByIndex(idx).getPayload()));
 	}
 
-Parallel discretization:
+##### Multi-threaded discretization *via sliding window*:
 
 	// instantiate needed classes
 	NormalAlphabet na = new NormalAlphabet();
