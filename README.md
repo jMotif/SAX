@@ -19,11 +19,13 @@ You can find more information about SAX at its authors pages: [SAX overview by J
 
 [2] Patel, P., Keogh, E., Lin, J., Lonardi, S., [*Mining Motifs in Massive Time Series Databases*](http://www.cs.gmu.edu/~jessica/publications/motif_icdm02.pdf), In Proc. ICDM (2002)
 
-_If you are using this implementation for you academic work, please cite this paper (it may seems odd, but performance issues with [Grammarviz 2.0](http://grammarviz2.github.io/grammarviz2_site/) made me working on this lib):_
+##### Citing this work:
+
+If you are using this implementation for you academic work, please cite our [Grammarviz 2.0 paper](http://link.springer.com/chapter/10.1007/978-3-662-44845-8_37):
 
 [Citation] Senin, P., Lin, J., Wang, X., Oates, T., Gandhi, S., Boedihardjo, A.P., Chen, C., Frankenstein, S., Lerner, M.,  [**GrammarViz 2.0: a tool for grammar-based pattern discovery in time series**](http://www2.hawaii.edu/~senin/assets/papers/grammarviz2.pdf), ECML/PKDD Conference, 2014.
 
-_If you are interested in the time series motif and discord discovery, please check out our new tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html) -- it is based on SAX and enables variable-length time series recurrent and anomalous patterns detection._
+###### If you are interested in the time series motif and discord discovery, please check out our new tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html) -- based on SAX, Grammatical Inference, and algorithmic (Kolmogorv complexity) it enables _*variable-length*_ time series recurrent and anomalous patterns detection.
 
 1.0 Building
 ------------
