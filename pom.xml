@@ -254,4 +254,8 @@
     </dependency>
   </dependencies>
 
+  <organization>
+  	<name>JMotif</name>
+  	<url>http://github.com/jMotif</url>
+  </organization>
 </project>
