@@ -260,4 +260,30 @@ public class SAXRecords implements Iterable<SAXRecord> {
     }
   }
 
+  /**
+   * Get motifs.
+   * 
+   * @param num how many motifs to report.
+   * @return the array of motif SAXRecords.
+   */
+  public ArrayList<SAXRecord> getMotifs(int num) {
+    ArrayList<SAXRecord> res = new ArrayList<SAXRecord>(num);
+    DoublyLinkedSortedList<Entry<String, SAXRecord>> list = new DoublyLinkedSortedList<Entry<String, SAXRecord>>(
+        num, new Comparator<Entry<String, SAXRecord>>() {
+          @Override
+          public int compare(Entry<String, SAXRecord> o1, Entry<String, SAXRecord> o2) {
+            int f1 = o1.getValue().getIndexes().size();
+            int f2 = o2.getValue().getIndexes().size();
+            return Integer.compare(f1, f2);
+          }
+        });
+    for (Entry<String, SAXRecord> e : this.records.entrySet()) {
+      list.addElement(e);
+    }
+    Iterator<Entry<String, SAXRecord>> i = list.iterator();
+    while (i.hasNext()) {
+      res.add(i.next().getValue());
+    }
+    return res;
+  }
 }

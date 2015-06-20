@@ -2,6 +2,8 @@ package net.seninp.jmotif.sax.datastructures;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+import net.seninp.util.StackTrace;
 
 /**
  * Implement Iterable doubly linked list.
@@ -37,15 +39,23 @@ public class DoublyLinkedSortedList<T> {
 
     @Override
     public T next() {
-      if (null == current) {
-        current = this.list.first;
+      try {
+        if (null == current) {
+          current = this.list.first;
+          return current.data;
+        }
+        current = current.next;
         return current.data;
       }
-      current = current.next;
-      return current.data;
-
+      catch (Exception e) {
+        throw new NoSuchElementException("There was an exception thrown: " + StackTrace.toString(e));
+      }
     }
 
+    @Override
+    public void remove() {
+      throw new UnsupportedOperationException("The remove is unsupported.");
+    }
   }
 
   // private classes should be at the end of the file

@@ -93,7 +93,7 @@ public class TestDoublyLinkedSortedList {
   @Test
   public void testComparatorDescending() {
 
-    DoublyLinkedSortedList<Entry<String, SAXRecord>> testListD = new DoublyLinkedSortedList<>(2,
+    DoublyLinkedSortedList<Entry<String, SAXRecord>> testListD = new DoublyLinkedSortedList<>(3,
         cDescending);
     testListD.addElement(entrySmallest);
     testListD.addElement(entryLargest);
@@ -107,7 +107,8 @@ public class TestDoublyLinkedSortedList {
     e = i.next();
     assertTrue("assert add element success", e.getKey().equals(entryMed.getKey()));
 
-    assertFalse("assert the list size", i.hasNext());
+    e = i.next();
+    assertTrue("assert add element success", e.getKey().equals(entrySmallest.getKey()));
 
   }
 
