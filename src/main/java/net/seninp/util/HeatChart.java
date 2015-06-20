@@ -322,51 +322,6 @@ public class HeatChart {
    * of x-values. Use this method where the minimum and maximum values possible are not contained
    * within the dataset.
    * 
-   * <h2>Example</h2>
-   * 
-   * <blockcode>
-   * 
-   * <pre>
-   * new double[][]{
-   *   {1.0,1.2,1.4},
-   *   {1.2,1.3,1.5},
-   *   {0.9,1.3,1.2},
-   *   {0.8,1.6,1.1}
-   * };
-   * </pre>
-   * 
-   * </blockcode>
-   * 
-   * The above zValues array is equivalent to:
-   * 
-   * <table border="1">
-   * <tr>
-   * <td rowspan="4" width="20"><center><strong>y</strong></center></td>
-   * <td>1.0</td>
-   * <td>1.2</td>
-   * <td>1.4</td>
-   * </tr>
-   * <tr>
-   * <td>1.2</td>
-   * <td>1.3</td>
-   * <td>1.5</td>
-   * </tr>
-   * <tr>
-   * <td>0.9</td>
-   * <td>1.3</td>
-   * <td>1.2</td>
-   * </tr>
-   * <tr>
-   * <td>0.8</td>
-   * <td>1.6</td>
-   * <td>1.1</td>
-   * </tr>
-   * <tr>
-   * <td></td>
-   * <td colspan="3"><center><strong>x</strong></center></td>
-   * </tr>
-   * </table>
-   * 
    * @param zValues the array to replace the current array with. The number of elements in each
    * inner array must be identical.
    * @param low the minimum possible value, which may or may not appear in the z-values.
