@@ -151,14 +151,14 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
 	Alphabet na = new NormalAlphabet();
 	double[] series = TSProcessor.readFileColumn(DATA_FNAME, 0, 0);
 	
-    	SAXProcessor sp = new SAXProcessor();
-    	saxData = sp.ts2saxViaWindow(series, WIN_SIZE, PAA_SIZE, na.getCuts(ALPHABET_SIZE),
+	SAXProcessor sp = new SAXProcessor();
+	saxData = sp.ts2saxViaWindow(series, WIN_SIZE, PAA_SIZE, na.getCuts(ALPHABET_SIZE),
         		NR_STRATEGY, NORM_THRESHOLD);
         		
-        ArrayList<SAXRecord> motifs = saxData.getMotifs(10);
-        SAXRecord topMotif = motifs.get(0);
+	ArrayList<SAXRecord> motifs = saxData.getMotifs(10);
+	SAXRecord topMotif = motifs.get(0);
         
-    	System.out.println("top motif " + String.valueOf(topMotif.getPayload()) + " seen " + 
+	System.out.println("top motif " + String.valueOf(topMotif.getPayload()) + " seen " + 
     	   		topMotif.getIndexes().size() + " times.");
 
 #### 5.2 Time series discord discovery using HOT-SAX
@@ -172,7 +172,7 @@ Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/
 	discordsTrie = HOTSAXImplementation.series2Discords(series, WIN_SIZE, ALPHABET_SIZE, 
 	DISCORDS_TO_REPORT, new LargeWindowAlgorithm(), NORM_THRESHOLD);
           
-        System.out.println("The best discord: " + discordsTrie.get(0));
+	System.out.println("The best discord: " + discordsTrie.get(0));
 
 
 ##### 5.2.1 Hash-table-based time series discord discovery (allows PAA and alphabet sizes to differ)  
@@ -180,4 +180,6 @@ Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/
 	discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, WIN_SIZE, PAA_SIZE, 
 		ALPHABET_SIZE, DISCORDS_TO_REPORT, new LargeWindowAlgorithm(), NORM_THRESHOLD);
           
-        System.out.println("The best discord: " + discordsHash.get(0));
+	System.out.println("The best discord: " + discordsHash.get(0));
+	
+	
