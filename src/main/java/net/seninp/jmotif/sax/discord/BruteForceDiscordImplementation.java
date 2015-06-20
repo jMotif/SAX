@@ -6,7 +6,7 @@ import java.util.Date;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
-import net.seninp.jmotif.sax.algorithm.LargeWindowAlgorithm;
+import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
 import net.seninp.jmotif.sax.registry.VisitRegistry;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -32,6 +32,9 @@ public class BruteForceDiscordImplementation {
   private static TSProcessor tsProcessor = new TSProcessor();
   private static EuclideanDistance ed = new EuclideanDistance();
 
+  /**
+   * Constructor.
+   */
   public BruteForceDiscordImplementation() {
     super();
   }

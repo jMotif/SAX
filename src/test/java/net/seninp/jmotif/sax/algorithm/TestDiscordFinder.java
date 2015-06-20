@@ -3,6 +3,7 @@ package net.seninp.jmotif.sax.algorithm;
 import static org.junit.Assert.*;
 import net.seninp.jmotif.sax.discord.BruteForceDiscordImplementation;
 import net.seninp.jmotif.sax.discord.DiscordRecord;
+import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
 import net.seninp.jmotif.sax.registry.VisitRegistry;
 import net.seninp.util.StackTrace;
 import net.seninp.util.SAXData;

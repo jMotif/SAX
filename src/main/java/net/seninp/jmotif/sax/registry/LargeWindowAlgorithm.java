@@ -1,6 +1,5 @@
-package net.seninp.jmotif.sax.algorithm;
+package net.seninp.jmotif.sax.registry;
 
-import net.seninp.jmotif.sax.registry.VisitRegistry;
 
 /**
  * Implements a large window marker.
