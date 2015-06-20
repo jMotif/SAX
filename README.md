@@ -148,7 +148,9 @@ The plot below shows the speedup achieved when using the parallelized SAX versio
 #### 5.1 Time series recurrent pattern (motif) discovery
 Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/datastructures/SAXRecords.java) implements a method for getting the most frequent SAX words:
 
-	double[] series = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
+	Alphabet na = new NormalAlphabet();
+	double[] series = TSProcessor.readFileColumn(DATA_FNAME, 0, 0);
+	
     	SAXProcessor sp = new SAXProcessor();
     	saxData = sp.ts2saxViaWindow(series, WIN_SIZE, PAA_SIZE, na.getCuts(ALPHABET_SIZE),
         		NR_STRATEGY, NORM_THRESHOLD);
@@ -158,3 +160,24 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
         
     	System.out.println("top motif " + String.valueOf(topMotif.getPayload()) + " seen " + 
     	   		topMotif.getIndexes().size() + " times.");
+
+#### 5.2 Time series discord discovery using HOT-SAX
+Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/HOTSAXImplementation.java) implements two methods for rare patterns discovery:
+
+##### 5.2.1 Trie-based time series discord discovery  
+
+	Alphabet na = new NormalAlphabet();
+	double[] series = TSProcessor.readFileColumn(DATA_FNAME, 0, 0);
+	
+	discordsTrie = HOTSAXImplementation.series2Discords(series, WIN_SIZE, ALPHABET_SIZE, 
+	DISCORDS_TO_REPORT, new LargeWindowAlgorithm(), NORM_THRESHOLD);
+          
+        System.out.println("The best discord: " + discordsTrie.get(0));
+
+
+##### 5.2.1 Hash-table-based time series discord discovery (allows PAA and alphabet sizes to differ)  
+
+	discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, WIN_SIZE, PAA_SIZE, 
+		ALPHABET_SIZE, DISCORDS_TO_REPORT, new LargeWindowAlgorithm(), NORM_THRESHOLD);
+          
+        System.out.println("The best discord: " + discordsHash.get(0));
