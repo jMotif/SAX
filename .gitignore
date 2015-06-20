@@ -1,6 +1,3 @@
 /build
 /target
-/gradle.properties
 /bin
-/settings.xml
-.Rproj.user
