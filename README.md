@@ -48,24 +48,24 @@ Built jar can be used to convert a time series (represented as a single-column t
 
 	$ java -jar target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar
 	Usage: <main class> [options] 
-  Options:
-    --alphabet_size, -a
-       SAX alphabet size, Default: 3
-    --data, -d
-       The input file name
-    --out, -o
-       The output file name
-    --strategy
-       SAX numerosity reduction strategy
-       Default: EXACT, Possible Values: [NONE, EXACT, MINDIST]
-    --threads, -t
-       number of threads to use, Default: 1
-    --threshold
-       SAX normalization threshold, Default: 0.01
-    --window_size, -w
-       SAX sliding window size, Default: 30
-    --word_size, -p
-       SAX PAA word size, Default: 4
+  	Options:
+    		--alphabet_size, -a
+    		   SAX alphabet size, Default: 3
+    		--data, -d
+    		   The input file name
+    		--out, -o
+       		   The output file name
+    		--strategy
+       		   SAX numerosity reduction strategy
+       		   Default: EXACT, Possible Values: [NONE, EXACT, MINDIST]
+    		--threads, -t
+       		   number of threads to use, Default: 1
+    		--threshold
+       		   SAX normalization threshold, Default: 0.01
+    		--window_size, -w
+       		   SAX sliding window size, Default: 30
+    		--word_size, -p
+       		   SAX PAA word size, Default: 4
 
 When run, it prints the time series index and a corresponding word:
 
