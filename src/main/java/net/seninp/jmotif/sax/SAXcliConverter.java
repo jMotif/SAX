@@ -1,7 +1,11 @@
 package net.seninp.jmotif.sax;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
+import java.util.Collections;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
@@ -84,7 +88,7 @@ public final class SAXcliConverter {
 
         NumerosityReductionStrategy nrStrategy = SAXCliParameters.SAX_NR_STRATEGY;
 
-        Double nThreshold = Double.valueOf(args[5]);
+        Double nThreshold = SAXCliParameters.SAX_NORM_THRESHOLD;
 
         NormalAlphabet na = new NormalAlphabet();
         SAXProcessor sp = new SAXProcessor();
@@ -106,10 +110,16 @@ public final class SAXcliConverter {
               nrStrategy, nThreshold);
         }
 
-        Set<Integer> index = res.getIndexes();
-        for (Integer idx : index) {
-          System.out.println(idx + COMMA + String.valueOf(res.getByIndex(idx).getPayload()));
+        ArrayList<Integer> indexes = new ArrayList<Integer>();
+        indexes.addAll(res.getIndexes());
+        Collections.sort(indexes);
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(SAXCliParameters.OUT_FILE)));
+        for (Integer idx : indexes) {
+          bw.write(idx + COMMA + String.valueOf(res.getByIndex(idx).getPayload()) + CR);
         }
+        bw.close();
+
       }
     }
     catch (Exception e) {

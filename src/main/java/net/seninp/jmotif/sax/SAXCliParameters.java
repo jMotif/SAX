@@ -46,7 +46,7 @@ public class SAXCliParameters {
 
   // threading parameter
   //
-  @Parameter(names = { "--threads", "-t" }, description = "number of threads to use)")
+  @Parameter(names = { "--threads", "-t" }, description = "number of threads to use")
   public static int THREADS_NUM = 1;
 
 }
