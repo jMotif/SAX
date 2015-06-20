@@ -23,8 +23,8 @@ public class DoublyLinkedSortedList<T> {
 
     @Override
     public boolean hasNext() {
-      if(null == this.current){
-        if(this.list.isEmpty()){
+      if (null == this.current) {
+        if (this.list.isEmpty()) {
           return false;
         }
         return true;
@@ -39,10 +39,11 @@ public class DoublyLinkedSortedList<T> {
     public T next() {
       if (null == current) {
         current = this.list.first;
+        return current.data;
       }
-      T res = this.current.data;
       current = current.next;
-      return res;
+      return current.data;
+
     }
 
   }
