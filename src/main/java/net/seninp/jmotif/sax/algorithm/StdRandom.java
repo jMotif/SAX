@@ -106,7 +106,7 @@ public final class StdRandom {
   /**
    * Returns an integer uniformly between 0 (inclusive) and N (exclusive).
    * 
-   * @throws IllegalArgumentException if N <= 0
+   * @throws IllegalArgumentException if {@code N <= 0 }
    */
   public static int uniform(int N) {
     if (N <= 0)
@@ -122,8 +122,8 @@ public final class StdRandom {
   /**
    * Returns an integer uniformly in [a, b).
    * 
-   * @throws IllegalArgumentException if b <= a
-   * @throws IllegalArgumentException if b - a >= Integer.MAX_VALUE
+   * @throws IllegalArgumentException if {@code b <= a }
+   * @throws IllegalArgumentException if {@code b - a >= Integer.MAX_VALUE }
    */
   public static int uniform(int a, int b) {
     if (b <= a)
@@ -136,7 +136,7 @@ public final class StdRandom {
   /**
    * Returns a real number uniformly in [a, b).
    * 
-   * @throws IllegalArgumentException unless a < b
+   * @throws IllegalArgumentException unless {@code a < b }
    */
   public static double uniform(double a, double b) {
     if (!(a < b))
@@ -147,7 +147,7 @@ public final class StdRandom {
   /**
    * Returns a boolean, which is true with probability p, and false otherwise.
    * 
-   * @throws IllegalArgumentException unless p >= 0.0 and p <= 1.0
+   * @throws IllegalArgumentException unless {@code p >= 0.0 } and {@code p <= 1.0 }
    */
   public static boolean bernoulli(double p) {
     if (!(p >= 0.0 && p <= 1.0))
@@ -190,7 +190,7 @@ public final class StdRandom {
   /**
    * Returns an integer with a geometric distribution with mean 1/p.
    * 
-   * @throws IllegalArgumentException unless p >= 0.0 and p <= 1.0
+   * @throws IllegalArgumentException unless {@code p >= 0.0 } and {@code p <= 1.0 }
    */
   public static int geometric(double p) {
     if (!(p >= 0.0 && p <= 1.0))
@@ -202,7 +202,7 @@ public final class StdRandom {
   /**
    * Return an integer with a Poisson distribution with mean lambda.
    * 
-   * @throws IllegalArgumentException unless lambda > 0.0 and not infinite
+   * @throws IllegalArgumentException unless {@code lambda > 0.0 } and not infinite
    */
   public static int poisson(double lambda) {
     if (!(lambda > 0.0))
@@ -225,7 +225,7 @@ public final class StdRandom {
   /**
    * Returns a real number with a Pareto distribution with parameter alpha.
    * 
-   * @throws IllegalArgumentException unless alpha > 0.0
+   * @throws IllegalArgumentException unless {@code alpha > 0.0 }
    */
   public static double pareto(double alpha) {
     if (!(alpha > 0.0))
@@ -242,8 +242,8 @@ public final class StdRandom {
 
   /**
    * Returns a number from a discrete distribution: i with probability a[i]. throws
-   * IllegalArgumentException if sum of array entries is not (very nearly) equal to 1.0
-   * throws IllegalArgumentException unless a[i] >= 0.0 for each index i
+   * IllegalArgumentException if sum of array entries is not (very nearly) equal to {@code 1.0 }
+   * throws IllegalArgumentException unless {@code a[i] >= 0.0 } for each index {@code i }
    */
   public static int discrete(double[] a) {
     double EPSILON = 1E-14;
@@ -273,7 +273,7 @@ public final class StdRandom {
   /**
    * Returns a real number from an exponential distribution with rate lambda.
    * 
-   * @throws IllegalArgumentException unless lambda > 0.0
+   * @throws IllegalArgumentException unless {@code lambda > 0.0 }
    */
   public static double exp(double lambda) {
     if (!(lambda > 0.0))
