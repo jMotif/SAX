@@ -136,7 +136,7 @@ public final class StdRandom {
   /**
    * Returns a real number uniformly in [a, b).
    * 
-   * @throws IllegalArgumentException unless {@code a < b }
+   * @throws IllegalArgumentException unless {@code a&lt;b }
    */
   public static double uniform(double a, double b) {
     if (!(a < b))
@@ -205,7 +205,7 @@ public final class StdRandom {
    * @throws IllegalArgumentException unless {@code lambda > 0.0 } and not infinite
    */
   public static int poisson(double lambda) {
-    if (!(lambda > 0.0))
+    if (!(lambda  &gt; .0))
       throw new IllegalArgumentException("Parameter lambda must be positive");
     if (Double.isInfinite(lambda))
       throw new IllegalArgumentException("Parameter lambda must not be infinite");
@@ -225,7 +225,7 @@ public final class StdRandom {
   /**
    * Returns a real number with a Pareto distribution with parameter alpha.
    * 
-   * @throws IllegalArgumentException unless {@code alpha > 0.0 }
+   * @throws IllegalArgumentException unless {@code alpha &gt; 0.0 }
    */
   public static double pareto(double alpha) {
     if (!(alpha > 0.0))
@@ -273,7 +273,7 @@ public final class StdRandom {
   /**
    * Returns a real number from an exponential distribution with rate lambda.
    * 
-   * @throws IllegalArgumentException unless {@code lambda > 0.0 }
+   * @throws IllegalArgumentException unless {@code lambda &gt; 0.0 }
    */
   public static double exp(double lambda) {
     if (!(lambda > 0.0))
