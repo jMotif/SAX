@@ -324,7 +324,7 @@ public final class SAXProcessor {
    * @param alphabetSize
    * @param strategy
    * @param nrThreshold
-   * @param
+   * @param shingleSize
    * 
    * @return map of shingle frequencies.
    * @throws SAXException if error occurs.

@@ -337,13 +337,14 @@ public class HeatChart {
    * Sets the x-values which are plotted along the x-axis. The x-values are calculated based upon
    * the indexes of the z-values array:
    * 
-   * <blockcode>
+   * <pre> 
+   * {@code
    * 
    * <pre>
    * x-value = x-offset + (column-index * x-interval)
    * </pre>
    * 
-   * </blockcode>
+   * } * </pre>
    * 
    * <p>
    * The x-interval defines the gap between each x-value and the x-offset is applied to each value
@@ -379,13 +380,15 @@ public class HeatChart {
    * Sets the y-values which are plotted along the y-axis. The y-values are calculated based upon
    * the indexes of the z-values array:
    * 
-   * <blockcode>
+   * <pre> 
+   * {@code
    * 
    * <pre>
    * y-value = y-offset + (column-index * y-interval)
    * </pre>
    * 
-   * </blockcode>
+   * } 
+   * </pre>
    * 
    * <p>
    * The y-interval defines the gap between each y-value and the y-offset is applied to each value
