@@ -32,7 +32,6 @@
     <url>http://github.com/jMotif/sax.git</url>
     <connection>scm:git:git://git@github.com/jMotif/sax.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jMotif/sax.git</developerConnection>
-    <tag>jmotif-sax-0.1.0</tag>
   </scm>
 
   <distributionManagement>
@@ -52,9 +51,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
         </configuration>
       </plugin>
 
