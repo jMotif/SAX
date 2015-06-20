@@ -47,26 +47,36 @@ The code is written in Java and I use maven to build it:
 Built jar can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
 
 	$ java -jar target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar
-	Command-line SAX conversion utility, the output printed to STDOUT 
-	Expects 6 parameters:
- 	[1] training dataset filename
- 	[2] sliding window size
- 	[3] PAA size
- 	[4] Alphabet size
- 	[5] numerosity reduction <NONE|EXACT|MINDIST>
- 	[6] z-Normalization threshold value
- 	[7] OPTIONAL: number of threads to use
-	An execution example: $java -jar target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar  src/resources/test-data/ecg0606_1.csv 120 7 5 EXACT 0.001 2
+	Usage: <main class> [options] 
+  Options:
+    --alphabet_size, -a
+       SAX alphabet size, Default: 3
+    --data, -d
+       The input file name
+    --out, -o
+       The output file name
+    --strategy
+       SAX numerosity reduction strategy
+       Default: EXACT, Possible Values: [NONE, EXACT, MINDIST]
+    --threads, -t
+       number of threads to use, Default: 1
+    --threshold
+       SAX normalization threshold, Default: 0.01
+    --window_size, -w
+       SAX sliding window size, Default: 30
+    --word_size, -p
+       SAX PAA word size, Default: 4
 
 When run, it prints the time series index and a corresponding word:
 
- 	$ java -jar "target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar" src/resources/test-data/ecg0606_1.csv 120 7 5 EXACT 0.001 2 | head
- 	0, aceccdc
- 	4, adeccdc
- 	6, addccdc
- 	8, addccdd
- 	9, adccccd
- 	...
+ 	$ java -jar "target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar" \ 
+ 	                      -d src/resources/test-data/ecg0606_1.csv -o test.txt
+ 	$ head test.txt
+ 	0, aabc
+	8, aacc
+	13, abcc
+	20, abcb
+	...
 
 3.0 API usage
 ------------	
