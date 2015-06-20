@@ -10,7 +10,7 @@ import java.util.Set;
  * @author psenin
  * 
  */
-public class SaxRecord implements Comparable<SaxRecord> {
+public class SAXRecord implements Comparable<SAXRecord> {
 
   /** The payload. */
   private char[] saxString;
@@ -20,7 +20,7 @@ public class SaxRecord implements Comparable<SaxRecord> {
 
   /** Disable the constructor. */
   @SuppressWarnings("unused")
-  private SaxRecord() {
+  private SAXRecord() {
     super();
   }
 
@@ -30,7 +30,7 @@ public class SaxRecord implements Comparable<SaxRecord> {
    * @param str the payload value.
    * @param idx the occurrence index.
    */
-  public SaxRecord(char[] str, int idx) {
+  public SAXRecord(char[] str, int idx) {
     super();
     this.saxString = str.clone();
     this.occurrences = new HashSet<Integer>();
@@ -83,7 +83,7 @@ public class SaxRecord implements Comparable<SaxRecord> {
    * @return results of comparison.
    */
   @Override
-  public int compareTo(SaxRecord o) {
+  public int compareTo(SAXRecord o) {
     int a = this.occurrences.size();
     int b = o.getIndexes().size();
     if (a == b) {
@@ -100,8 +100,8 @@ public class SaxRecord implements Comparable<SaxRecord> {
    */
   @Override
   public boolean equals(Object o) {
-    if (o instanceof SaxRecord) {
-      SaxRecord other = (SaxRecord) o;
+    if (o instanceof SAXRecord) {
+      SAXRecord other = (SAXRecord) o;
       if (Arrays.equals(other.getPayload(), this.saxString)
           && (other.getIndexes().size() == this.occurrences.size())) {
         for (Integer e : this.occurrences) {

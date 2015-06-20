@@ -16,7 +16,7 @@ import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
-import net.seninp.jmotif.sax.datastructures.SaxRecord;
+import net.seninp.jmotif.sax.datastructures.SAXRecord;
 import net.seninp.util.StackTrace;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -209,7 +209,7 @@ public class ParallelSAXImplementation {
 
                 // res head
                 int resultHeadIndex = res.getMinIndex();
-                SaxRecord resultHead = res.getByIndex(resultHeadIndex);
+                SAXRecord resultHead = res.getByIndex(resultHeadIndex);
                 String headStr = String.valueOf(resultHead.getPayload());
 
                 // print the log
@@ -249,7 +249,7 @@ public class ParallelSAXImplementation {
 
                 // find the RES last index
                 int resultTailIndex = res.getMaxIndex();
-                SaxRecord resTail = res.getByIndex(resultTailIndex);
+                SAXRecord resTail = res.getByIndex(resultTailIndex);
                 String resStr = String.valueOf(resTail.getPayload());
 
                 consoleLogger.debug("last index in the res " + resultTailIndex + " for " + resStr
@@ -295,7 +295,7 @@ public class ParallelSAXImplementation {
                   tmpIdx--;
                 }
                 int resultTailIndex = tmpIdx;
-                SaxRecord resTail = res.getByIndex(resultTailIndex);
+                SAXRecord resTail = res.getByIndex(resultTailIndex);
                 String resStr = String.valueOf(resTail.getPayload());
 
                 consoleLogger.debug("last index in the res " + resultTailIndex + " for " + resStr
@@ -330,7 +330,7 @@ public class ParallelSAXImplementation {
                   tmpIdx++;
                 }
                 int resultHeadIndex = tmpIdx;
-                SaxRecord resultHead = res.getByIndex(resultHeadIndex);
+                SAXRecord resultHead = res.getByIndex(resultHeadIndex);
                 String headStr = String.valueOf(resultHead.getPayload());
 
                 // print the log

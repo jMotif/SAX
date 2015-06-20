@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
-import net.seninp.jmotif.sax.datastructures.SaxRecord;
+import net.seninp.jmotif.sax.datastructures.SAXRecord;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -351,7 +351,7 @@ public final class SAXProcessor {
         strategy, nrThreshold);
 
     // fill in the counts
-    for (SaxRecord sr : saxData) {
+    for (SAXRecord sr : saxData) {
       String word = String.valueOf(sr.getPayload());
       for (int i = 0; i < word.length() - shingleSize; i++) {
         String shingle = word.substring(i, i + shingleSize);
@@ -472,7 +472,7 @@ public final class SAXProcessor {
         double[] weights = new double[len];
 
         // fill in the counts
-        for (SaxRecord sr : saxData) {
+        for (SAXRecord sr : saxData) {
           String word = String.valueOf(sr.getPayload());
           Integer idx = indexTable.get(word);
           if (null == idx) {

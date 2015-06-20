@@ -37,7 +37,7 @@ public class TestSAXRecords {
     res.buildIndex();
     String str1 = "";
     for (int i = 11; i < 47; i++) {
-      SaxRecord r = res.getByIndex(res.mapStringIndexToTSPosition(i));
+      SAXRecord r = res.getByIndex(res.mapStringIndexToTSPosition(i));
       str1 = str1.concat(String.valueOf(r.getPayload()) + " ");
     }
     assertTrue("Asserting substring existence", str.indexOf(str1) > 0);
@@ -84,7 +84,7 @@ public class TestSAXRecords {
     //
     // test drop by index
     //
-    SaxRecord rec = res.getByIndex(res.getIndexes().iterator().next());
+    SAXRecord rec = res.getByIndex(res.getIndexes().iterator().next());
     String str = String.valueOf(rec.getPayload());
     ArrayList<Integer> indexes = new ArrayList<Integer>();
     indexes.addAll(rec.getIndexes());

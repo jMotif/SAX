@@ -30,7 +30,7 @@ public class TestSaxRecord {
    */
   @Test
   public void testSAXFrequencyEntry() {
-    SaxRecord se = new SaxRecord(str11.toCharArray(), iNum2);
+    SAXRecord se = new SAXRecord(str11.toCharArray(), iNum2);
 
     assertTrue("Testing SAXRecord", str11.equalsIgnoreCase(String.valueOf(se.getPayload())));
 
@@ -57,7 +57,7 @@ public class TestSaxRecord {
    */
   @Test
   public void setUp() {
-    SaxRecord sfe1 = new SaxRecord(str1.toCharArray(), 0);
+    SAXRecord sfe1 = new SAXRecord(str1.toCharArray(), 0);
     assertTrue("Testing constructor", String.valueOf(sfe1.getPayload()).equalsIgnoreCase(str1));
     assertFalse("Testing constructor", String.valueOf(sfe1.getPayload()).equalsIgnoreCase(str2));
     assertEquals("Testing constructor", (Integer) sfe1.getIndexes().size(), ONE);
@@ -74,9 +74,9 @@ public class TestSaxRecord {
    */
   @Test
   public void testCompare() {
-    SaxRecord sfe1 = new SaxRecord(str1.toCharArray(), 0);
-    SaxRecord sfe2 = new SaxRecord(str1.toCharArray(), 0);
-    SaxRecord sfe3 = new SaxRecord(str2.toCharArray(), 0);
+    SAXRecord sfe1 = new SAXRecord(str1.toCharArray(), 0);
+    SAXRecord sfe2 = new SAXRecord(str1.toCharArray(), 0);
+    SAXRecord sfe3 = new SAXRecord(str2.toCharArray(), 0);
     assertTrue("testing equals", sfe1.equals(sfe2));
     assertEquals("testing hashCode", sfe1.hashCode(), sfe2.hashCode());
     assertSame("testing comparison", sfe1.compareTo(sfe1), 0);

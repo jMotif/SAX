@@ -15,16 +15,16 @@ import java.util.Set;
  * 
  */
 // public class SAXRecords {
-public class SAXRecords implements Iterable<SaxRecord> {
+public class SAXRecords implements Iterable<SAXRecord> {
 
   /** The id is used to identify the chunk. */
   private final long id;
 
   /** All the SAX records. */
-  private final HashMap<String, SaxRecord> records;
+  private final HashMap<String, SAXRecord> records;
 
   /** The index of occurrences, key is the position in the time series. */
-  private final HashMap<Integer, SaxRecord> realTSindex;
+  private final HashMap<Integer, SAXRecord> realTSindex;
 
   /** The mapping from SAX string positions to real time series positions. */
   private HashMap<Integer, Integer> stringPosToRealPos;
@@ -35,8 +35,8 @@ public class SAXRecords implements Iterable<SaxRecord> {
   public SAXRecords() {
     super();
     this.id = System.currentTimeMillis();
-    this.records = new HashMap<String, SaxRecord>();
-    this.realTSindex = new HashMap<Integer, SaxRecord>();
+    this.records = new HashMap<String, SAXRecord>();
+    this.realTSindex = new HashMap<Integer, SAXRecord>();
   }
 
   /**
@@ -47,8 +47,8 @@ public class SAXRecords implements Iterable<SaxRecord> {
   public SAXRecords(long id) {
     super();
     this.id = id;
-    this.records = new HashMap<String, SaxRecord>();
-    this.realTSindex = new HashMap<Integer, SaxRecord>();
+    this.records = new HashMap<String, SAXRecord>();
+    this.realTSindex = new HashMap<Integer, SAXRecord>();
   }
 
   /**
@@ -67,7 +67,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
    * @return an iterator.
    */
   @Override
-  public Iterator<SaxRecord> iterator() {
+  public Iterator<SAXRecord> iterator() {
     return this.realTSindex.values().iterator();
   }
 
@@ -77,7 +77,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
    * @param idx The index.
    * @return The entry.
    */
-  public SaxRecord getByIndex(int idx) {
+  public SAXRecord getByIndex(int idx) {
     return realTSindex.get(idx);
   }
 
@@ -87,7 +87,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
    * @param str The query string.
    * @return the record if exists.
    */
-  public SaxRecord getByWord(String str) {
+  public SAXRecord getByWord(String str) {
     return records.get(str);
   }
 
@@ -97,7 +97,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
    * @param idx the index.
    */
   public void dropByIndex(int idx) {
-    SaxRecord entry = realTSindex.get(idx);
+    SAXRecord entry = realTSindex.get(idx);
     if (null != entry) {
       realTSindex.remove(idx);
       entry.removeIndex(idx);
@@ -114,9 +114,9 @@ public class SAXRecords implements Iterable<SaxRecord> {
    * @param idx The index.
    */
   public void add(char[] str, int idx) {
-    SaxRecord rr = records.get(String.valueOf(str));
+    SAXRecord rr = records.get(String.valueOf(str));
     if (null == rr) {
-      rr = new SaxRecord(str, idx);
+      rr = new SAXRecord(str, idx);
       this.records.put(String.valueOf(str), rr);
     }
     else {
@@ -131,7 +131,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
    * @param records The collection.
    */
   public void addAll(SAXRecords records) {
-    for (SaxRecord record : records) {
+    for (SAXRecord record : records) {
       char[] payload = record.getPayload();
       for (Integer i : record.getIndexes()) {
         this.add(payload, i);
@@ -250,7 +250,7 @@ public class SAXRecords implements Iterable<SaxRecord> {
   public void excludePositions(ArrayList<Integer> positions) {
     for (Integer p : positions) {
       if (realTSindex.containsKey(p)) {
-        SaxRecord rec = realTSindex.get(p);
+        SAXRecord rec = realTSindex.get(p);
         rec.removeIndex(p);
         if (rec.getIndexes().isEmpty()) {
           this.records.remove(String.valueOf(rec.getPayload()));
