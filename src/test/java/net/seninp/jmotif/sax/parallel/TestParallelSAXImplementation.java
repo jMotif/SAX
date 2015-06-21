@@ -16,15 +16,15 @@ import org.junit.Test;
  */
 public class TestParallelSAXImplementation {
 
-  private static final String filenameTEK14 = "src/resources/test-data/TEK14.txt";
+  private static final String TEST_DATA = "src/resources/test-data/ecg0606_1.csv";
 
-  private static final int THREADS_NUM = 5;
+  private static final int[] THREADS_NUM = { 2, 3, 4, 5 };
 
-  private static final int WINDOW_SIZE = 128;
-  private static final int PAA_SIZE = 7;
-  private static final int ALPHABET_SIZE = 5;
+  private static final int WINDOW_SIZE = 100;
+  private static final int PAA_SIZE = 4;
+  private static final int ALPHABET_SIZE = 3;
 
-  private static final double NORM_THRESHOLD = 0.0005d;
+  private static final double NORM_THRESHOLD = 0.001;
 
   /**
    * Test parallel SAX conversion.
@@ -37,54 +37,32 @@ public class TestParallelSAXImplementation {
     SAXProcessor sp = new SAXProcessor();
     NormalAlphabet na = new NormalAlphabet();
 
-    double[] ts = TSProcessor.readFileColumn(filenameTEK14, 0, 0);
+    double[] ts = TSProcessor.readFileColumn(TEST_DATA, 0, 0);
 
     SAXRecords sequentialRes = sp.ts2saxViaWindow(ts, WINDOW_SIZE, PAA_SIZE,
         na.getCuts(ALPHABET_SIZE), NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
 
-    String str1 = sequentialRes.getSAXString(" ");
-    // System.out.println(str1);
-
     String sequentialString = sequentialRes.getSAXString(" ");
-    // 3 threads
-    ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
-    SAXRecords parallelRes = ps1.process(ts, THREADS_NUM, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
-        NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
 
-    String str2 = parallelRes.getSAXString(" ");
-    // System.out.println(str2);
+    for (int threadsNum : THREADS_NUM) {
+      ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
+      SAXRecords parallelRes = ps1.process(ts, threadsNum, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
+          NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
 
-    String[] arr1 = str1.split(" ");
-    String[] arr2 = str2.split(" ");
+      String str2 = parallelRes.getSAXString(" ");
 
-    for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
-      if (!arr1[i].equalsIgnoreCase(arr2[i])) {
-        System.out.println("Error in index " + i + ", string " + arr1[i] + " versus " + arr2[i]);
-        break;
+      String[] arr1 = sequentialString.split(" ");
+      String[] arr2 = str2.split(" ");
+
+      for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
+        if (!arr1[i].equalsIgnoreCase(arr2[i])) {
+          System.out.println("Error in index " + i + ", string " + arr1[i] + " versus " + arr2[i]);
+          break;
+        }
       }
-    }
 
-    assertTrue(sequentialString.equalsIgnoreCase(parallelRes.getSAXString(" ")));
+      assertTrue("assert correctness", sequentialString.equalsIgnoreCase(str2));
 
-    for (int i : parallelRes.getIndexes()) {
-      String entrySerial = String.valueOf(sequentialRes.getByIndex(i).getPayload());
-      String entryParallel = String.valueOf(parallelRes.getByIndex(i).getPayload());
-      assertTrue(entrySerial.equalsIgnoreCase(entryParallel));
-    }
-
-    SAXRecords sequentialRes2 = sp.ts2saxViaWindow(ts, 100, 8, na.getCuts(4),
-        NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
-    String sequentialString2 = sequentialRes2.getSAXString(" ");
-    // 3 threads
-    ParallelSAXImplementation ps2 = new ParallelSAXImplementation();
-    SAXRecords parallelRes2 = ps2.process(ts, THREADS_NUM, 100, 8, 4,
-        NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
-    assertTrue(sequentialString2.equalsIgnoreCase(parallelRes2.getSAXString(" ")));
-
-    for (int i : parallelRes2.getIndexes()) {
-      String entrySerial = String.valueOf(sequentialRes2.getByIndex(i).getPayload());
-      String entryParallel = String.valueOf(parallelRes2.getByIndex(i).getPayload());
-      assertTrue(entrySerial.equalsIgnoreCase(entryParallel));
     }
 
   }
