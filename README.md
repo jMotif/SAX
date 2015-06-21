@@ -3,7 +3,7 @@ Time series discretization with SAX.
 
 Implements Symbolic Aggregate Approximation of time series in Java; implements a multi-threaded SAX discretization. 
 
-The library is **[available through Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22)** and built by TravisCI: [![Build Status](https://travis-ci.org/jMotif/SAX.svg?branch=master)](https://travis-ci.org/jMotif/SAX).
+The library is **[available through Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22)** and is built by TravisCI: [![Build Status](https://travis-ci.org/jMotif/SAX.svg?branch=master)](https://travis-ci.org/jMotif/SAX).
 
 0.0 SAX transform in a nutshell
 ------------
@@ -11,7 +11,7 @@ An illustration of a time series of 128 points converted into the word of 8 lett
 
 ![SAX in a nutshell](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/sax.png)
 
-You can find more information about SAX at its authors pages: [SAX overview by Jessica Lin](http://cs.gmu.edu/~jessica/sax.htm), [Eamonn Keogh's SAX page](http://www.cs.ucr.edu/~eamonn/SAX.htm), or at [sax-vsm wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html).
+Find more information about SAX at its authors pages: [SAX overview by Jessica Lin](http://cs.gmu.edu/~jessica/sax.htm), [Eamonn Keogh's SAX page](http://www.cs.ucr.edu/~eamonn/SAX.htm), or at [sax-vsm wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html).
 
 ##### The key publications introducing SAX:
 
@@ -44,7 +44,7 @@ The code is written in Java and I use maven to build it:
 
 2.0 Time series to SAX conversion using CLI
 ------------
-Built jar can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
+The jar file can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
 
 	$ java -jar target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar
 	Usage: <main class> [options] 
@@ -67,7 +67,7 @@ Built jar can be used to convert a time series (represented as a single-column t
     		--word_size, -p
        		   SAX PAA word size, Default: 4
 
-When run, it prints the time series index and a corresponding word:
+When run, it prints the time series point index and a corresponding word:
 
  	$ java -jar "target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar" \ 
  	                      -d src/resources/test-data/ecg0606_1.csv -o test.txt
