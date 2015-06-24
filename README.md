@@ -183,3 +183,5 @@ Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/
 	System.out.println("The best discord: " + discordsHash.get(0));
 	
 	
+## Made with Aloha!
+![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
