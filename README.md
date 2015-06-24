@@ -1,4 +1,4 @@
-Time series discretization with SAX.
+Time series discretization with SAX
 ====
 
 Implements Symbolic Aggregate Approximation of time series in Java; implements a multi-threaded SAX discretization. This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
