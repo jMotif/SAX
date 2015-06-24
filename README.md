@@ -175,7 +175,7 @@ Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/
 	System.out.println("The best discord: " + discordsTrie.get(0));
 
 
-##### 5.2.1 Hash-table-based time series discord discovery (allows PAA and alphabet sizes to differ)  
+##### 5.2.2 Hash-table-based time series discord discovery (allows PAA and alphabet sizes to differ)  
 
 	discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, WIN_SIZE, PAA_SIZE, 
 		ALPHABET_SIZE, DISCORDS_TO_REPORT, new LargeWindowAlgorithm(), NORM_THRESHOLD);
