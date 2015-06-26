@@ -10,6 +10,10 @@ import net.seninp.jmotif.sax.SAXException;
  */
 public final class NormalAlphabet extends Alphabet {
 
+  /** The latin alphabet, lower case letters a-z. */
+  public static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+      'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+  
   /** Maximal possible alphabet size. */
   private static final int MAX_SIZE = 20;
 
