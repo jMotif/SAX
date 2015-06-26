@@ -1,4 +1,4 @@
-package net.seninp.jmotif.sax.algorithm;
+package net.seninp.jmotif.sax.bitmap;
 
 import java.awt.Dimension;
 import java.io.BufferedWriter;
