@@ -1,7 +1,7 @@
-Time series discretization with SAX.
+Time series discretization with SAX
 ====
 
-Implements Symbolic Aggregate Approximation of time series in Java; implements a multi-threaded SAX discretization. 
+Implements Symbolic Aggregate Approximation of time series in Java; implements a multi-threaded SAX discretization. This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
 
 The library is **[available through Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22)** and is built by TravisCI: [![Build Status](https://travis-ci.org/jMotif/SAX.svg?branch=master)](https://travis-ci.org/jMotif/SAX).
 
@@ -175,7 +175,7 @@ Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/
 	System.out.println("The best discord: " + discordsTrie.get(0));
 
 
-##### 5.2.1 Hash-table-based time series discord discovery (allows PAA and alphabet sizes to differ)  
+##### 5.2.2 Hash-table-based time series discord discovery (allows PAA and alphabet sizes to differ)  
 
 	discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, WIN_SIZE, PAA_SIZE, 
 		ALPHABET_SIZE, DISCORDS_TO_REPORT, new LargeWindowAlgorithm(), NORM_THRESHOLD);
@@ -183,3 +183,5 @@ Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/
 	System.out.println("The best discord: " + discordsHash.get(0));
 	
 	
+## Made with Aloha!
+![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
