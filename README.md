@@ -161,7 +161,7 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
 	System.out.println("top motif " + String.valueOf(topMotif.getPayload()) + " seen " + 
     	   		topMotif.getIndexes().size() + " times.");
 
-#### 5.2 Time series rare pattern (discord) detection using HOT-SAX
+#### 5.2 Time series rare pattern (discord, anomaly) detection using HOT-SAX
 Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/HOTSAXImplementation.java) implements two methods for rare patterns discovery:
 
 ##### 5.2.1 Trie-based time series discord discovery  
