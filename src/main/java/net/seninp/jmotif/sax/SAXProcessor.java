@@ -383,9 +383,12 @@ public final class SAXProcessor {
     NormalAlphabet normalA = new NormalAlphabet();
     char[] previousString = null;
 
-    int pointsPerSegment = winSize / paaSize;
+    double pointsPerSegment = (double) winSize / (double) paaSize;
+
     for (int i = 0; i < ts.length - (winSize - 1); i++) {
+
       double[] subSection = Arrays.copyOfRange(ts, i, i + winSize);
+
       if (tsProcessor.stDev(subSection) > normThreshold) {
         subSection = tsProcessor.znorm(subSection, normThreshold);
       }
@@ -394,6 +397,7 @@ public final class SAXProcessor {
       // Convert the PAA to a string.
       char[] currentString = tsProcessor.ts2String(paa, normalA.getCuts(alphabetSize));
 
+      // Check if need to leave the loop due to numerosity reduction
       if (NumerosityReductionStrategy.EXACT.equals(strategy)
           && Arrays.equals(previousString, currentString)) {
         continue;
@@ -405,12 +409,12 @@ public final class SAXProcessor {
           continue;
         }
       }
-
       previousString = currentString;
       windowCounter++;
 
+      // if made it here compute the distance
       for (int j = 0; j < subSection.length; j++) {
-        int paaIdx = j / pointsPerSegment;
+        int paaIdx = (int) Math.round((double) j / pointsPerSegment);
         if (paaIdx >= paaSize) {
           paaIdx = paaSize - 1;
         }
