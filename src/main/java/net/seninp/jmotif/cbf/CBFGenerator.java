@@ -1,6 +1,5 @@
 package net.seninp.jmotif.cbf;
 
-import net.seninp.jmotif.sax.algorithm.StdRandom;
 
 /**
  * CBF Domain data generator.

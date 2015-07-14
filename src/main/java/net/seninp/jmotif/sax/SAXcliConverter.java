@@ -66,18 +66,12 @@ public final class SAXcliConverter {
 
         sb.append("  input file:                  ").append(SAXCliParameters.IN_FILE).append(CR);
         sb.append("  output file:                 ").append(SAXCliParameters.OUT_FILE).append(CR);
-        sb.append("  SAX sliding window size:     ").append(SAXCliParameters.SAX_WINDOW_SIZE)
-            .append(CR);
-        sb.append("  SAX PAA size:                ").append(SAXCliParameters.SAX_PAA_SIZE)
-            .append(CR);
-        sb.append("  SAX alphabet size:           ").append(SAXCliParameters.SAX_ALPHABET_SIZE)
-            .append(CR);
-        sb.append("  SAX numerosity reduction:    ").append(SAXCliParameters.SAX_NR_STRATEGY)
-            .append(CR);
-        sb.append("  SAX normalization threshold: ").append(SAXCliParameters.SAX_NORM_THRESHOLD)
-            .append(CR);
-
-        sb.append("  threads to use:         ").append(SAXCliParameters.THREADS_NUM).append(CR);
+        sb.append("  SAX sliding window size:     ").append(SAXCliParameters.SAX_WINDOW_SIZE).append(CR);
+        sb.append("  SAX PAA size:                ").append(SAXCliParameters.SAX_PAA_SIZE).append(CR);
+        sb.append("  SAX alphabet size:           ").append(SAXCliParameters.SAX_ALPHABET_SIZE).append(CR);
+        sb.append("  SAX numerosity reduction:    ").append(SAXCliParameters.SAX_NR_STRATEGY).append(CR);
+        sb.append("  SAX normalization threshold: ").append(SAXCliParameters.SAX_NORM_THRESHOLD).append(CR);
+        sb.append("  threads to use:              ").append(SAXCliParameters.THREADS_NUM).append(CR);
 
         String dataFName = SAXCliParameters.IN_FILE;
         double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);

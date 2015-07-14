@@ -1,9 +1,9 @@
-Time series discretization with SAX.
+Time series discretization with SAX
 ====
 
-This library implements Symbolic Aggregate Approximation of time series in Java. The code and API are aiming at performance implementing a multi-threaded SAX discretization. 
+Implements Symbolic Aggregate Approximation of time series in Java; implements a multi-threaded SAX discretization. This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
 
-The library is **[available through Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22)** and built by TravisCI: [![Build Status](https://travis-ci.org/jMotif/SAX.svg?branch=master)](https://travis-ci.org/jMotif/SAX).
+The library is **[available through Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22)** and is built by TravisCI: [![Build Status](https://travis-ci.org/jMotif/SAX.svg?branch=master)](https://travis-ci.org/jMotif/SAX).
 
 0.0 SAX transform in a nutshell
 ------------
@@ -11,7 +11,7 @@ An illustration of a time series of 128 points converted into the word of 8 lett
 
 ![SAX in a nutshell](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/sax.png)
 
-You can find more information about SAX at its authors pages: [SAX overview by Jessica Lin](http://cs.gmu.edu/~jessica/sax.htm), [Eamonn Keogh's SAX page](http://www.cs.ucr.edu/~eamonn/SAX.htm), or at [sax-vsm wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html).
+Find more information about SAX at its authors pages: [SAX overview by Jessica Lin](http://cs.gmu.edu/~jessica/sax.htm), [Eamonn Keogh's SAX page](http://www.cs.ucr.edu/~eamonn/SAX.htm), or at [sax-vsm wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html).
 
 ##### The key publications introducing SAX:
 
@@ -44,7 +44,7 @@ The code is written in Java and I use maven to build it:
 
 2.0 Time series to SAX conversion using CLI
 ------------
-Built jar can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
+The jar file can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
 
 	$ java -jar target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar
 	Usage: <main class> [options] 
@@ -67,7 +67,7 @@ Built jar can be used to convert a time series (represented as a single-column t
     		--word_size, -p
        		   SAX PAA word size, Default: 4
 
-When run, it prints the time series index and a corresponding word:
+When run, it prints the time series point index and a corresponding word:
 
  	$ java -jar "target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar" \ 
  	                      -d src/resources/test-data/ecg0606_1.csv -o test.txt
@@ -161,7 +161,7 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
 	System.out.println("top motif " + String.valueOf(topMotif.getPayload()) + " seen " + 
     	   		topMotif.getIndexes().size() + " times.");
 
-#### 5.2 Time series rare pattern (discord) detection using HOT-SAX
+#### 5.2 Time series rare pattern (discord, anomaly) detection using HOT-SAX
 Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/HOTSAXImplementation.java) implements two methods for rare patterns discovery:
 
 ##### 5.2.1 Trie-based time series discord discovery  
@@ -175,7 +175,7 @@ Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/
 	System.out.println("The best discord: " + discordsTrie.get(0));
 
 
-##### 5.2.1 Hash-table-based time series discord discovery (allows PAA and alphabet sizes to differ)  
+##### 5.2.2 Hash-table-based time series discord discovery (allows PAA and alphabet sizes to differ)  
 
 	discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, WIN_SIZE, PAA_SIZE, 
 		ALPHABET_SIZE, DISCORDS_TO_REPORT, new LargeWindowAlgorithm(), NORM_THRESHOLD);
@@ -183,3 +183,5 @@ Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/
 	System.out.println("The best discord: " + discordsHash.get(0));
 	
 	
+## Made with Aloha!
+![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)

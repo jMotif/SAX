@@ -1,4 +1,4 @@
-package net.seninp.jmotif.sax.algorithm;
+package net.seninp.jmotif.cbf;
 
 // StdRandom.java
 // Below is the syntax highlighted version of StdRandom.java from § Standard Libraries.   Here is the Javadoc.

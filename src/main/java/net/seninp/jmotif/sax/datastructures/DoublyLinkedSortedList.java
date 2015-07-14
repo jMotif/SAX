@@ -62,6 +62,7 @@ public class DoublyLinkedSortedList<T> {
   private static class Node<T> {
     protected T data;
     protected Node<T> next;
+    @SuppressWarnings("unused")
     protected Node<T> prev;
 
     public Node(T data) {
