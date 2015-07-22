@@ -23,7 +23,7 @@ public final class EuclideanDistance {
    * @param p2 The second point.
    * @return The Square of Euclidean distance.
    */
-  private double distance2(double p1, double p2) {
+  public double distance2(double p1, double p2) {
     return (p1 - p2) * (p1 - p2);
   }
 
@@ -36,7 +36,7 @@ public final class EuclideanDistance {
    * @return The Euclidean distance.
    * @throws Exception In the case of error.
    */
-  private double distance2(double[] point1, double[] point2) throws Exception {
+  public double distance2(double[] point1, double[] point2) throws Exception {
     if (point1.length == point2.length) {
       Double sum = 0D;
       for (int i = 0; i < point1.length; i++) {
@@ -60,7 +60,7 @@ public final class EuclideanDistance {
    * @return The Euclidean distance.
    * @throws Exception In the case of error.
    */
-  private double distance2(int[] point1, int[] point2) throws Exception {
+  public double distance2(int[] point1, int[] point2) throws Exception {
     if (point1.length == point2.length) {
       Double sum = 0D;
       for (int i = 0; i < point1.length; i++) {
