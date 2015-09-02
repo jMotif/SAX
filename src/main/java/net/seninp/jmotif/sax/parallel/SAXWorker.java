@@ -3,13 +3,13 @@ package net.seninp.jmotif.sax.parallel;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
-import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 
 /**
  * A callable worker class that will translate a given interval of the timeseries into SAX.

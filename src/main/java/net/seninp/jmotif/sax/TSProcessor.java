@@ -13,11 +13,11 @@ import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import net.seninp.jmotif.sax.alphabet.Alphabet;
-import net.seninp.util.StackTrace;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import net.seninp.jmotif.sax.alphabet.Alphabet;
+import net.seninp.util.StackTrace;
 
 /**
  * Implements algorithms for low-level data manipulation.

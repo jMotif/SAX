@@ -11,16 +11,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
-import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.datastructures.SAXRecord;
+import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.util.StackTrace;
-import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 
 /**
  * Implements a parallel SAX factory class.
@@ -55,7 +55,7 @@ public class ParallelSAXImplementation {
   }
 
   /**
-   * Discretizes a time series using N threads.
+   * Discretizes a time series using N threads. If interrupted returns null.
    * 
    * @param timeseries the input time series.
    * @param threadsNum the number of threads to allocate for conversion.
@@ -65,11 +65,12 @@ public class ParallelSAXImplementation {
    * @param nrStrategy the SAX numerosity reduction strategy.
    * @param normalizationThreshold the normalization threshold.
    * @return a SAX representation of the input time series.
+   * 
    * @throws SAXException if error occurs.
    */
-  public SAXRecords process(double[] timeseries, int threadsNum, int slidingWindowSize,
-      int paaSize, int alphabetSize, NumerosityReductionStrategy nrStrategy,
-      double normalizationThreshold) throws SAXException {
+  public SAXRecords process(double[] timeseries, int threadsNum, int slidingWindowSize, int paaSize,
+      int alphabetSize, NumerosityReductionStrategy nrStrategy, double normalizationThreshold)
+          throws SAXException {
 
     consoleLogger.debug("Starting the parallel SAX");
 
@@ -131,8 +132,8 @@ public class ParallelSAXImplementation {
           intermediateChunkStart, intermediateChunkEnd, slidingWindowSize, paaSize, alphabetSize,
           nrStrategy, normalizationThreshold);
       completionService.submit(job);
-      consoleLogger.debug("submitted intermediate chunk job "
-          + String.valueOf(tstamp + totalTaskCounter));
+      consoleLogger
+          .debug("submitted intermediate chunk job " + String.valueOf(tstamp + totalTaskCounter));
       totalTaskCounter++;
     }
 
@@ -232,8 +233,8 @@ public class ParallelSAXImplementation {
                 }
               }
               else {
-                consoleLogger
-                    .debug("this is the very first chunk, but second is not yet in the results, merging all in");
+                consoleLogger.debug(
+                    "this is the very first chunk, but second is not yet in the results, merging all in");
               }
               res.addAll(chunkRes);
             }
@@ -270,8 +271,8 @@ public class ParallelSAXImplementation {
                 }
               }
               else {
-                consoleLogger
-                    .debug("this is the very last chunk, but previous is not yet in the results, merging all in");
+                consoleLogger.debug(
+                    "this is the very last chunk, but previous is not yet in the results, merging all in");
               }
               res.addAll(chunkRes);
             }

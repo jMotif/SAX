@@ -2,8 +2,8 @@ package net.seninp.jmotif.sax.bitmap;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import com.beust.jcommander.Parameter;
+import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 
 /**
  * Parameters accepted by the bitmap printer and their default values.

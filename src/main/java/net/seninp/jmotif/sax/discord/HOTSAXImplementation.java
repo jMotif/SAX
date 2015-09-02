@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
@@ -16,9 +19,6 @@ import net.seninp.jmotif.sax.registry.VisitRegistry;
 import net.seninp.jmotif.sax.trie.SAXTrie;
 import net.seninp.jmotif.sax.trie.SAXTrieHitEntry;
 import net.seninp.jmotif.sax.trie.TrieException;
-import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 
 /**
  * Implements HOTSAX discord discovery algorithm.

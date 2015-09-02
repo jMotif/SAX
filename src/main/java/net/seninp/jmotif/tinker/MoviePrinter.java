@@ -18,11 +18,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 import javax.imageio.ImageIO;
-import net.seninp.jmotif.distance.EuclideanDistance;
-import net.seninp.jmotif.sax.NumerosityReductionStrategy;
-import net.seninp.jmotif.sax.SAXProcessor;
-import net.seninp.jmotif.sax.TSProcessor;
-import net.seninp.util.HeatChart;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -32,6 +27,11 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import net.seninp.jmotif.distance.EuclideanDistance;
+import net.seninp.jmotif.sax.NumerosityReductionStrategy;
+import net.seninp.jmotif.sax.SAXProcessor;
+import net.seninp.jmotif.sax.TSProcessor;
+import net.seninp.util.HeatChart;
 
 public class MoviePrinter {
 
