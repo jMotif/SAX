@@ -96,6 +96,15 @@ public class VisitRegistry implements Cloneable {
    * @return True if visited.
    */
   public boolean isVisited(Integer intervalStart, int intervalEnd) {
+    // do a bit of validation here and signal about error
+    //
+    if (intervalStart < 0) {
+      throw new RuntimeException("In the registry logic asked to look left from 0!!!");
+    }
+    else if (intervalEnd >= this.registry.length) {
+      throw new RuntimeException("In the registry logic asked to look beyond the right margin "
+          + this.registry.length + "!!!");
+    }
     return (1 == this.registry[intervalStart] || 1 == this.registry[intervalEnd]);
   }
 
