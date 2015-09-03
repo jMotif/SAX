@@ -1,6 +1,6 @@
 package net.seninp.jmotif.sax.parallel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -10,7 +10,6 @@ import java.util.zip.GZIPInputStream;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
-import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 
@@ -31,6 +30,7 @@ public class TestParallelInterruption {
   public void test() {
     ParallelSAXImplementation ps = new ParallelSAXImplementation();
     try {
+      @SuppressWarnings("unused")
       SAXRecords res = ps.process(ts, 2, 50, 5, 5, NumerosityReductionStrategy.NONE, 0.005);
       Thread.sleep(1);
       ps.cancel();
