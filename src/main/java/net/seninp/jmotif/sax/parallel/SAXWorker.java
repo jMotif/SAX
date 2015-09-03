@@ -72,7 +72,8 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
    * @param normalizationThreshold The normalization strategy.
    */
   public SAXWorker(long id, double[] data, int intervalStart, int intervalEnd, int windowSize,
-      int paaSize, int alphabetSize, NumerosityReductionStrategy nrs, double normalizationThreshold) {
+      int paaSize, int alphabetSize, NumerosityReductionStrategy nrs,
+      double normalizationThreshold) {
     super();
     this.id = id;
     this.ts = data;
@@ -136,6 +137,11 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
       res.put(i, currentString);
 
       consoleLogger.trace(this.id + ", " + String.valueOf(currentString) + ", " + i);
+
+      if (Thread.currentThread().isInterrupted()) {
+        System.err.println("SAXWorker was interrupted... returning NULL");
+        return null;
+      }
 
     }
 

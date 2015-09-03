@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,6 +46,9 @@ public class ParallelSAXImplementation {
     consoleLogger.setLevel(LOGGING_LEVEL);
   }
 
+  private ExecutorCompletionService<HashMap<Integer, char[]>> completionService;
+  private ExecutorService executorService;
+
   /**
    * Constructor.
    */
@@ -80,11 +82,10 @@ public class ParallelSAXImplementation {
 
     SAXRecords res = new SAXRecords(0);
 
-    ExecutorService executorService = Executors.newFixedThreadPool(threadsNum);
+    executorService = Executors.newFixedThreadPool(threadsNum);
     consoleLogger.debug("Created thread pool of " + threadsNum + " threads");
 
-    CompletionService<HashMap<Integer, char[]>> completionService = new ExecutorCompletionService<HashMap<Integer, char[]>>(
-        executorService);
+    completionService = new ExecutorCompletionService<HashMap<Integer, char[]>>(executorService);
 
     int totalTaskCounter = 0;
 
@@ -157,11 +158,16 @@ public class ParallelSAXImplementation {
     try {
       while (totalTaskCounter > 0) {
 
-        Future<HashMap<Integer, char[]>> finished = completionService.poll(128, TimeUnit.HOURS);
+        if (Thread.currentThread().isInterrupted()) {
+          System.err.println("Parallel SAX being interrupted, returning NULL!");
+          return null;
+        }
+
+        Future<HashMap<Integer, char[]>> finished = completionService.poll(24, TimeUnit.HOURS);
 
         if (null == finished) {
           // something went wrong - break from here
-          System.err.println("Breaking POLL loop after 128 HOURS of waiting...");
+          System.err.println("Breaking POLL loop after 24 HOURS of waiting...");
           break;
         }
         else {
@@ -368,10 +374,11 @@ public class ParallelSAXImplementation {
     finally {
       // wait at least 1 more hour before terminate and fail
       try {
-        if (!executorService.awaitTermination(4, TimeUnit.HOURS)) {
+        if (!executorService.awaitTermination(1, TimeUnit.HOURS)) {
           executorService.shutdownNow(); // Cancel currently executing tasks
           if (!executorService.awaitTermination(30, TimeUnit.MINUTES)) {
             System.err.println("Pool did not terminate... FATAL ERROR");
+            throw new RuntimeException("Parallel SAX pool did not terminate... FATAL ERROR");
           }
         }
       }
@@ -386,5 +393,28 @@ public class ParallelSAXImplementation {
     }
 
     return res;
+  }
+
+  public void cancel() {
+    try {
+      executorService.shutdown();
+      if (!executorService.awaitTermination(30, TimeUnit.MINUTES)) {
+        executorService.shutdownNow(); // Cancel currently executing tasks
+        if (!executorService.awaitTermination(30, TimeUnit.MINUTES)) {
+          System.err.println("Pool did not terminate... FATAL ERROR");
+          throw new RuntimeException("Parallel SAX pool did not terminate... FATAL ERROR");
+        }
+      }
+      else {
+        System.err.println("Parallel SAX was interrupted by a request");
+      }
+    }
+    catch (InterruptedException ie) {
+      System.err.println("Error while waiting interrupting: " + StackTrace.toString(ie));
+      // (Re-)Cancel if current thread also interrupted
+      executorService.shutdownNow();
+      // Preserve interrupt status
+      Thread.currentThread().interrupt();
+    }
   }
 }

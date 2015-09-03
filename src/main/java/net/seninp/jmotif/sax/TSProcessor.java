@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
-import net.seninp.util.StackTrace;
 
 /**
  * Implements algorithms for low-level data manipulation.
@@ -37,6 +35,7 @@ public class TSProcessor {
   //
   private static Logger consoleLogger;
   private static Level LOGGING_LEVEL = Level.DEBUG;
+
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(TSProcessor.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
@@ -62,9 +61,32 @@ public class TSProcessor {
    */
   public static double[] readFileColumn(String filename, int columnIdx, int sizeLimit)
       throws IOException, SAXException {
-    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filename),
-        "UTF-8"));
 
+    // make sure the path exists
+    Path path = Paths.get(filename);
+    if (!(Files.exists(path))) {
+      throw new SAXException("unable to load data - data source not found.");
+    }
+
+    BufferedReader br = new BufferedReader(
+        new InputStreamReader(new FileInputStream(filename), "UTF-8"));
+
+    return readTS(br, columnIdx, sizeLimit);
+  }
+
+  /**
+   * Reads timeseries from a file. Assumes that file has a single double value on every line.
+   * Assigned timestamps are the line numbers.
+   * 
+   * @param br The reader to use.
+   * @param columnIdx The column index.
+   * @param sizeLimit The number of lines to read, 0 == all.
+   * @return data.
+   * @throws IOException if error occurs.
+   * @throws SAXException if error occurs.
+   */
+  public static double[] readTS(BufferedReader br, int columnIdx, int sizeLimit)
+      throws IOException, SAXException {
     ArrayList<Double> preRes = new ArrayList<Double>();
     int lineCounter = 0;
 
@@ -72,7 +94,7 @@ public class TSProcessor {
     while ((line = br.readLine()) != null) {
       String[] split = line.trim().split("\\s+");
       if (split.length < columnIdx) {
-        String message = "Unable to read data from column " + columnIdx + " of file " + filename;
+        String message = "Unable to read data from column " + columnIdx;
         br.close();
         throw new SAXException(message);
       }
@@ -97,6 +119,29 @@ public class TSProcessor {
       res[i] = preRes.get(i);
     }
     return res;
+
+  }
+
+  /**
+   * Read at least N elements from the one-column file.
+   * 
+   * @param dataFileName the file name.
+   * @param loadLimit the load limit.
+   * @return the read data or empty array if nothing to load.
+   * @throws SAXException if error occurs.
+   * @throws IOException
+   */
+  public double[] readTS(String dataFileName, int loadLimit) throws SAXException, IOException {
+
+    Path path = Paths.get(dataFileName);
+    if (!(Files.exists(path))) {
+      throw new SAXException("unable to load data - data source not found.");
+    }
+
+    BufferedReader reader = Files.newBufferedReader(path, DEFAULT_CHARSET);
+
+    return readTS(reader, 0, loadLimit);
+
   }
 
   /**
@@ -163,7 +208,8 @@ public class TSProcessor {
 
     double median;
     if (clonedSeries.length % 2 == 0) {
-      median = (clonedSeries[clonedSeries.length / 2] + (double) clonedSeries[clonedSeries.length / 2 - 1]) / 2;
+      median = (clonedSeries[clonedSeries.length / 2]
+          + (double) clonedSeries[clonedSeries.length / 2 - 1]) / 2;
     }
     else {
       median = clonedSeries[clonedSeries.length / 2];
@@ -442,69 +488,6 @@ public class TSProcessor {
       }
     }
     return res;
-  }
-
-  /**
-   * Read at least N elements from the file.
-   * 
-   * @param dataFileName the file name.
-   * @param loadLimit the load limit.
-   * @return the read data or empty array if nothing to load.
-   * @throws SAXException if error occurs.
-   */
-  public double[] readTS(String dataFileName, int loadLimit) throws SAXException {
-
-    // make sure the path exists
-    Path path = Paths.get(dataFileName);
-    if (!(Files.exists(path))) {
-      throw new SAXException("unable to load data - data source not found.");
-    }
-
-    // read the input
-    //
-    // init the data araay
-    ArrayList<Double> data = new ArrayList<Double>();
-
-    // lets go
-    try {
-
-      // open the reader
-      BufferedReader reader = Files.newBufferedReader(path, DEFAULT_CHARSET);
-
-      // read by the line in the loop from reader
-      String line = null;
-      long lineCounter = 0;
-      while ((line = reader.readLine()) != null) {
-        String[] lineSplit = line.trim().split("\\s+");
-        // we read only first column
-        // for (int i = 0; i < lineSplit.length; i++) {
-        double value = new BigDecimal(lineSplit[0]).doubleValue();
-        data.add(value);
-        // }
-        lineCounter++;
-        // break the load if needed
-        if ((loadLimit > 0) && (lineCounter > loadLimit)) {
-          break;
-        }
-      }
-      reader.close();
-    }
-    catch (Exception e) {
-      System.err.println(StackTrace.toString(e));
-    }
-    finally {
-      assert true;
-    }
-
-    // convert to simple doubles array and clean the variable
-    if (!(data.isEmpty())) {
-      double[] ts = new double[data.size()];
-      for (int i = 0; i < data.size(); i++) {
-        ts[i] = data.get(i);
-      }
-      return ts;
-    }
-    return new double[0];
   }
 
   /**
