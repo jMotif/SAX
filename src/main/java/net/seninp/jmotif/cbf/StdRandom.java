@@ -83,6 +83,8 @@ public final class StdRandom {
 
   /**
    * Sets the seed of the psedurandom number generator.
+   * 
+   * @param s the seed value
    */
   public static void setSeed(long s) {
     seed = s;
@@ -91,6 +93,8 @@ public final class StdRandom {
 
   /**
    * Returns the seed of the psedurandom number generator.
+   * 
+   * @return the seed value.
    */
   public static long getSeed() {
     return seed;
@@ -98,6 +102,8 @@ public final class StdRandom {
 
   /**
    * Return real number uniformly in [0, 1).
+   * 
+   * @return the uniformly sampled random value.
    */
   public static double uniform() {
     return random.nextDouble();
@@ -106,7 +112,8 @@ public final class StdRandom {
   /**
    * Returns an integer uniformly between 0 (inclusive) and N (exclusive).
    * 
-   * @throws IllegalArgumentException if {@code N <= 0 } 
+   * @return the next uniformly sampled value.
+   * @throws IllegalArgumentException if {@code N <= 0 }
    */
   public static int uniform(int N) {
     if (N <= 0)
@@ -122,8 +129,11 @@ public final class StdRandom {
   /**
    * Returns an integer uniformly in [a, b).
    * 
-   * @throws IllegalArgumentException if {@code b <= a } 
-   * @throws IllegalArgumentException if {@code b - a >= Integer.MAX_VALUE } 
+   * @param a the sampling interval's start.
+   * @param b the sampling interval's end.
+   * @return the next uniformly sampled value.
+   * @throws IllegalArgumentException if {@code b <= a }
+   * @throws IllegalArgumentException if {@code b - a >= Integer.MAX_VALUE }
    */
   public static int uniform(int a, int b) {
     if (b <= a)
@@ -136,7 +146,12 @@ public final class StdRandom {
   /**
    * Returns a real number uniformly in [a, b).
    * 
-   * @throws IllegalArgumentException unless {@code a < b } 
+   * @param a the sampling interval's start.
+   * @param b the sampling interval's end.
+   * 
+   * @return the next uniformly sampled value.
+   * 
+   * @throws IllegalArgumentException unless {@code a < b }
    */
   public static double uniform(double a, double b) {
     if (!(a < b))
@@ -147,7 +162,7 @@ public final class StdRandom {
   /**
    * Returns a boolean, which is true with probability p, and false otherwise.
    * 
-   * @throws IllegalArgumentException unless {@code p >= 0.0 }  and {@code p <= 1.0 } 
+   * @throws IllegalArgumentException unless {@code p >= 0.0 } and {@code p <= 1.0 }
    */
   public static boolean bernoulli(double p) {
     if (!(p >= 0.0 && p <= 1.0))
@@ -190,7 +205,7 @@ public final class StdRandom {
   /**
    * Returns an integer with a geometric distribution with mean 1/p.
    * 
-   * @throws IllegalArgumentException unless {@code p >= 0.0 }  and {@code p <= 1.0 } 
+   * @throws IllegalArgumentException unless {@code p >= 0.0 } and {@code p <= 1.0 }
    */
   public static int geometric(double p) {
     if (!(p >= 0.0 && p <= 1.0))
@@ -202,7 +217,7 @@ public final class StdRandom {
   /**
    * Return an integer with a Poisson distribution with mean lambda.
    * 
-   * @throws IllegalArgumentException unless {@code lambda > 0.0 }  and not infinite
+   * @throws IllegalArgumentException unless {@code lambda > 0.0 } and not infinite
    */
   public static int poisson(double lambda) {
     if (!(lambda > 0.0))
@@ -225,7 +240,7 @@ public final class StdRandom {
   /**
    * Returns a real number with a Pareto distribution with parameter alpha.
    * 
-   * @throws IllegalArgumentException unless {@code alpha > 0.0 } 
+   * @throws IllegalArgumentException unless {@code alpha > 0.0 }
    */
   public static double pareto(double alpha) {
     if (!(alpha > 0.0))
@@ -242,8 +257,8 @@ public final class StdRandom {
 
   /**
    * Returns a number from a discrete distribution: i with probability a[i]. throws
-   * IllegalArgumentException if sum of array entries is not (very nearly) equal to {@code 1.0 } 
-   * throws IllegalArgumentException unless {@code a[i] >= 0.0 }  for each index {@code i } 
+   * IllegalArgumentException if sum of array entries is not (very nearly) equal to {@code 1.0 }
+   * throws IllegalArgumentException unless {@code a[i] >= 0.0 } for each index {@code i }
    */
   public static int discrete(double[] a) {
     double EPSILON = 1E-14;
@@ -254,8 +269,8 @@ public final class StdRandom {
       sum = sum + a[i];
     }
     if (sum > 1.0 + EPSILON || sum < 1.0 - EPSILON)
-      throw new IllegalArgumentException("sum of array entries does not approximately equal 1.0: "
-          + sum);
+      throw new IllegalArgumentException(
+          "sum of array entries does not approximately equal 1.0: " + sum);
 
     // the for loop may not return a value when both r is (nearly) 1.0 and when the
     // cumulative sum is less than 1.0 (as a result of floating-point roundoff error)
@@ -273,7 +288,7 @@ public final class StdRandom {
   /**
    * Returns a real number from an exponential distribution with rate lambda.
    * 
-   * @throws IllegalArgumentException unless {@code lambda > 0.0 } 
+   * @throws IllegalArgumentException unless {@code lambda > 0.0 }
    */
   public static double exp(double lambda) {
     if (!(lambda > 0.0))

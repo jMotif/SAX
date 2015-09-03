@@ -395,6 +395,9 @@ public class ParallelSAXImplementation {
     return res;
   }
 
+  /**
+   * Cancels the execution.
+   */
   public void cancel() {
     try {
       executorService.shutdown();
