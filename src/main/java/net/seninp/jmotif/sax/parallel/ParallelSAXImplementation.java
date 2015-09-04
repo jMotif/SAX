@@ -368,6 +368,10 @@ public class ParallelSAXImplementation {
         totalTaskCounter--;
       }
     }
+    catch (InterruptedException e) {
+      System.err.println("Error while waiting results: " + StackTrace.toString(e));
+      this.cancel();
+    }
     catch (Exception e) {
       System.err.println("Error while waiting results: " + StackTrace.toString(e));
     }
