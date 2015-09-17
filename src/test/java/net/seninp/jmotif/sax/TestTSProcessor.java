@@ -2,10 +2,10 @@ package net.seninp.jmotif.sax;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import net.seninp.jmotif.sax.alphabet.Alphabet;
-import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import org.junit.Before;
 import org.junit.Test;
+import net.seninp.jmotif.sax.alphabet.Alphabet;
+import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 
 /**
  * Test the tsp.

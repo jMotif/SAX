@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
+import net.seninp.util.StackTrace;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,9 +27,11 @@ public class TestDiscordDiscovery {
 
   @Test
   public void test() {
+
     DiscordRecords discordsBruteForce = null;
     DiscordRecords discordsTrie = null;
     DiscordRecords discordsHash = null;
+
     try {
 
       discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series,
@@ -41,15 +44,15 @@ public class TestDiscordDiscovery {
           ALPHABET_SIZE, 2, new LargeWindowAlgorithm(), NORM_THRESHOLD);
     }
     catch (Exception e) {
-      fail("sholdn throw an exception");
+      fail("sholdn't throw an exception, exception thrown: \n" + StackTrace.toString(e));
       e.printStackTrace();
     }
 
-    assertEquals("discords test", discordsBruteForce.get(0).getPosition(), discordsHash.get(0)
-        .getPosition());
+    assertEquals("discords test", discordsBruteForce.get(0).getPosition(),
+        discordsHash.get(0).getPosition());
 
-    assertEquals("discords test", discordsHash.get(0).getPosition(), discordsTrie.get(0)
-        .getPosition());
+    assertEquals("discords test", discordsHash.get(0).getPosition(),
+        discordsTrie.get(0).getPosition());
 
   }
 }

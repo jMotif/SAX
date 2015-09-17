@@ -12,7 +12,7 @@ import java.util.Random;
 public class VisitRegistry implements Cloneable {
 
   private static final byte ZERO = 0;
-  private static final byte ONE = 0;
+  private static final byte ONE = 1;
 
   protected byte[] registry; // 1 visited, 0 unvisited
 
@@ -45,11 +45,17 @@ public class VisitRegistry implements Cloneable {
    * @param loc The location to mark.
    */
   public void markVisited(int loc) {
-    if (loc >= 0 && loc < this.registry.length) {
-      if (ZERO == this.registry[loc]) {
-        this.unvisitedCount--;
+    if (checkBounds(loc)) {
+      if (loc >= 0 && loc < this.registry.length) {
+        if (ZERO == this.registry[loc]) {
+          this.unvisitedCount--;
+        }
+        this.registry[loc] = ONE;
       }
-      this.registry[loc] = ONE;
+    }
+    else {
+      throw new RuntimeException(
+          "The location " + loc + " out of bounds [0," + (this.registry.length - 1) + "]");
     }
   }
 
@@ -57,20 +63,17 @@ public class VisitRegistry implements Cloneable {
    * Marks as visited a range of locations.
    * 
    * @param from the start of labeling (inclusive).
-   * @param upTo the end of labeling (inclusive).
+   * @param upTo the end of labeling (exclusive).
    */
   public void markVisited(int from, int upTo) {
-    // check the bounds
-    //
-    if (from < 0) {
-      throw new RuntimeException("In the registry logic asked to look left from 0!");
+    if (checkBounds(from) && checkBounds(upTo - 1)) {
+      for (int i = from; i < upTo; i++) {
+        this.markVisited(i);
+      }
     }
-    else if (upTo >= this.registry.length) {
-      throw new RuntimeException("In the registry logic asked to look beyond the right margin "
-          + this.registry.length + "!");
-    }
-    for (int i = from; i <= upTo; i++) {
-      this.markVisited(i);
+    else {
+      throw new RuntimeException("The location " + from + "," + upTo + " out of bounds [0,"
+          + (this.registry.length - 1) + "]");
     }
   }
 
@@ -89,21 +92,30 @@ public class VisitRegistry implements Cloneable {
 
     // if there is space continue with random sampling
     //
+    // int calls = 1;
     int i = this.randomizer.nextInt(this.registry.length);
     while (ONE == registry[i]) {
       i = this.randomizer.nextInt(this.registry.length);
+      // calls++;
     }
+    // System.err.println("after " + calls + " calls, picked " + i);
     return i;
   }
 
   /**
    * Check if position is not visited.
    * 
-   * @param i The index.
+   * @param loc The index.
    * @return true if not visited.
    */
-  public boolean isNotVisited(int i) {
-    return (ZERO == this.registry[i]);
+  public boolean isNotVisited(int loc) {
+    if (checkBounds(loc)) {
+      return (ZERO == this.registry[loc]);
+    }
+    else {
+      throw new RuntimeException(
+          "The location " + loc + " out of bounds [0," + (this.registry.length - 1) + "]");
+    }
   }
 
   /**
@@ -113,26 +125,39 @@ public class VisitRegistry implements Cloneable {
    * @param upTo The interval end (exclusive).
    * @return True if visited.
    */
-  public boolean isVisited(Integer from, int upTo) {
-
-    // check the bounds
-    //
-    if (from < 0) {
-      throw new RuntimeException("In the registry logic asked to look left from 0!");
-    }
-    else if (upTo >= this.registry.length) {
-      throw new RuntimeException("In the registry logic asked to look beyond the right margin "
-          + this.registry.length + "!");
-    }
-
-    // perform the visit check
-    //
-    for (int i = this.registry[from]; i <= this.registry[upTo]; i++) {
-      if (ZERO == this.registry[i]) {
-        return false;
+  public boolean isVisited(int from, int upTo) {
+    if (checkBounds(from) && checkBounds(upTo - 1)) {
+      // perform the visit check
+      //
+      for (int i = from; i < upTo; i++) {
+        if (ZERO == this.registry[i]) {
+          return false;
+        }
       }
+      return true;
     }
-    return true;
+    else {
+      throw new RuntimeException("The location " + from + "," + upTo + " out of bounds [0,"
+          + (this.registry.length - 1) + "]");
+    }
+  }
+
+  /**
+   * Check if the location specified is visited.
+   * 
+   * @param loc the location.
+   * @return true if visited
+   */
+  public boolean isVisited(int loc) {
+    if (checkBounds(loc)) {
+      return (ONE == this.registry[loc]);
+
+    }
+    else {
+      throw new RuntimeException(
+          "The location " + loc + " out of bounds [0," + (this.registry.length - 1) + "]");
+    }
+
   }
 
   /**
@@ -140,30 +165,32 @@ public class VisitRegistry implements Cloneable {
    * 
    * @return list of unvisited positions.
    */
-  public int[] getUnvisited() {
-    int[] res = new int[this.unvisitedCount];
-    int counter = 0;
+  public ArrayList<Integer> getUnvisited() {
+    if (0 == this.unvisitedCount) {
+      return new ArrayList<Integer>();
+    }
+    ArrayList<Integer> res = new ArrayList<Integer>(this.unvisitedCount);
     for (int i = 0; i < this.registry.length; i++) {
       if (ZERO == this.registry[i]) {
-        res[counter] = i;
-        counter++;
+        res.add(i);
       }
     }
     return res;
   }
 
   /**
-   * Get the list of visited positions.
+   * Get the list of visited positions. Returns NULL if none are visited.
    * 
    * @return list of visited positions.
    */
-  public int[] getVisited() {
-    int[] res = new int[this.registry.length - this.unvisitedCount];
-    int counter = 0;
+  public ArrayList<Integer> getVisited() {
+    if (0 == (this.registry.length - this.unvisitedCount)) {
+      return new ArrayList<Integer>();
+    }
+    ArrayList<Integer> res = new ArrayList<Integer>(this.registry.length - this.unvisitedCount);
     for (int i = 0; i < this.registry.length; i++) {
       if (ONE == this.registry[i]) {
-        res[counter] = i;
-        counter++;
+        res.add(i);
       }
     }
     return res;
@@ -202,4 +229,16 @@ public class VisitRegistry implements Cloneable {
     return this.registry.length;
   }
 
+  /**
+   * Check the bounds.
+   * 
+   * @param pos the pos to check.
+   * @return true if within the bounds.
+   */
+  private boolean checkBounds(int pos) {
+    if (pos < 0 || pos >= this.registry.length) {
+      return false;
+    }
+    return true;
+  }
 }

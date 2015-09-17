@@ -1,7 +1,5 @@
 package net.seninp.jmotif.sax.discord;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -23,7 +21,8 @@ public class BruteForceDiscordImplementation {
   // logging stuff
   //
   private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.DEBUG;
+  private static Level LOGGING_LEVEL = Level.INFO;
+
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(BruteForceDiscordImplementation.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
@@ -63,8 +62,8 @@ public class BruteForceDiscordImplementation {
 
     while (discords.getSize() < discordCollectionSize) {
 
-      consoleLogger.debug("currently known discords: " + discords.getSize() + " out of "
-          + discordCollectionSize);
+      consoleLogger.debug(
+          "currently known discords: " + discords.getSize() + " out of " + discordCollectionSize);
 
       // mark start and number of iterations
       Date start = new Date();
@@ -81,10 +80,10 @@ public class BruteForceDiscordImplementation {
         break;
       }
 
-      bestDiscord.setInfo("position " + bestDiscord.getPosition() + ", NN distance "
-          + bestDiscord.getNNDistance() + ", elapsed time: "
-          + SAXProcessor.timeToString(start.getTime(), end.getTime()) + ", "
-          + bestDiscord.getInfo());
+      bestDiscord.setInfo(
+          "position " + bestDiscord.getPosition() + ", NN distance " + bestDiscord.getNNDistance()
+              + ", elapsed time: " + SAXProcessor.timeToString(start.getTime(), end.getTime())
+              + ", " + bestDiscord.getInfo());
       consoleLogger.debug(bestDiscord.getInfo());
 
       // collect the result
@@ -123,16 +122,16 @@ public class BruteForceDiscordImplementation {
     double bestSoFarDistance = -1;
     int bestSoFarPosition = -1;
 
-    // make an array of all subsequences
-    //
-    ArrayList<Integer> locations = globalRegistry.getUnvisited();
-    Collections.shuffle(locations);
+    VisitRegistry localRegistry = globalRegistry.clone();
 
-    for (int i : locations) { // outer loop
+    int i = -1;
+    while (-1 != (i = localRegistry.getNextRandomUnvisitedPosition())) { // outer loop
 
-      if (i > series.length - windowSize - 1) {
-        continue;
-      }
+      // shall not happen!
+      //
+      // if (i >= series.length - windowSize - 1) {
+      // continue;
+      // }
 
       // check the global visits registry
       if (globalRegistry.isVisited(i, i + windowSize)) {
@@ -142,9 +141,9 @@ public class BruteForceDiscordImplementation {
       double[] cw = tsProcessor.subseriesByCopy(series, i, i + windowSize);
       double nearestNeighborDistance = Double.MAX_VALUE;
 
-      for (int j = 1; j < series.length - windowSize + 1; j++) { // inner loop
+      for (int j = 1; j < series.length - windowSize; j++) { // inner loop
 
-        if (Math.abs(i - j) >= windowSize) {
+        if (Math.abs(i - j) > windowSize) { // > means they shall not overlap even in a single point
 
           double[] currentSubsequence = tsProcessor.subseriesByCopy(series, j, j + windowSize);
 
@@ -155,22 +154,27 @@ public class BruteForceDiscordImplementation {
           if ((!Double.isNaN(dist)) && dist < nearestNeighborDistance) {
             nearestNeighborDistance = dist;
           }
-
         }
+
       }
 
       if (!(Double.isInfinite(nearestNeighborDistance))
           && nearestNeighborDistance > bestSoFarDistance) {
         bestSoFarDistance = nearestNeighborDistance;
         bestSoFarPosition = i;
+        consoleLogger
+            .debug("discord updated: pos " + bestSoFarPosition + ", dist " + bestSoFarDistance);
       }
+
+      localRegistry.markVisited(i);
+
     }
     Date firstDiscord = new Date();
 
-    consoleLogger.debug("best discord found at " + bestSoFarPosition + ", best distance: "
-        + bestSoFarDistance + ", in "
-        + SAXProcessor.timeToString(start.getTime(), firstDiscord.getTime()) + " distance calls: "
-        + distanceCallsCounter);
+    consoleLogger.debug(
+        "best discord found at " + bestSoFarPosition + ", best distance: " + bestSoFarDistance
+            + ", in " + SAXProcessor.timeToString(start.getTime(), firstDiscord.getTime())
+            + " distance calls: " + distanceCallsCounter);
 
     DiscordRecord res = new DiscordRecord(bestSoFarPosition, bestSoFarDistance);
     res.setInfo("distance calls: " + distanceCallsCounter);
