@@ -11,7 +11,7 @@ import net.seninp.util.StackTrace;
 
 public class TestDoubleLong {
 
-  private static final String TEST_DATA_FNAME = "src/resources/test-data/ann_gun_CentroidA1.csv";
+  private static final String TEST_DATA_FNAME = "src/resources/test-data/ecg0606_1.csv";
 
   private static final int WIN_SIZE = 50;
   private static final int PAA_SIZE = 4;
@@ -19,7 +19,7 @@ public class TestDoubleLong {
 
   private static final double NORM_THRESHOLD = 0.01;
 
-  private static final int DISCORDS_TO_TEST = 7;
+  private static final int DISCORDS_TO_TEST = 5;
 
   private double[] series;
 

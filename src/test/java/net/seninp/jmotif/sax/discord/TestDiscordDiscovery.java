@@ -55,9 +55,6 @@ public class TestDiscordDiscovery {
     }
 
     for (int i = 0; i < DISCORDS_TO_TEST; i++) {
-      Integer p1 = discordsBruteForce.get(i).getPosition();
-      Integer p2 = discordsHash.get(i).getPosition();
-      Integer p3 = discordsTrie.get(i).getPosition();
 
       Double d1 = discordsBruteForce.get(i).getNNDistance();
       Double d2 = discordsHash.get(i).getNNDistance();
