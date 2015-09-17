@@ -1,6 +1,7 @@
 package net.seninp.jmotif.sax.datastructures;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -285,5 +286,14 @@ public class SAXRecords implements Iterable<SAXRecord> {
       res.add(i.next().getValue());
     }
     return res;
+  }
+
+  /**
+   * Get access to records.
+   * 
+   * @return records.
+   */
+  public Collection<SAXRecord> getRecords() {
+    return this.records.values();
   }
 }

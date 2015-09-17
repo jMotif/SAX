@@ -169,7 +169,23 @@ public class TestVisitRegistry {
     }
 
     try {
+      vr.markVisited(REG_SIZE + 3);
+      fail("exception was not thrown!");
+    }
+    catch (RuntimeException e) {
+      assert true;
+    }
+
+    try {
       vr.markVisited(-3, 1);
+      fail("exception was not thrown!");
+    }
+    catch (RuntimeException e) {
+      assert true;
+    }
+
+    try {
+      vr.markVisited(1, REG_SIZE + 1);
       fail("exception was not thrown!");
     }
     catch (RuntimeException e) {
@@ -185,6 +201,14 @@ public class TestVisitRegistry {
     }
 
     try {
+      vr.isVisited(-1);
+      fail("exception was not thrown!");
+    }
+    catch (RuntimeException e) {
+      assert true;
+    }
+
+    try {
       vr.isNotVisited(-1);
       fail("exception was not thrown!");
     }
@@ -193,7 +217,15 @@ public class TestVisitRegistry {
     }
 
     try {
-      vr.isVisited(-2, REG_SIZE + 1);
+      vr.isVisited(2, REG_SIZE + 1);
+      fail("exception was not thrown!");
+    }
+    catch (RuntimeException e) {
+      assert true;
+    }
+
+    try {
+      vr.isVisited(-2, REG_SIZE);
       fail("exception was not thrown!");
     }
     catch (RuntimeException e) {

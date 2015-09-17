@@ -33,8 +33,8 @@ public class SAXTrie {
   public SAXTrie(Integer seqLength, Integer alphabetSize) throws TrieException {
     if (alphabetSize > 10) {
       throw new TrieException(
-          "Unable to create a Trie data structiure of size greater than 10! Size of "
-              + alphabetSize + " requested.");
+          "Unable to create a Trie data structiure of size greater than 10! Size of " + alphabetSize
+              + " requested.");
     }
     else {
       this.alphabetSize = alphabetSize;
@@ -65,6 +65,9 @@ public class SAXTrie {
     // populate updated frequencies
     for (Integer i : allOccurences) {
       this.frequencies.get(i).setFrequency(allOccurences.size());
+      if (i > 2198) {
+        System.out.println("Gotcha!");
+      }
     }
 
   }
@@ -99,7 +102,7 @@ public class SAXTrie {
   public ArrayList<SAXTrieHitEntry> getFrequencies() {
     // make a copy
     //
-    ArrayList<SAXTrieHitEntry> res = new ArrayList<SAXTrieHitEntry>();
+    ArrayList<SAXTrieHitEntry> res = new ArrayList<SAXTrieHitEntry>(this.frequencies.size());
     for (SAXTrieHitEntry e : this.frequencies) {
       res.add(e.clone());
     }

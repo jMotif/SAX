@@ -7,7 +7,7 @@ import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
-import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
+import net.seninp.jmotif.sax.registry.SlidingWindowMarkerAlgorithm;
 import net.seninp.jmotif.sax.registry.VisitRegistry;
 
 /**
@@ -49,7 +49,7 @@ public class BruteForceDiscordImplementation {
    * @throws Exception if error occurs.
    */
   public static DiscordRecords series2BruteForceDiscords(double[] series, Integer windowSize,
-      int discordCollectionSize, LargeWindowAlgorithm marker) throws Exception {
+      int discordCollectionSize, SlidingWindowMarkerAlgorithm marker) throws Exception {
 
     DiscordRecords discords = new DiscordRecords();
 
@@ -69,7 +69,7 @@ public class BruteForceDiscordImplementation {
       Date start = new Date();
 
       DiscordRecord bestDiscord = findBestDiscordBruteForce(series, windowSize,
-          globalTrackVisitRegistry, marker);
+          globalTrackVisitRegistry);
       bestDiscord.setPayload("#" + discordCounter);
       Date end = new Date();
 
@@ -108,12 +108,11 @@ public class BruteForceDiscordImplementation {
    * @param series the data.
    * @param windowSize the SAX sliding window size.
    * @param globalRegistry the visit registry to use.
-   * @param marker the marker algorithm implementation.
    * @return the best discord with respect to registry.
    * @throws Exception if error occurs.
    */
   public static DiscordRecord findBestDiscordBruteForce(double[] series, Integer windowSize,
-      VisitRegistry globalRegistry, LargeWindowAlgorithm marker) throws Exception {
+      VisitRegistry globalRegistry) throws Exception {
 
     Date start = new Date();
 
@@ -127,21 +126,21 @@ public class BruteForceDiscordImplementation {
     int i = -1;
     while (-1 != (i = localRegistry.getNextRandomUnvisitedPosition())) { // outer loop
 
-      // shall not happen!
-      //
-      // if (i >= series.length - windowSize - 1) {
-      // continue;
-      // }
+      localRegistry.markVisited(i);
 
       // check the global visits registry
-      if (globalRegistry.isVisited(i, i + windowSize)) {
+      if (globalRegistry.isVisited(i)) {
         continue;
       }
 
       double[] cw = tsProcessor.subseriesByCopy(series, i, i + windowSize);
+
       double nearestNeighborDistance = Double.MAX_VALUE;
 
-      for (int j = 1; j < series.length - windowSize; j++) { // inner loop
+      VisitRegistry visitRegistry = new VisitRegistry(series.length - windowSize);
+      int j = -1;
+      while (-1 != (j = visitRegistry.getNextRandomUnvisitedPosition())) { // outer loop
+        visitRegistry.markVisited(j);
 
         if (Math.abs(i - j) > windowSize) { // > means they shall not overlap even in a single point
 
@@ -165,8 +164,6 @@ public class BruteForceDiscordImplementation {
         consoleLogger
             .debug("discord updated: pos " + bestSoFarPosition + ", dist " + bestSoFarDistance);
       }
-
-      localRegistry.markVisited(i);
 
     }
     Date firstDiscord = new Date();

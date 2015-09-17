@@ -1,12 +1,14 @@
 package net.seninp.jmotif.sax.discord;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import org.junit.Before;
+import org.junit.Test;
+import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
 import net.seninp.util.StackTrace;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TestDiscordDiscovery {
 
@@ -17,6 +19,8 @@ public class TestDiscordDiscovery {
   private static final int ALPHABET_SIZE = 3;
 
   private static final double NORM_THRESHOLD = 0.01;
+
+  private static final int DISCORDS_TO_TEST = 7;
 
   private double[] series;
 
@@ -35,24 +39,38 @@ public class TestDiscordDiscovery {
     try {
 
       discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series,
-          WIN_SIZE, 2, new LargeWindowAlgorithm());
+          WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
 
-      discordsTrie = HOTSAXImplementation.series2Discords(series, WIN_SIZE, ALPHABET_SIZE, 2,
-          new LargeWindowAlgorithm(), NORM_THRESHOLD);
+      discordsTrie = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
+          ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
+          NORM_THRESHOLD);
 
-      discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, WIN_SIZE, PAA_SIZE,
-          ALPHABET_SIZE, 2, new LargeWindowAlgorithm(), NORM_THRESHOLD);
+      discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, DISCORDS_TO_TEST,
+          WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(),
+          NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
+
     }
     catch (Exception e) {
       fail("sholdn't throw an exception, exception thrown: \n" + StackTrace.toString(e));
       e.printStackTrace();
     }
 
-    assertEquals("discords test", discordsBruteForce.get(0).getPosition(),
-        discordsHash.get(0).getPosition());
+    for (int i = 0; i < DISCORDS_TO_TEST; i++) {
+      Integer p1 = discordsBruteForce.get(i).getPosition();
+      Integer p2 = discordsHash.get(i).getPosition();
+      Integer p3 = discordsTrie.get(i).getPosition();
 
-    assertEquals("discords test", discordsHash.get(0).getPosition(),
-        discordsTrie.get(0).getPosition());
+      Double d1 = discordsBruteForce.get(i).getNNDistance();
+      Double d2 = discordsHash.get(i).getNNDistance();
+      Double d3 = discordsTrie.get(i).getNNDistance();
+
+      assertEquals(p1, p2);
+      assertEquals(p1, p3);
+
+      assertEquals(d1, d2);
+      assertEquals(d1, d3);
+
+    }
 
   }
 }

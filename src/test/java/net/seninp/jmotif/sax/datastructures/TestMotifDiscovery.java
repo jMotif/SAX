@@ -1,14 +1,14 @@
 package net.seninp.jmotif.sax.datastructures;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
+import org.junit.Before;
+import org.junit.Test;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TestMotifDiscovery {
 

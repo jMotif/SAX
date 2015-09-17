@@ -2,6 +2,7 @@ package net.seninp.jmotif.sax.registry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -240,5 +241,10 @@ public class VisitRegistry implements Cloneable {
       return false;
     }
     return true;
+  }
+
+  public void markVisited(List<Integer> currentWordOccurences) {
+    // TODO Auto-generated method stub
+    
   }
 }

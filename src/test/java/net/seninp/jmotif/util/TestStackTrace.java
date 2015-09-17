@@ -1,8 +1,8 @@
 package net.seninp.jmotif.util;
 
 import static org.junit.Assert.assertTrue;
-import net.seninp.util.StackTrace;
 import org.junit.Test;
+import net.seninp.util.StackTrace;
 
 /**
  * Tests the Stack Trace class.
