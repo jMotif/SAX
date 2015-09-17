@@ -19,7 +19,7 @@ public class TestDiscordDiscovery {
 
   private static final double NORM_THRESHOLD = 0.01;
 
-  private static final int DISCORDS_TO_TEST = 7;
+  private static final int DISCORDS_TO_TEST = 3;
 
   private double[] series;
 

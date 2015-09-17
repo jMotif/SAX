@@ -260,7 +260,7 @@ public class HOTSAXImplementation {
               .trace(" ** current NN at " + nextOccurrence + ", distance: " + nearestNeighborDist);
         }
         if (dist < bestSoFarDistance) {
-          consoleLogger.debug(" ** abandoning the occurrences loop, distance " + dist
+          consoleLogger.trace(" ** abandoning the occurrences loop, distance " + dist
               + " is less than best so far " + bestSoFarDistance);
           doRandomSearch = false;
           break;
@@ -481,7 +481,7 @@ public class HOTSAXImplementation {
     // while not all sequences are considered
     VisitRegistry localRegistry = globalRegistry.clone();
 
-    System.err.println(frequencies.size() + " left to iterate over");
+    // System.err.println(frequencies.size() + " left to iterate over");
 
     while (!frequencies.isEmpty()) {
 
@@ -490,7 +490,7 @@ public class HOTSAXImplementation {
       // the head of this array has the rarest word
       SAXTrieHitEntry currentEntry = frequencies.remove(0);
       // if (frequencies.size() % 10000 == 0) {
-      System.err.println(frequencies.size() + " left to iterate over");
+      // System.err.println(frequencies.size() + " left to iterate over");
       // }
       String currentWord = String.valueOf(currentEntry.getStr());
       int currentPos = currentEntry.getPosition();
@@ -533,7 +533,7 @@ public class HOTSAXImplementation {
         // keep track of best so far distance
         if (dist < nearestNeighborDist) {
           nearestNeighborDist = dist;
-          consoleLogger.debug(" ** current NN at " + nextOccurrence + ", distance: "
+          consoleLogger.trace(" ** current NN at " + nextOccurrence + ", distance: "
               + nearestNeighborDist + ", pos " + currentPos);
         }
         if (dist < bestSoFarDistance) {
@@ -578,7 +578,7 @@ public class HOTSAXImplementation {
 
           // keep track
           if (dist < nearestNeighborDist) {
-            consoleLogger.debug(
+            consoleLogger.trace(
                 " ** current NN at " + randomPos + ", distance: " + dist + ", pos " + currentPos);
             nearestNeighborDist = dist;
           }
