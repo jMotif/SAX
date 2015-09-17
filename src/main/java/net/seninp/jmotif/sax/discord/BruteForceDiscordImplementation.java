@@ -1,7 +1,5 @@
 package net.seninp.jmotif.sax.discord;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -9,7 +7,7 @@ import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
-import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
+import net.seninp.jmotif.sax.registry.SlidingWindowMarkerAlgorithm;
 import net.seninp.jmotif.sax.registry.VisitRegistry;
 
 /**
@@ -24,6 +22,7 @@ public class BruteForceDiscordImplementation {
   //
   private static Logger consoleLogger;
   private static Level LOGGING_LEVEL = Level.DEBUG;
+
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(BruteForceDiscordImplementation.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
@@ -50,7 +49,7 @@ public class BruteForceDiscordImplementation {
    * @throws Exception if error occurs.
    */
   public static DiscordRecords series2BruteForceDiscords(double[] series, Integer windowSize,
-      int discordCollectionSize, LargeWindowAlgorithm marker) throws Exception {
+      int discordCollectionSize, SlidingWindowMarkerAlgorithm marker) throws Exception {
 
     DiscordRecords discords = new DiscordRecords();
 
@@ -63,14 +62,14 @@ public class BruteForceDiscordImplementation {
 
     while (discords.getSize() < discordCollectionSize) {
 
-      consoleLogger.debug("currently known discords: " + discords.getSize() + " out of "
-          + discordCollectionSize);
+      consoleLogger.debug(
+          "currently known discords: " + discords.getSize() + " out of " + discordCollectionSize);
 
       // mark start and number of iterations
       Date start = new Date();
 
       DiscordRecord bestDiscord = findBestDiscordBruteForce(series, windowSize,
-          globalTrackVisitRegistry, marker);
+          globalTrackVisitRegistry);
       bestDiscord.setPayload("#" + discordCounter);
       Date end = new Date();
 
@@ -81,10 +80,10 @@ public class BruteForceDiscordImplementation {
         break;
       }
 
-      bestDiscord.setInfo("position " + bestDiscord.getPosition() + ", NN distance "
-          + bestDiscord.getNNDistance() + ", elapsed time: "
-          + SAXProcessor.timeToString(start.getTime(), end.getTime()) + ", "
-          + bestDiscord.getInfo());
+      bestDiscord.setInfo(
+          "position " + bestDiscord.getPosition() + ", NN distance " + bestDiscord.getNNDistance()
+              + ", elapsed time: " + SAXProcessor.timeToString(start.getTime(), end.getTime())
+              + ", " + bestDiscord.getInfo());
       consoleLogger.debug(bestDiscord.getInfo());
 
       // collect the result
@@ -109,12 +108,11 @@ public class BruteForceDiscordImplementation {
    * @param series the data.
    * @param windowSize the SAX sliding window size.
    * @param globalRegistry the visit registry to use.
-   * @param marker the marker algorithm implementation.
    * @return the best discord with respect to registry.
    * @throws Exception if error occurs.
    */
   public static DiscordRecord findBestDiscordBruteForce(double[] series, Integer windowSize,
-      VisitRegistry globalRegistry, LargeWindowAlgorithm marker) throws Exception {
+      VisitRegistry globalRegistry) throws Exception {
 
     Date start = new Date();
 
@@ -123,28 +121,28 @@ public class BruteForceDiscordImplementation {
     double bestSoFarDistance = -1;
     int bestSoFarPosition = -1;
 
-    // make an array of all subsequences
-    //
-    ArrayList<Integer> locations = globalRegistry.getUnvisited();
-    Collections.shuffle(locations);
+    VisitRegistry localRegistry = globalRegistry.clone();
 
-    for (int i : locations) { // outer loop
+    int i = -1;
+    while (-1 != (i = localRegistry.getNextRandomUnvisitedPosition())) { // outer loop
 
-      if (i > series.length - windowSize - 1) {
-        continue;
-      }
+      localRegistry.markVisited(i);
 
       // check the global visits registry
-      if (globalRegistry.isVisited(i, i + windowSize)) {
+      if (globalRegistry.isVisited(i)) {
         continue;
       }
 
       double[] cw = tsProcessor.subseriesByCopy(series, i, i + windowSize);
+
       double nearestNeighborDistance = Double.MAX_VALUE;
 
-      for (int j = 1; j < series.length - windowSize + 1; j++) { // inner loop
+      VisitRegistry visitRegistry = new VisitRegistry(series.length - windowSize);
+      int j = -1;
+      while (-1 != (j = visitRegistry.getNextRandomUnvisitedPosition())) { // outer loop
+        visitRegistry.markVisited(j);
 
-        if (Math.abs(i - j) >= windowSize) {
+        if (Math.abs(i - j) > windowSize) { // > means they shall not overlap even in a single point
 
           double[] currentSubsequence = tsProcessor.subseriesByCopy(series, j, j + windowSize);
 
@@ -155,22 +153,25 @@ public class BruteForceDiscordImplementation {
           if ((!Double.isNaN(dist)) && dist < nearestNeighborDistance) {
             nearestNeighborDistance = dist;
           }
-
         }
+
       }
 
       if (!(Double.isInfinite(nearestNeighborDistance))
           && nearestNeighborDistance > bestSoFarDistance) {
         bestSoFarDistance = nearestNeighborDistance;
         bestSoFarPosition = i;
+        consoleLogger
+            .debug("discord updated: pos " + bestSoFarPosition + ", dist " + bestSoFarDistance);
       }
+
     }
     Date firstDiscord = new Date();
 
-    consoleLogger.debug("best discord found at " + bestSoFarPosition + ", best distance: "
-        + bestSoFarDistance + ", in "
-        + SAXProcessor.timeToString(start.getTime(), firstDiscord.getTime()) + " distance calls: "
-        + distanceCallsCounter);
+    consoleLogger.debug(
+        "best discord found at " + bestSoFarPosition + ", best distance: " + bestSoFarDistance
+            + ", in " + SAXProcessor.timeToString(start.getTime(), firstDiscord.getTime())
+            + " distance calls: " + distanceCallsCounter);
 
     DiscordRecord res = new DiscordRecord(bestSoFarPosition, bestSoFarDistance);
     res.setInfo("distance calls: " + distanceCallsCounter);

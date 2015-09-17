@@ -1,12 +1,12 @@
 package net.seninp.jmotif.sax.parallel;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
-import org.junit.Test;
 
 /**
  * Testing the parallel SAX implementation.

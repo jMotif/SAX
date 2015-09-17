@@ -1,12 +1,13 @@
 package net.seninp.jmotif.sax.datastructures;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import net.seninp.util.JmotifMapEntry;
 import org.junit.Before;
 import org.junit.Test;
+import net.seninp.util.JmotifMapEntry;
 
 public class TestDoublyLinkedSortedList {
 

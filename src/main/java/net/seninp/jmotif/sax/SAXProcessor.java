@@ -60,7 +60,7 @@ public final class SAXProcessor {
     // scan across the time series extract sub sequences, and convert them to strings
     char[] previousString = null;
 
-    for (int i = 0; i < ts.length - (windowSize - 1); i++) {
+    for (int i = 0; i < ts.length - windowSize; i++) {
 
       // fix the current subsection
       double[] subSection = Arrays.copyOfRange(ts, i, i + windowSize);
@@ -113,9 +113,8 @@ public final class SAXProcessor {
    * 
    * @return SAX representation of the time series.
    */
-  public SAXRecords ts2saxViaWindowSkipping(double[] ts, int windowSize, int paaSize,
-      double[] cuts, NumerosityReductionStrategy strategy, double nThreshold,
-      ArrayList<Integer> skips) {
+  public SAXRecords ts2saxViaWindowSkipping(double[] ts, int windowSize, int paaSize, double[] cuts,
+      NumerosityReductionStrategy strategy, double nThreshold, ArrayList<Integer> skips) {
 
     // the resulting data structure init
     //
@@ -235,13 +234,12 @@ public final class SAXProcessor {
    */
   public char[] ts2string(double[] ts, int paaSize, double[] cuts, double nThreshold) {
 
-    int tsLength = ts.length;
-    if (tsLength == paaSize) {
+    if (paaSize == ts.length) {
       return tsProcessor.ts2String(tsProcessor.znorm(ts, nThreshold), cuts);
     }
     else {
       // perform PAA conversion
-      double[] paa = tsProcessor.paa(ts, paaSize);
+      double[] paa = tsProcessor.paa(tsProcessor.znorm(ts, nThreshold), paaSize);
       return tsProcessor.ts2String(paa, cuts);
     }
   }
@@ -331,7 +329,7 @@ public final class SAXProcessor {
    */
   public Map<String, Integer> ts2Shingles(double[] series, int windowSize, int paaSize,
       int alphabetSize, NumerosityReductionStrategy strategy, double nrThreshold, int shingleSize)
-      throws SAXException {
+          throws SAXException {
 
     // build all shingles
     String[] alphabet = new String[alphabetSize];
