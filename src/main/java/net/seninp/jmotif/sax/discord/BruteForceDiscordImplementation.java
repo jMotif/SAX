@@ -21,7 +21,7 @@ public class BruteForceDiscordImplementation {
   // logging stuff
   //
   private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.INFO;
+  private static Level LOGGING_LEVEL = Level.DEBUG;
 
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(BruteForceDiscordImplementation.class);

@@ -65,9 +65,6 @@ public class SAXTrie {
     // populate updated frequencies
     for (Integer i : allOccurences) {
       this.frequencies.get(i).setFrequency(allOccurences.size());
-      if (i > 2198) {
-        System.out.println("Gotcha!");
-      }
     }
 
   }

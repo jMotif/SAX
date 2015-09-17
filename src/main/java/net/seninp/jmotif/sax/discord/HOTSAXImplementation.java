@@ -40,7 +40,7 @@ public class HOTSAXImplementation {
   //
   private static Logger consoleLogger;
 
-  private static final Level LOGGING_LEVEL = Level.INFO;
+  private static final Level LOGGING_LEVEL = Level.DEBUG;
 
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(HOTSAXImplementation.class);
@@ -195,6 +195,7 @@ public class HOTSAXImplementation {
     //
     ArrayList<SAXTrieHitEntry> frequencies = trie.getFrequencies();
     Collections.sort(frequencies);
+    consoleLogger.debug("trie-based HOTSAX, iterating over " + frequencies.size() + " records");
 
     // init tracking variables
     int bestSoFarPosition = -1;
@@ -259,13 +260,15 @@ public class HOTSAXImplementation {
               .trace(" ** current NN at " + nextOccurrence + ", distance: " + nearestNeighborDist);
         }
         if (dist < bestSoFarDistance) {
-          consoleLogger.trace(" ** abandoning the occurrences loop, distance " + dist
+          consoleLogger.debug(" ** abandoning the occurrences loop, distance " + dist
               + " is less than best so far " + bestSoFarDistance);
           doRandomSearch = false;
           break;
         }
 
       }
+
+      // consoleLogger.debug("occurrence loop finished");
 
       // check if we must continue with random neighbors
       if (doRandomSearch) {
@@ -478,12 +481,17 @@ public class HOTSAXImplementation {
     // while not all sequences are considered
     VisitRegistry localRegistry = globalRegistry.clone();
 
+    System.err.println(frequencies.size() + " left to iterate over");
+
     while (!frequencies.isEmpty()) {
 
       iterationCounter++;
 
       // the head of this array has the rarest word
       SAXTrieHitEntry currentEntry = frequencies.remove(0);
+      // if (frequencies.size() % 10000 == 0) {
+      System.err.println(frequencies.size() + " left to iterate over");
+      // }
       String currentWord = String.valueOf(currentEntry.getStr());
       int currentPos = currentEntry.getPosition();
 
@@ -525,8 +533,8 @@ public class HOTSAXImplementation {
         // keep track of best so far distance
         if (dist < nearestNeighborDist) {
           nearestNeighborDist = dist;
-          consoleLogger
-              .trace(" ** current NN at " + nextOccurrence + ", distance: " + nearestNeighborDist);
+          consoleLogger.debug(" ** current NN at " + nextOccurrence + ", distance: "
+              + nearestNeighborDist + ", pos " + currentPos);
         }
         if (dist < bestSoFarDistance) {
           consoleLogger.trace(" ** abandoning the occurrences loop, distance " + dist
@@ -570,7 +578,8 @@ public class HOTSAXImplementation {
 
           // keep track
           if (dist < nearestNeighborDist) {
-            consoleLogger.trace(" ** current NN at " + randomPos + ", distance: " + dist);
+            consoleLogger.debug(
+                " ** current NN at " + randomPos + ", distance: " + dist + ", pos " + currentPos);
             nearestNeighborDist = dist;
           }
 

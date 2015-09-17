@@ -9,12 +9,12 @@ import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
 import net.seninp.util.StackTrace;
 
-public class TestDiscordDiscovery {
+public class TestDoubleLong {
 
-  private static final String TEST_DATA_FNAME = "src/resources/test-data/ecg0606_1.csv";
+  private static final String TEST_DATA_FNAME = "src/resources/test-data/ann_gun_CentroidA1.csv";
 
-  private static final int WIN_SIZE = 100;
-  private static final int PAA_SIZE = 3;
+  private static final int WIN_SIZE = 50;
+  private static final int PAA_SIZE = 4;
   private static final int ALPHABET_SIZE = 3;
 
   private static final double NORM_THRESHOLD = 0.01;
@@ -26,6 +26,12 @@ public class TestDiscordDiscovery {
   @Before
   public void setUp() throws Exception {
     series = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
+    double[] tmp = new double[series.length * 2];
+    for (int i = 0; i < series.length; i++) {
+      tmp[i] = series[i];
+      tmp[i + series.length] = series[i];
+    }
+    series = tmp;
   }
 
   @Test
@@ -37,12 +43,12 @@ public class TestDiscordDiscovery {
 
     try {
 
-      discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series,
-          WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
+      // discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series,
+      // WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
 
-      discordsTrie = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
-          ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
-          NORM_THRESHOLD);
+      // discordsTrie = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
+      // ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
+      // NORM_THRESHOLD);
 
       discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, DISCORDS_TO_TEST,
           WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(),
@@ -55,19 +61,19 @@ public class TestDiscordDiscovery {
     }
 
     for (int i = 0; i < DISCORDS_TO_TEST; i++) {
-      Integer p1 = discordsBruteForce.get(i).getPosition();
+      // Integer p1 = discordsBruteForce.get(i).getPosition();
       Integer p2 = discordsHash.get(i).getPosition();
       Integer p3 = discordsTrie.get(i).getPosition();
 
-      Double d1 = discordsBruteForce.get(i).getNNDistance();
+      // Double d1 = discordsBruteForce.get(i).getNNDistance();
       Double d2 = discordsHash.get(i).getNNDistance();
       Double d3 = discordsTrie.get(i).getNNDistance();
 
-      assertEquals(p1, p2);
-      assertEquals(p1, p3);
+      // assertEquals(p1, p2);
+      // assertEquals(p1, p3);
 
-      assertEquals(d1, d2);
-      assertEquals(d1, d3);
+      // assertEquals(d1, d2);
+      // assertEquals(d1, d3);
 
     }
 

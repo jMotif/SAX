@@ -243,8 +243,8 @@ public class VisitRegistry implements Cloneable {
     return true;
   }
 
-  public void markVisited(List<Integer> currentWordOccurences) {
-    // TODO Auto-generated method stub
-    
+  public int getUnvisitedCount() {
+    return this.unvisitedCount;
   }
+
 }
