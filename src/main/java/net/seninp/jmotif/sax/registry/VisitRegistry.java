@@ -11,10 +11,14 @@ import java.util.Random;
  */
 public class VisitRegistry implements Cloneable {
 
+  private static final byte ZERO = 0;
+  private static final byte ONE = 0;
+
   protected byte[] registry; // 1 visited, 0 unvisited
-  private int unvisitedCount;
+
+  private int unvisitedCount; // unvisited counter
+
   private final Random randomizer = new Random(System.currentTimeMillis());
-  private int capacity;
 
   /**
    * Constructor.
@@ -23,7 +27,6 @@ public class VisitRegistry implements Cloneable {
    */
   public VisitRegistry(int capacity) {
     super();
-    this.capacity = capacity;
     this.registry = new byte[capacity];
     this.unvisitedCount = capacity;
   }
@@ -37,25 +40,36 @@ public class VisitRegistry implements Cloneable {
   }
 
   /**
-   * Mark as visited certain location.
+   * Marks location visited. If it was unvisited, counter decremented.
    * 
-   * @param i The location to mark.
+   * @param loc The location to mark.
    */
-  public void markVisited(int i) {
-    if (i >= 0 && i < this.capacity && 0 == this.registry[i]) {
-      this.unvisitedCount--;
-      this.registry[i] = 1;
+  public void markVisited(int loc) {
+    if (loc >= 0 && loc < this.registry.length) {
+      if (ZERO == this.registry[loc]) {
+        this.unvisitedCount--;
+      }
+      this.registry[loc] = ONE;
     }
   }
 
   /**
    * Marks as visited a range of locations.
    * 
-   * @param start the start of labeling (inclusive).
-   * @param end the end of labeling (exclusive).
+   * @param from the start of labeling (inclusive).
+   * @param upTo the end of labeling (inclusive).
    */
-  public void markVisited(int start, int end) {
-    for (int i = start; i < end; i++) {
+  public void markVisited(int from, int upTo) {
+    // check the bounds
+    //
+    if (from < 0) {
+      throw new RuntimeException("In the registry logic asked to look left from 0!");
+    }
+    else if (upTo >= this.registry.length) {
+      throw new RuntimeException("In the registry logic asked to look beyond the right margin "
+          + this.registry.length + "!");
+    }
+    for (int i = from; i <= upTo; i++) {
       this.markVisited(i);
     }
   }
@@ -66,14 +80,18 @@ public class VisitRegistry implements Cloneable {
    * @return The next unvisited position.
    */
   public int getNextRandomUnvisitedPosition() {
-    // if all visited return -1
+
+    // if all are visited, return -1
+    //
     if (0 == this.unvisitedCount) {
       return -1;
     }
+
     // if there is space continue with random sampling
-    int i = this.randomizer.nextInt(capacity);
-    while (1 == registry[i]) {
-      i = this.randomizer.nextInt(capacity);
+    //
+    int i = this.randomizer.nextInt(this.registry.length);
+    while (ONE == registry[i]) {
+      i = this.randomizer.nextInt(this.registry.length);
     }
     return i;
   }
@@ -85,27 +103,36 @@ public class VisitRegistry implements Cloneable {
    * @return true if not visited.
    */
   public boolean isNotVisited(int i) {
-    return (0 == this.registry[i]);
+    return (ZERO == this.registry[i]);
   }
 
   /**
-   * Check if interval boundaries were visited.
+   * Check if the interval and its boundaries were visited.
    * 
-   * @param intervalStart The interval start (inclusive).
-   * @param intervalEnd The interval end (inclusive).
+   * @param from The interval start (inclusive).
+   * @param upTo The interval end (exclusive).
    * @return True if visited.
    */
-  public boolean isVisited(Integer intervalStart, int intervalEnd) {
-    // do a bit of validation here and signal about error
+  public boolean isVisited(Integer from, int upTo) {
+
+    // check the bounds
     //
-    if (intervalStart < 0) {
-      throw new RuntimeException("In the registry logic asked to look left from 0!!!");
+    if (from < 0) {
+      throw new RuntimeException("In the registry logic asked to look left from 0!");
     }
-    else if (intervalEnd >= this.registry.length) {
+    else if (upTo >= this.registry.length) {
       throw new RuntimeException("In the registry logic asked to look beyond the right margin "
-          + this.registry.length + "!!!");
+          + this.registry.length + "!");
     }
-    return (1 == this.registry[intervalStart] || 1 == this.registry[intervalEnd]);
+
+    // perform the visit check
+    //
+    for (int i = this.registry[from]; i <= this.registry[upTo]; i++) {
+      if (ZERO == this.registry[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
@@ -113,11 +140,13 @@ public class VisitRegistry implements Cloneable {
    * 
    * @return list of unvisited positions.
    */
-  public ArrayList<Integer> getUnvisited() {
-    ArrayList<Integer> res = new ArrayList<Integer>(capacity);
-    for (int i = 0; i < capacity; i++) {
-      if (0 == this.registry[i]) {
-        res.add(i);
+  public int[] getUnvisited() {
+    int[] res = new int[this.unvisitedCount];
+    int counter = 0;
+    for (int i = 0; i < this.registry.length; i++) {
+      if (ZERO == this.registry[i]) {
+        res[counter] = i;
+        counter++;
       }
     }
     return res;
@@ -129,18 +158,12 @@ public class VisitRegistry implements Cloneable {
    * @return list of visited positions.
    */
   public int[] getVisited() {
-    int count = 0;
-    for (int i = 0; i < capacity; i++) {
-      if (1 == this.registry[i]) {
-        count++;
-      }
-    }
-    int[] res = new int[count];
-    int cp = 0;
-    for (int i = 0; i < capacity; i++) {
-      if (1 == this.registry[i]) {
-        res[cp] = i;
-        cp++;
+    int[] res = new int[this.registry.length - this.unvisitedCount];
+    int counter = 0;
+    for (int i = 0; i < this.registry.length; i++) {
+      if (ONE == this.registry[i]) {
+        res[counter] = i;
+        counter++;
       }
     }
     return res;
@@ -165,7 +188,6 @@ public class VisitRegistry implements Cloneable {
    */
   public VisitRegistry clone() throws CloneNotSupportedException {
     VisitRegistry res = (VisitRegistry) super.clone();
-    res.capacity = this.capacity;
     res.unvisitedCount = this.unvisitedCount;
     res.registry = Arrays.copyOfRange(this.registry, 0, this.registry.length);
     return res;
