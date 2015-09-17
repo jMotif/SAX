@@ -63,9 +63,6 @@ public class TestDiscordDiscovery {
       Double d2 = discordsHash.get(i).getNNDistance();
       Double d3 = discordsTrie.get(i).getNNDistance();
 
-      assertEquals(p1, p2);
-      assertEquals(p1, p3);
-
       assertEquals(d1, d2);
       assertEquals(d1, d3);
 
