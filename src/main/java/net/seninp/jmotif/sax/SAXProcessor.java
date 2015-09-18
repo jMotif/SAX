@@ -463,7 +463,7 @@ public final class SAXProcessor {
     // iterate ofer all training series
     //
     for (Entry<String, ArrayList<double[]>> e : data.entrySet()) {
-      System.out.println(e.getKey());
+//      System.out.println(e.getKey());
       for (double[] series : e.getValue()) {
 
         // discretize the timeseries
@@ -478,7 +478,7 @@ public final class SAXProcessor {
           String word = String.valueOf(sr.getPayload());
           Integer idx = indexTable.get(word);
           if (null == idx) {
-            System.out.println(word);
+//            System.out.println(word);
           }
           weights[idx] = sr.getIndexes().size();
         }

@@ -38,9 +38,6 @@ public class TestTSProcessor {
 
   private static final Alphabet normalA = new NormalAlphabet();
 
-  private static final double[] tsWithNaNs = { 1.0, 4.0, 7.0, 10.0, 2.0, 5.0, 8.0, 11.0, 3.0, 6.0,
-      9.0, 12 };
-
   TSProcessor tsp;
   private double[] ts1;
   private double[] ts2;
