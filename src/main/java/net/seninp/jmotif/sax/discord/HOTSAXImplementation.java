@@ -206,9 +206,6 @@ public class HOTSAXImplementation {
     int iterationCounter = 0;
     int distanceCalls = 0;
 
-    // while not all sequences are considered
-    VisitRegistry localRegistry = globalRegistry.clone();
-
     while (!frequencies.isEmpty()) {
 
       iterationCounter++;
@@ -222,9 +219,19 @@ public class HOTSAXImplementation {
       if (globalRegistry.isVisited(currentPos)) {
         continue;
       }
-      else {
-        localRegistry.markVisited(currentPos);
+
+      // all the candidates we are going to try
+      VisitRegistry randomRegistry = new VisitRegistry(series.length);
+      randomRegistry.markVisited(series.length - windowSize, series.length);
+      int markStart = currentPos - windowSize;
+      if (markStart < 0) {
+        markStart = 0;
       }
+      int markEnd = currentPos + windowSize;
+      if (markEnd > series.length) {
+        markEnd = series.length;
+      }
+      randomRegistry.markVisited(markStart, markEnd);
 
       consoleLogger.trace("conducting search for " + currentWord + " at " + currentPos
           + ", iteration " + iterationCounter + ", to go: " + frequencies.size());
@@ -243,8 +250,11 @@ public class HOTSAXImplementation {
       for (Integer nextOccurrence : currentWordOccurences) {
 
         // just in case there is an overlap
-        if (Math.abs(nextOccurrence.intValue() - currentPos) <= windowSize) {
+        if (randomRegistry.isVisited(nextOccurrence.intValue())) {
           continue;
+        }
+        else {
+          randomRegistry.markVisited(nextOccurrence.intValue());
         }
 
         // get the subsequence and the distance
@@ -277,15 +287,10 @@ public class HOTSAXImplementation {
         int visitCounter = 0;
 
         // while there are unvisited locations
-        VisitRegistry randomRegistry = new VisitRegistry(series.length - windowSize);
         int randomPos = -1;
         while (-1 != (randomPos = randomRegistry.getNextRandomUnvisitedPosition())) {
 
           randomRegistry.markVisited(randomPos);
-
-          if (Math.abs(currentPos - randomPos) <= windowSize) {
-            continue;
-          }
 
           double[] randomSubsequence = tp.subseriesByCopy(series, randomPos,
               randomPos + windowSize);
@@ -478,9 +483,6 @@ public class HOTSAXImplementation {
     int iterationCounter = 0;
     int distanceCalls = 0;
 
-    // while not all sequences are considered
-    VisitRegistry localRegistry = globalRegistry.clone();
-
     // System.err.println(frequencies.size() + " left to iterate over");
 
     while (!frequencies.isEmpty()) {
@@ -499,14 +501,24 @@ public class HOTSAXImplementation {
       if (globalRegistry.isVisited(currentPos)) {
         continue;
       }
-      else {
-        localRegistry.markVisited(currentPos);
+
+      // all the candidates we are going to try
+      VisitRegistry randomRegistry = new VisitRegistry(series.length);
+      randomRegistry.markVisited(series.length - windowSize, series.length);
+      int markStart = currentPos - windowSize;
+      if (markStart < 0) {
+        markStart = 0;
       }
+      int markEnd = currentPos + windowSize;
+      if (markEnd > series.length) {
+        markEnd = series.length;
+      }
+      randomRegistry.markVisited(markStart, markEnd);
 
       consoleLogger.trace("conducting search for " + currentWord + " at " + currentPos
           + ", iteration " + iterationCounter + ", to go: " + frequencies.size());
 
-      // fix the current subsequencetrace
+      // fix the current subsequence trace
       double[] currentCandidateSeq = tp.subseriesByCopy(series, currentPos,
           currentPos + windowSize);
 
@@ -520,8 +532,11 @@ public class HOTSAXImplementation {
       for (Integer nextOccurrence : currentWordOccurences) {
 
         // just in case there is an overlap
-        if (Math.abs(nextOccurrence.intValue() - currentPos) <= windowSize) {
+        if (randomRegistry.isVisited(nextOccurrence.intValue())) {
           continue;
+        }
+        else {
+          randomRegistry.markVisited(nextOccurrence.intValue());
         }
 
         // get the subsequence and the distance
@@ -546,21 +561,17 @@ public class HOTSAXImplementation {
       }
 
       // check if we must continue with random neighbors
+
       if (doRandomSearch) {
         consoleLogger.trace("starting random search");
 
         int visitCounter = 0;
 
         // while there are unvisited locations
-        VisitRegistry randomRegistry = new VisitRegistry(series.length - windowSize);
         int randomPos = -1;
         while (-1 != (randomPos = randomRegistry.getNextRandomUnvisitedPosition())) {
 
           randomRegistry.markVisited(randomPos);
-
-          if (Math.abs(currentPos - randomPos) <= windowSize) {
-            continue;
-          }
 
           double[] randomSubsequence = tp.subseriesByCopy(series, randomPos,
               randomPos + windowSize);
