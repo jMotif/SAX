@@ -5,8 +5,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import net.seninp.jmotif.sax.discord.MagicArray;
 import java.util.Set;
 
 /**
@@ -295,5 +297,14 @@ public class SAXRecords implements Iterable<SAXRecord> {
    */
   public Collection<SAXRecord> getRecords() {
     return this.records.values();
+  }
+
+  public MagicArray getVisitRegistry() {
+    Hashtable<Integer, boolean[]> res = new Hashtable<Integer, boolean[]>(this.realTSindex.size(),
+        1.0f);
+    for (Entry<Integer, SAXRecord> e : this.realTSindex.entrySet()) {
+      res.put(e.getKey(), new boolean[2]);
+    }
+    return new MagicArray(res);
   }
 }

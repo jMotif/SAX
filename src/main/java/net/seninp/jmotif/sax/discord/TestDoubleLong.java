@@ -38,7 +38,6 @@ public class TestDoubleLong {
   public void test() {
 
     DiscordRecords discordsBruteForce = null;
-    DiscordRecords discordsTrie = null;
     DiscordRecords discordsHash = null;
 
     try {
@@ -49,16 +48,9 @@ public class TestDoubleLong {
         System.out.println("brute force discord " + d.toString());
       }
 
-      discordsTrie = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
-          ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
+      discordsHash = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
+          PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
           NORM_THRESHOLD);
-      for (DiscordRecord d : discordsTrie) {
-        System.out.println("hotsax trie discord " + d.toString());
-      }
-
-      discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, DISCORDS_TO_TEST,
-          WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(),
-          NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
       for (DiscordRecord d : discordsHash) {
         System.out.println("hotsax hash discord " + d.toString());
       }
@@ -73,10 +65,8 @@ public class TestDoubleLong {
 
       Double d1 = discordsBruteForce.get(i).getNNDistance();
       Double d2 = discordsHash.get(i).getNNDistance();
-      Double d3 = discordsTrie.get(i).getNNDistance();
 
       assertEquals(d1, d2);
-      assertEquals(d1, d3);
 
     }
 

@@ -14,8 +14,8 @@ public class TestDiscordDiscovery {
   private static final String TEST_DATA_FNAME = "src/resources/test-data/ecg0606_1.csv";
 
   private static final int WIN_SIZE = 100;
-  private static final int PAA_SIZE = 3;
-  private static final int ALPHABET_SIZE = 3;
+  private static final int PAA_SIZE = 4;
+  private static final int ALPHABET_SIZE = 4;
 
   private static final double NORM_THRESHOLD = 0.01;
 
@@ -32,7 +32,6 @@ public class TestDiscordDiscovery {
   public void test() {
 
     DiscordRecords discordsBruteForce = null;
-    DiscordRecords discordsTrie = null;
     DiscordRecords discordsHash = null;
 
     try {
@@ -43,16 +42,9 @@ public class TestDiscordDiscovery {
         System.out.println("brute force discord " + d.toString());
       }
 
-      discordsTrie = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
-          ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
+      discordsHash = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
+          PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
           NORM_THRESHOLD);
-      for (DiscordRecord d : discordsTrie) {
-        System.out.println("hotsax trie discord " + d.toString());
-      }
-
-      discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, DISCORDS_TO_TEST,
-          WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(),
-          NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
       for (DiscordRecord d : discordsHash) {
         System.out.println("hotsax hash discord " + d.toString());
       }
@@ -67,10 +59,8 @@ public class TestDiscordDiscovery {
 
       Double d1 = discordsBruteForce.get(i).getNNDistance();
       Double d2 = discordsHash.get(i).getNNDistance();
-      Double d3 = discordsTrie.get(i).getNNDistance();
 
       assertEquals(d1, d2);
-      assertEquals(d1, d3);
 
     }
 
