@@ -16,7 +16,6 @@ import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecord;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
-import net.seninp.jmotif.sax.registry.SlidingWindowMarkerAlgorithm;
 
 /**
  * Implements HOTSAX discord discovery algorithm.
@@ -52,15 +51,14 @@ public class HOTSAXImplementation {
    * @param windowSize sliding window size to use.
    * @param paaSize PAA value to use.
    * @param alphabetSize The SAX alphabet size.
-   * @param markerAlgorithm marker algorithm.
    * @param strategy numerosity reduction strategy.
    * @param nThreshold the normalization threshold value.
    * @return Discords found within the series.
    * @throws Exception if error occurs.
    */
   public static DiscordRecords series2Discords(double[] series, int discordsNumToReport,
-      int windowSize, int paaSize, int alphabetSize, SlidingWindowMarkerAlgorithm markerAlgorithm,
-      NumerosityReductionStrategy strategy, double nThreshold) throws Exception {
+      int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
+      double nThreshold) throws Exception {
 
     Date start = new Date();
     // get the SAX transform
@@ -95,8 +93,7 @@ public class HOTSAXImplementation {
       reportNum = discordsNumToReport;
     }
 
-    DiscordRecords discords = getDiscordsWithHash(series, sax, windowSize, hash, reportNum,
-        markerAlgorithm);
+    DiscordRecords discords = getDiscordsWithHash(series, sax, windowSize, hash, reportNum);
 
     Date end = new Date();
 
@@ -107,8 +104,7 @@ public class HOTSAXImplementation {
   }
 
   private static DiscordRecords getDiscordsWithHash(double[] series, SAXRecords sax, int windowSize,
-      HashMap<String, ArrayList<Integer>> hash, int discordCollectionSize,
-      SlidingWindowMarkerAlgorithm markerAlgorithm) throws Exception {
+      HashMap<String, ArrayList<Integer>> hash, int discordCollectionSize) throws Exception {
 
     // resulting discords collection
     DiscordRecords discords = new DiscordRecords();
@@ -125,8 +121,7 @@ public class HOTSAXImplementation {
           "currently known discords: " + discords.getSize() + " out of " + discordCollectionSize);
 
       Date start = new Date();
-      DiscordRecord bestDiscord = findBestDiscordWithHash(series, windowSize, hash, registry,
-          markerAlgorithm);
+      DiscordRecord bestDiscord = findBestDiscordWithHash(series, windowSize, hash, registry);
       Date end = new Date();
 
       // if the discord is null we getting out of the search
@@ -179,8 +174,7 @@ public class HOTSAXImplementation {
    * @throws TrieException If error occurs.
    */
   private static DiscordRecord findBestDiscordWithHash(double[] series, int windowSize,
-      HashMap<String, ArrayList<Integer>> hash, MagicArray registry,
-      SlidingWindowMarkerAlgorithm marker) throws Exception {
+      HashMap<String, ArrayList<Integer>> hash, MagicArray registry) throws Exception {
 
     // we extract all seen words from the trie and sort them by the frequency decrease
     ArrayList<MagicArrayEntry> frequencies = hashToFrequencies(hash);
