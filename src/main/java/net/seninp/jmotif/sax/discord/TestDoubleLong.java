@@ -11,7 +11,7 @@ import net.seninp.util.StackTrace;
 
 public class TestDoubleLong {
 
-  private static final String TEST_DATA_FNAME = "src/resources/test-data/ann_gun_CentroidA1.csv";
+  private static final String TEST_DATA_FNAME = "src/resources/test-data/ecg0606_1.csv";
 
   private static final int WIN_SIZE = 50;
   private static final int PAA_SIZE = 4;
@@ -19,7 +19,7 @@ public class TestDoubleLong {
 
   private static final double NORM_THRESHOLD = 0.01;
 
-  private static final int DISCORDS_TO_TEST = 7;
+  private static final int DISCORDS_TO_TEST = 5;
 
   private double[] series;
 
@@ -43,16 +43,25 @@ public class TestDoubleLong {
 
     try {
 
-      // discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series,
-      // WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
+      discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series,
+          WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
+      for (DiscordRecord d : discordsBruteForce) {
+        System.out.println("brute force discord " + d.toString());
+      }
 
-      // discordsTrie = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
-      // ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
-      // NORM_THRESHOLD);
+      discordsTrie = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
+          ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
+          NORM_THRESHOLD);
+      for (DiscordRecord d : discordsTrie) {
+        System.out.println("hotsax trie discord " + d.toString());
+      }
 
       discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, DISCORDS_TO_TEST,
           WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(),
           NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
+      for (DiscordRecord d : discordsHash) {
+        System.out.println("hotsax hash discord " + d.toString());
+      }
 
     }
     catch (Exception e) {
@@ -60,20 +69,14 @@ public class TestDoubleLong {
       e.printStackTrace();
     }
 
-    for (int i = 0; i < DISCORDS_TO_TEST; i++) {
-      // Integer p1 = discordsBruteForce.get(i).getPosition();
-      Integer p2 = discordsHash.get(i).getPosition();
-      Integer p3 = discordsTrie.get(i).getPosition();
+    for (int i = 0; i < 1; i++) {
 
-      // Double d1 = discordsBruteForce.get(i).getNNDistance();
+      Double d1 = discordsBruteForce.get(i).getNNDistance();
       Double d2 = discordsHash.get(i).getNNDistance();
       Double d3 = discordsTrie.get(i).getNNDistance();
 
-      // assertEquals(p1, p2);
-      // assertEquals(p1, p3);
-
-      // assertEquals(d1, d2);
-      // assertEquals(d1, d3);
+      assertEquals(d1, d2);
+      assertEquals(d1, d3);
 
     }
 

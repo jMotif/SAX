@@ -10,7 +10,7 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
 
   /** The discord id (used when wrapped by RRA). */
   private int ruleId;
-  
+
   /** The discord position. */
   private int position;
 
@@ -208,8 +208,6 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
     }
     return true;
   }
-  
-  
 
   public int getRuleId() {
     return ruleId;
@@ -224,8 +222,14 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
    */
   @Override
   public String toString() {
-    return "'" + this.payload + "', distance " + this.getNNDistance() + " position: "
-        + this.getPosition();
+    StringBuffer sb = new StringBuffer();
+    sb.append("'").append(this.payload).append("'");
+    sb.append(", distance: ");
+    sb.append(this.nnDistance).append(", position: ").append(this.position);
+    if (null != this.info && !(this.info.isEmpty())) {
+      sb.append(", info: ").append(this.info);
+    }
+    return sb.toString();
   }
 
 }

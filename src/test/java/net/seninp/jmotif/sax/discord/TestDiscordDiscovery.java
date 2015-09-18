@@ -39,14 +39,23 @@ public class TestDiscordDiscovery {
 
       discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series,
           WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
+      for (DiscordRecord d : discordsBruteForce) {
+        System.out.println("brute force discord " + d.toString());
+      }
 
       discordsTrie = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
           ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
           NORM_THRESHOLD);
+      for (DiscordRecord d : discordsTrie) {
+        System.out.println("hotsax trie discord " + d.toString());
+      }
 
       discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, DISCORDS_TO_TEST,
           WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(),
           NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
+      for (DiscordRecord d : discordsHash) {
+        System.out.println("hotsax hash discord " + d.toString());
+      }
 
     }
     catch (Exception e) {
@@ -55,9 +64,6 @@ public class TestDiscordDiscovery {
     }
 
     for (int i = 0; i < DISCORDS_TO_TEST; i++) {
-      Integer p1 = discordsBruteForce.get(i).getPosition();
-      Integer p2 = discordsHash.get(i).getPosition();
-      Integer p3 = discordsTrie.get(i).getPosition();
 
       Double d1 = discordsBruteForce.get(i).getNNDistance();
       Double d2 = discordsHash.get(i).getNNDistance();
