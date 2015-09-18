@@ -40,7 +40,7 @@ public class HOTSAXImplementation {
   //
   private static Logger consoleLogger;
 
-  private static final Level LOGGING_LEVEL = Level.DEBUG;
+  private static final Level LOGGING_LEVEL = Level.INFO;
 
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(HOTSAXImplementation.class);
