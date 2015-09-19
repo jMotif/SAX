@@ -2,8 +2,8 @@ package net.seninp.jmotif.sax.discord;
 
 import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Random;
 
 public class MagicArray {
 

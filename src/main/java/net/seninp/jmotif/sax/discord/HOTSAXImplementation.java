@@ -43,17 +43,22 @@ public class HOTSAXImplementation {
   }
 
   /**
-   * Build the SAX trie out of the series and reports discords. This uses default numerosity
-   * reduction that is EXACT.
+   * Hash-table backed implementation (in contrast to trie). Time series is converted into a
+   * SAXRecords data structure first, Hash-table backed magic array created second. HOTSAX applied
+   * third. Nearest neighbors are searched only among the subsequences which were produced by SAX
+   * with specified numerosity reduction. Thus, if the strategy is EXACT or MINDIST, discords do not
+   * match those produced by BruteForce or NONE.
    * 
    * @param series The timeseries.
-   * @param discordsNumToReport how many discords to report.
-   * @param windowSize sliding window size to use.
-   * @param paaSize PAA value to use.
-   * @param alphabetSize The SAX alphabet size.
-   * @param strategy numerosity reduction strategy.
+   * @param discordsNumToReport The number of discords to report.
+   * @param windowSize SAX sliding window size.
+   * @param paaSize SAX PAA value.
+   * @param alphabetSize SAX alphabet size.
+   * @param strategy the numerosity reduction strategy.
    * @param nThreshold the normalization threshold value.
-   * @return Discords found within the series.
+   * @return The set of discords found within the time series, it may return less than asked for --
+   * in this case, there are no more discords.
+   * 
    * @throws Exception if error occurs.
    */
   public static DiscordRecords series2Discords(double[] series, int discordsNumToReport,
@@ -93,7 +98,7 @@ public class HOTSAXImplementation {
       reportNum = discordsNumToReport;
     }
 
-    DiscordRecords discords = getDiscordsWithHash(series, sax, windowSize, hash, reportNum);
+    DiscordRecords discords = getDiscordsWithMagic(series, sax, windowSize, hash, reportNum);
 
     Date end = new Date();
 
@@ -103,8 +108,9 @@ public class HOTSAXImplementation {
     return discords;
   }
 
-  private static DiscordRecords getDiscordsWithHash(double[] series, SAXRecords sax, int windowSize,
-      HashMap<String, ArrayList<Integer>> hash, int discordCollectionSize) throws Exception {
+  private static DiscordRecords getDiscordsWithMagic(double[] series, SAXRecords sax,
+      int windowSize, HashMap<String, ArrayList<Integer>> hash, int discordCollectionSize)
+          throws Exception {
 
     // resulting discords collection
     DiscordRecords discords = new DiscordRecords();
@@ -121,7 +127,7 @@ public class HOTSAXImplementation {
           "currently known discords: " + discords.getSize() + " out of " + discordCollectionSize);
 
       Date start = new Date();
-      DiscordRecord bestDiscord = findBestDiscordWithHash(series, windowSize, hash, registry);
+      DiscordRecord bestDiscord = findBestDiscordWithMagic(series, windowSize, hash, registry);
       Date end = new Date();
 
       // if the discord is null we getting out of the search
@@ -173,7 +179,7 @@ public class HOTSAXImplementation {
    * @throws Exception If error occurs.
    * @throws TrieException If error occurs.
    */
-  private static DiscordRecord findBestDiscordWithHash(double[] series, int windowSize,
+  private static DiscordRecord findBestDiscordWithMagic(double[] series, int windowSize,
       HashMap<String, ArrayList<Integer>> hash, MagicArray registry) throws Exception {
 
     // we extract all seen words from the trie and sort them by the frequency decrease
