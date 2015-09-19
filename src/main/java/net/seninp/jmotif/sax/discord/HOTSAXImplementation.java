@@ -16,6 +16,8 @@ import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecord;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
+import net.seninp.jmotif.sax.registry.MagicArray;
+import net.seninp.jmotif.sax.registry.MagicArrayEntry;
 
 /**
  * Implements HOTSAX discord discovery algorithm.

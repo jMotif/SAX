@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import net.seninp.jmotif.sax.discord.MagicArray;
+import net.seninp.jmotif.sax.registry.MagicArray;
 import java.util.Set;
 
 /**

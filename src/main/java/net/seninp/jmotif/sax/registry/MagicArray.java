@@ -1,10 +1,16 @@
-package net.seninp.jmotif.sax.discord;
+package net.seninp.jmotif.sax.registry;
 
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Random;
 
+/**
+ * A magic array to track visits.
+ * 
+ * @author psenin
+ *
+ */
 public class MagicArray {
 
   private Hashtable<Integer, boolean[]> registry;

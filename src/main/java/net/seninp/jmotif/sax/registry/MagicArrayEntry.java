@@ -1,4 +1,4 @@
-package net.seninp.jmotif.sax.discord;
+package net.seninp.jmotif.sax.registry;
 
 public class MagicArrayEntry implements Cloneable, Comparable<MagicArrayEntry> {
 

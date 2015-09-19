@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * The convenient way to keep track of visited locations.
+ * The convenient way to keep track of visited locations. Note that a new unvisited location is
+ * searched for by random generator-backed search. which may take time... sometimes :).
  * 
  * @author Pavel Senin.
  */
