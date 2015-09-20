@@ -48,6 +48,13 @@ public class TestDiscordDiscovery {
         System.out.println("hotsax hash discord " + d.toString());
       }
 
+      DiscordRecords discordsOle = HOTSAXImplementation.series2DiscordsVariant(series,
+          DISCORDS_TO_TEST, WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(),
+          NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
+      for (DiscordRecord d : discordsOle) {
+        System.out.println("old hash discord " + d.toString());
+      }
+
     }
     catch (Exception e) {
       fail("sholdn't throw an exception, exception thrown: \n" + StackTrace.toString(e));

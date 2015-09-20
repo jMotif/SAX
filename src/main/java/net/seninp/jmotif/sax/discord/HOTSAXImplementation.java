@@ -285,6 +285,7 @@ public class HOTSAXImplementation {
 
         // while there are unvisited locations
         int randomPos = -1;
+        registry.RandomLocalSearchRedify();
         while (-1 != (randomPos = registry.getNextLocallyUnvisitedPosition())) {
 
           registry.markLocallyVisited(randomPos);

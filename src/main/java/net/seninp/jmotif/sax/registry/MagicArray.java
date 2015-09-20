@@ -1,6 +1,5 @@
 package net.seninp.jmotif.sax.registry;
 
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -14,23 +13,28 @@ import java.util.Random;
 public class MagicArray {
 
   private Hashtable<Integer, boolean[]> registry;
-  private int[] index;
-  private final Random randomizer = new Random(System.currentTimeMillis());
+  // private int[] index;
+
   private int locallyUnvisitedCount;
   @SuppressWarnings("unused")
   private int globallyUnvisitedCount;
 
+  private int[] randomVisitArray;
+  private int unvisitedIndex;
+
+  // private final Random randomizer = new Random(System.currentTimeMillis());
+
   public MagicArray(Hashtable<Integer, boolean[]> res) {
     this.registry = res;
-    this.index = new int[res.size()];
-    int i = 0;
-    for (Entry<Integer, boolean[]> e : res.entrySet()) {
-      this.index[i] = e.getKey();
-      i++;
-    }
-    Arrays.sort(this.index);
-    this.locallyUnvisitedCount = this.index.length;
-    this.globallyUnvisitedCount = this.index.length;
+    // this.index = new int[res.size()];
+    // int i = 0;
+    // for (Entry<Integer, boolean[]> e : res.entrySet()) {
+    // this.index[i] = e.getKey();
+    // i++;
+    // }
+    // Arrays.sort(this.index);
+    this.locallyUnvisitedCount = this.registry.size();
+    this.globallyUnvisitedCount = this.registry.size();
   }
 
   public boolean isGloballyVisited(int loc) {
@@ -78,10 +82,10 @@ public class MagicArray {
   }
 
   public void resetLocal() {
-    for (int i : this.index) {
-      registry.get(i)[1] = false;
+    for (Entry<Integer, boolean[]> e : this.registry.entrySet()) {
+      e.getValue()[1] = false;
     }
-    this.locallyUnvisitedCount = this.index.length;
+    this.locallyUnvisitedCount = this.registry.size();
   }
 
   public int getNextLocallyUnvisitedPosition() {
@@ -90,49 +94,78 @@ public class MagicArray {
       return -1;
     }
 
-    int next = randomizer.nextInt(this.index.length);
-    int idx = this.index[next];
-    int saveidx = idx;
+    this.unvisitedIndex++;
+    return this.randomVisitArray[unvisitedIndex - 1];
 
-    if (this.registry.get(idx)[1]) {
+    // int next = randomizer.nextInt(this.index.length);
+    // int idx = this.index[next];
+    // int saveidx = idx;
+    //
+    // if (this.registry.get(idx)[1]) {
+    //
+    // int direction = randomizer.nextInt(2);
+    //
+    // if (0 == direction && next >= 0) {
+    // while ((true == this.registry.get(idx)[1]) && next > 0) {
+    // next = next - 1;
+    // idx = this.index[next];
+    // }
+    // if (-1 == next) { // should move up
+    // idx = saveidx + 1;
+    // while ((true == this.registry.get(idx)[1]) && next < this.index.length - 1) {
+    // next = next + 1;
+    // idx = this.index[next];
+    // }
+    // }
+    // return idx;
+    //
+    // }
+    // else if (1 == direction && next < this.index.length) {
+    // while ((true == this.registry.get(idx)[1]) && next < this.index.length - 1) {
+    // next = next + 1;
+    // idx = this.index[next];
+    // }
+    // if (this.index.length == next) { // should move down
+    // idx = saveidx - 1;
+    // while ((true == this.registry.get(idx)[1]) && next > 0) {
+    // next = next - 1;
+    // idx = this.index[next];
+    // }
+    // }
+    // return idx;
+    // }
+    // }
+    // else {
+    // return idx;
+    // }
+    //
+    // return 0;
+  }
 
-      int direction = randomizer.nextInt(2);
-
-      if (0 == direction && next >= 0) {
-        while ((true == this.registry.get(idx)[1]) && next > 0) {
-          next = next - 1;
-          idx = this.index[next];
-        }
-        if (-1 == next) { // should move up
-          idx = saveidx + 1;
-          while ((true == this.registry.get(idx)[1]) && next < this.index.length - 1) {
-            next = next + 1;
-            idx = this.index[next];
-          }
-        }
-        return idx;
-
+  public void RandomLocalSearchRedify() {
+    this.randomVisitArray = new int[this.locallyUnvisitedCount];
+    int ctr = 0;
+    for (Entry<Integer, boolean[]> e : this.registry.entrySet()) {
+      if (e.getValue()[1]) {
+        continue;
       }
-      else if (1 == direction && next < this.index.length) {
-        while ((true == this.registry.get(idx)[1]) && next < this.index.length - 1) {
-          next = next + 1;
-          idx = this.index[next];
-        }
-        if (this.index.length == next) { // should move down
-          idx = saveidx - 1;
-          while ((true == this.registry.get(idx)[1]) && next > 0) {
-            next = next - 1;
-            idx = this.index[next];
-          }
-        }
-        return idx;
+      else {
+        this.randomVisitArray[ctr] = e.getKey();
+        ctr++;
       }
     }
-    else {
-      return idx;
-    }
+    shuffle(this.randomVisitArray);
+    this.unvisitedIndex = 0;
+  }
 
-    return 0;
+  private void shuffle(int[] array) {
+    Random rnd = new Random();
+    for (int i = array.length - 1; i > 0; i--) {
+      int index = rnd.nextInt(i + 1);
+      int a = array[index];
+      array[index] = array[i];
+      array[i] = a;
+    }
   }
 
 }

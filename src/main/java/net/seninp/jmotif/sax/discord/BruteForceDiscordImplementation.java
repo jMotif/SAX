@@ -21,7 +21,7 @@ public class BruteForceDiscordImplementation {
   // logging stuff
   //
   private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.DEBUG;
+  private static Level LOGGING_LEVEL = Level.INFO;
 
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(BruteForceDiscordImplementation.class);
@@ -162,7 +162,7 @@ public class BruteForceDiscordImplementation {
         bestSoFarDistance = nearestNeighborDistance;
         bestSoFarPosition = i;
         consoleLogger
-            .debug("discord updated: pos " + bestSoFarPosition + ", dist " + bestSoFarDistance);
+            .trace("discord updated: pos " + bestSoFarPosition + ", dist " + bestSoFarDistance);
       }
 
     }
