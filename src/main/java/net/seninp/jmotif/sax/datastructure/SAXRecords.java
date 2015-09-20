@@ -1,4 +1,4 @@
-package net.seninp.jmotif.sax.datastructures;
+package net.seninp.jmotif.sax.datastructure;
 
 import java.util.ArrayList;
 import java.util.Collection;

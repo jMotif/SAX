@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import org.junit.Test;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
-import net.seninp.jmotif.sax.datastructures.SAXRecords;
+import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 /**
  * Test SAX factory methods.

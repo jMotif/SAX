@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import org.junit.Before;
 import org.junit.Test;
+import net.seninp.jmotif.sax.datastructure.DoublyLinkedSortedList;
+import net.seninp.jmotif.sax.datastructure.SAXRecord;
 import net.seninp.util.JmotifMapEntry;
 
 public class TestDoublyLinkedSortedList {
