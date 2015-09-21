@@ -88,6 +88,11 @@ public class MagicArray {
     this.locallyUnvisitedCount = this.registry.size();
   }
 
+  /**
+   * Generates a next unvisited candidate.
+   * 
+   * @return
+   */
   public int getNextLocallyUnvisitedPosition() {
 
     if (0 == this.locallyUnvisitedCount) {
@@ -97,49 +102,6 @@ public class MagicArray {
     this.unvisitedIndex++;
     return this.randomVisitArray[unvisitedIndex - 1];
 
-    // int next = randomizer.nextInt(this.index.length);
-    // int idx = this.index[next];
-    // int saveidx = idx;
-    //
-    // if (this.registry.get(idx)[1]) {
-    //
-    // int direction = randomizer.nextInt(2);
-    //
-    // if (0 == direction && next >= 0) {
-    // while ((true == this.registry.get(idx)[1]) && next > 0) {
-    // next = next - 1;
-    // idx = this.index[next];
-    // }
-    // if (-1 == next) { // should move up
-    // idx = saveidx + 1;
-    // while ((true == this.registry.get(idx)[1]) && next < this.index.length - 1) {
-    // next = next + 1;
-    // idx = this.index[next];
-    // }
-    // }
-    // return idx;
-    //
-    // }
-    // else if (1 == direction && next < this.index.length) {
-    // while ((true == this.registry.get(idx)[1]) && next < this.index.length - 1) {
-    // next = next + 1;
-    // idx = this.index[next];
-    // }
-    // if (this.index.length == next) { // should move down
-    // idx = saveidx - 1;
-    // while ((true == this.registry.get(idx)[1]) && next > 0) {
-    // next = next - 1;
-    // idx = this.index[next];
-    // }
-    // }
-    // return idx;
-    // }
-    // }
-    // else {
-    // return idx;
-    // }
-    //
-    // return 0;
   }
 
   public void RandomLocalSearchRedify() {
