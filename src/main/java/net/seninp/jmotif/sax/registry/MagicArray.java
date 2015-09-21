@@ -1,5 +1,6 @@
 package net.seninp.jmotif.sax.registry;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -12,7 +13,7 @@ import java.util.Random;
  */
 public class MagicArray {
 
-  private Hashtable<Integer, boolean[]> registry;
+  private HashMap<Integer, boolean[]> registry;
   // private int[] index;
 
   private int locallyUnvisitedCount;
@@ -24,7 +25,7 @@ public class MagicArray {
 
   // private final Random randomizer = new Random(System.currentTimeMillis());
 
-  public MagicArray(Hashtable<Integer, boolean[]> res) {
+  public MagicArray(HashMap<Integer, boolean[]> res) {
     this.registry = res;
     // this.index = new int[res.size()];
     // int i = 0;

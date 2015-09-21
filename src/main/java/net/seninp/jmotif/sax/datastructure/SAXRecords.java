@@ -300,7 +300,7 @@ public class SAXRecords implements Iterable<SAXRecord> {
   }
 
   public MagicArray getVisitRegistry() {
-    Hashtable<Integer, boolean[]> res = new Hashtable<Integer, boolean[]>(this.realTSindex.size(),
+    HashMap<Integer, boolean[]> res = new HashMap<Integer, boolean[]>(this.realTSindex.size(),
         1.0f);
     for (Entry<Integer, SAXRecord> e : this.realTSindex.entrySet()) {
       res.put(e.getKey(), new boolean[2]);
