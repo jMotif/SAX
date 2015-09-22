@@ -42,7 +42,7 @@ public class HOTSAXImplementation {
   //
   private static Logger consoleLogger;
 
-  private static final Level LOGGING_LEVEL = Level.INFO;
+  private static final Level LOGGING_LEVEL = Level.DEBUG;
 
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(HOTSAXImplementation.class);
@@ -189,7 +189,7 @@ public class HOTSAXImplementation {
           throws Exception {
 
     // prepare the visits array, note that there can't be more points to visit that in a SAX index
-    int[] visitArray = new int[sax.getIndexes().size()];
+    int[] visitArray = new int[series.length];
 
     // init tracking variables
     int bestSoFarPosition = -1;
@@ -212,6 +212,10 @@ public class HOTSAXImplementation {
       for (int currentPos : occurrences) {
 
         iterationCounter++;
+
+        if (currentPos == 658) {
+          System.out.println("gotcha!");
+        }
 
         // make sure it is not previously found discord passed through the parameters array
         boolean shallSkipThisOccurrence = false;
@@ -291,7 +295,7 @@ public class HOTSAXImplementation {
           //
           int visitCounter = 0;
           int cIndex = 0;
-          for (int i : sax.getIndexes()) {
+          for (int i = 0; i < series.length - windowSize; i++) {
             if (!(alreadyVisited.contains(i))) {
               visitArray[cIndex] = i;
               cIndex++;
@@ -312,8 +316,8 @@ public class HOTSAXImplementation {
           // while there are unvisited locations
           while (cIndex >= 0) {
 
+            int randomPos = visitArray[cIndex];
             cIndex--;
-            int randomPos = visitArray[cIndex + 1];
 
             double[] randomSubsequence = tp.subseriesByCopy(series, randomPos,
                 randomPos + windowSize);
@@ -379,7 +383,7 @@ public class HOTSAXImplementation {
    * @return Discords found within the series.
    * @throws Exception if error occurs.
    */
-  public static DiscordRecords series2DiscordsVariant(double[] series, int discordsNumToReport,
+  public static DiscordRecords series2DiscordsDeprecated(double[] series, int discordsNumToReport,
       int windowSize, int paaSize, int alphabetSize, SlidingWindowMarkerAlgorithm markerAlgorithm,
       NumerosityReductionStrategy strategy, double nThreshold) throws Exception {
 
@@ -395,7 +399,7 @@ public class HOTSAXImplementation {
     // instantiate the hash
     HashMap<String, ArrayList<Integer>> hash = new HashMap<String, ArrayList<Integer>>();
 
-    // fill the trie
+    // fill the hash
     for (SAXRecord sr : sax.getRecords()) {
       for (Integer pos : sr.getIndexes()) {
         // add to hash
@@ -437,7 +441,7 @@ public class HOTSAXImplementation {
     // locations for all searches. in other words, if the discord was found, its location is marked
     // as visited and there will be no search IT CANT SPAN BEYOND series.length - windowSize
     VisitRegistry globalTrackVisitRegistry = new VisitRegistry(series.length);
-    globalTrackVisitRegistry.markVisited(series.length - windowSize, series.length);
+    globalTrackVisitRegistry.markVisited(series.length - windowSize, windowSize);
 
     // we conduct the search until the number of discords is less than
     // desired
@@ -473,7 +477,6 @@ public class HOTSAXImplementation {
       //
       markerAlgorithm.markVisited(globalTrackVisitRegistry, bestDiscord.getPosition(), windowSize);
 
-      // completeWords.add(String.valueOf(bestDiscord.getPayload()));
     }
 
     // done deal
@@ -533,6 +536,7 @@ public class HOTSAXImplementation {
       // all the candidates we are going to try
       VisitRegistry randomRegistry = new VisitRegistry(series.length);
       randomRegistry.markVisited(series.length - windowSize, series.length);
+
       int markStart = currentPos - windowSize;
       if (markStart < 0) {
         markStart = 0;

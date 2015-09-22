@@ -37,7 +37,7 @@ public class LargeWindowAlgorithm implements SlidingWindowMarkerAlgorithm {
 
     // grow left
     for (int i = 0; i < intervalLength; i++) {
-      if (startPosition - i < 0) {
+      if (startPosition - i <= 0) {
         break;
       }
       registry.markVisited(startPosition - i);

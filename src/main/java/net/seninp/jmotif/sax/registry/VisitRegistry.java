@@ -47,12 +47,10 @@ public class VisitRegistry implements Cloneable {
    */
   public void markVisited(int loc) {
     if (checkBounds(loc)) {
-      if (loc >= 0 && loc < this.registry.length) {
-        if (ZERO == this.registry[loc]) {
-          this.unvisitedCount--;
-        }
-        this.registry[loc] = ONE;
+      if (ZERO == this.registry[loc]) {
+        this.unvisitedCount--;
       }
+      this.registry[loc] = ONE;
     }
     else {
       throw new RuntimeException(

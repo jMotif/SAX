@@ -32,7 +32,7 @@ public class DiscordDiscoveryPerformanceOld {
 
     series = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
 
-    DiscordRecords discordsOle = HOTSAXImplementation.series2DiscordsVariant(series,
+    DiscordRecords discordsOle = HOTSAXImplementation.series2DiscordsDeprecated(series,
         DISCORDS_TO_TEST, WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(),
         NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
     for (DiscordRecord d : discordsOle) {

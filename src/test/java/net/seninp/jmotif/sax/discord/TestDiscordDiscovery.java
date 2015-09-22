@@ -2,6 +2,7 @@ package net.seninp.jmotif.sax.discord;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
@@ -14,18 +15,21 @@ public class TestDiscordDiscovery {
   private static final String TEST_DATA_FNAME = "src/resources/test-data/ecg0606_1.csv";
 
   private static final int WIN_SIZE = 100;
-  private static final int PAA_SIZE = 4;
-  private static final int ALPHABET_SIZE = 4;
+  private static final int PAA_SIZE = 3;
+  private static final int ALPHABET_SIZE = 3;
 
   private static final double NORM_THRESHOLD = 0.01;
 
-  private static final int DISCORDS_TO_TEST = 3;
+  private static final int DISCORDS_TO_TEST = 4;
+
+  private static final NumerosityReductionStrategy STRATEGY = NumerosityReductionStrategy.MINDIST;
 
   private double[] series;
 
   @Before
   public void setUp() throws Exception {
     series = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
+    series = Arrays.copyOfRange(series, 0, 800);
   }
 
   @Test
@@ -44,14 +48,13 @@ public class TestDiscordDiscovery {
       }
 
       discordsHash = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
-          PAA_SIZE, ALPHABET_SIZE, NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
+          PAA_SIZE, ALPHABET_SIZE, STRATEGY, NORM_THRESHOLD);
       for (DiscordRecord d : discordsHash) {
         System.out.println("hotsax hash discord " + d.toString());
       }
 
-      discordsOle = HOTSAXImplementation.series2DiscordsVariant(series, DISCORDS_TO_TEST, WIN_SIZE,
-          PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
-          NORM_THRESHOLD);
+      discordsOle = HOTSAXImplementation.series2DiscordsDeprecated(series, DISCORDS_TO_TEST,
+          WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(), STRATEGY, NORM_THRESHOLD);
       for (DiscordRecord d : discordsOle) {
         System.out.println("old hash discord " + d.toString());
       }
