@@ -66,7 +66,7 @@ public class HOTSAXImplementation {
    * @return The set of discords found within the time series, it may return less than asked for --
    * in this case, there are no more discords.
    * 
-   * @throws Exception if error occurs.
+   * @throws Exception if error occurs., currentPos + windowSize
    */
   public static DiscordRecords series2Discords(double[] series, int discordsNumToReport,
       int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
@@ -218,14 +218,7 @@ public class HOTSAXImplementation {
         iterationCounter++;
 
         // make sure it is not previously found discord passed through the parameters array
-        boolean shallSkipThisOccurrence = false;
-        for (int i = currentPos; i < currentPos + windowSize; i++) {
-          if (registry.contains(i)) {
-            shallSkipThisOccurrence = true;
-            break;
-          }
-        }
-        if (shallSkipThisOccurrence) {
+        if (registry.contains(currentPos)) {
           continue;
         }
         consoleLogger.trace("conducting search for " + currentWord + " at " + currentPos
@@ -530,7 +523,7 @@ public class HOTSAXImplementation {
       int currentPos = currentEntry.getPosition();
 
       // make sure it is not previously found discord passed through the parameters array
-      if (globalRegistry.isVisited(currentPos, currentPos + windowSize)) {
+      if (globalRegistry.isVisited(currentPos)) {
         continue;
       }
 
