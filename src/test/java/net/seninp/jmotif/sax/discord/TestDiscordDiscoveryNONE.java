@@ -61,7 +61,7 @@ public class TestDiscordDiscoveryNONE {
 
     }
     catch (Exception e) {
-      fail("sholdn't throw an exception, exception thrown: \n" + StackTrace.toString(e));
+      fail("shouldn't throw an exception, exception thrown: \n" + StackTrace.toString(e));
       e.printStackTrace();
     }
 
