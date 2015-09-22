@@ -20,7 +20,6 @@ import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.FrequencyTableEntry;
 import net.seninp.jmotif.sax.datastructure.SAXRecord;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
-import net.seninp.jmotif.sax.registry.MagicArray;
 import net.seninp.jmotif.sax.registry.MagicArrayEntry;
 import net.seninp.jmotif.sax.registry.SlidingWindowMarkerAlgorithm;
 import net.seninp.jmotif.sax.registry.VisitRegistry;
@@ -118,7 +117,7 @@ public class HOTSAXImplementation {
     DiscordRecords discords = new DiscordRecords();
 
     // visit registry
-    MagicArray registry = sax.getVisitRegistry();
+    HashSet<Integer> visitRegistry = new HashSet<Integer>(windowSize * discordCollectionSize);
 
     // we conduct the search until the number of discords is less than
     // desired
@@ -130,7 +129,7 @@ public class HOTSAXImplementation {
 
       Date start = new Date();
       DiscordRecord bestDiscord = findBestDiscordWithMagic(series, windowSize, sax, allWords,
-          registry);
+          visitRegistry);
       Date end = new Date();
 
       // if the discord is null we getting out of the search
@@ -160,7 +159,9 @@ public class HOTSAXImplementation {
       if (markEnd > series.length) {
         markEnd = series.length;
       }
-      registry.markGloballyVisited(markStart, markEnd);
+      for (int i = markStart; i < markEnd; i++) {
+        visitRegistry.add(i);
+      }
 
     }
 
@@ -177,14 +178,15 @@ public class HOTSAXImplementation {
    * @param series The series we are looking for discord in.
    * @param windowSize The sliding window size.
    * @param sax The SAX data structure for the reference.
-   * @param allWords The hash-based magic array.
-   * @param registry The magic visit array.
+   * @param allWords The magic heuristics array.
+   * @param registry The global visit array.
    * @return The best discord instance.
    * @throws Exception If error occurs.
    * @throws TrieException If error occurs.
    */
   private static DiscordRecord findBestDiscordWithMagic(double[] series, int windowSize,
-      SAXRecords sax, ArrayList<MagicArrayEntry> allWords, MagicArray registry) throws Exception {
+      SAXRecords sax, ArrayList<MagicArrayEntry> allWords, HashSet<Integer> registry)
+          throws Exception {
 
     // prepare the visits array, note that there can't be more points to visit that in a SAX index
     int[] visitArray = new int[sax.getIndexes().size()];
@@ -202,11 +204,6 @@ public class HOTSAXImplementation {
 
     for (MagicArrayEntry currentEntry : allWords) {
 
-      iterationCounter++;
-
-      // // the head of this array has the rarest word
-      // MagicArrayEntry currentEntry = allWords.remove(0);
-
       // look into that entry
       String currentWord = currentEntry.getStr();
       Set<Integer> occurrences = sax.getByWord(currentWord).getIndexes();
@@ -214,12 +211,21 @@ public class HOTSAXImplementation {
       // we shall iterate over these candidate positions first
       for (int currentPos : occurrences) {
 
+        iterationCounter++;
+
         // make sure it is not previously found discord passed through the parameters array
-        if (registry.isGloballyVisited(currentPos, currentPos + windowSize)) {
-          continue;
+        boolean shallSkipThisOccurrence = false;
+        for (int i = currentPos; i < currentPos + windowSize; i++) {
+          if (registry.contains(i)) {
+            shallSkipThisOccurrence = true;
+            break;
+          }
+        }
+        if (shallSkipThisOccurrence) {
+          break;
         }
         consoleLogger.trace("conducting search for " + currentWord + " at " + currentPos
-            + ", iteration " + iterationCounter + ", to go: " + allWords.size());
+            + ", iteration " + iterationCounter);
 
         int markStart = currentPos - windowSize;
         if (markStart < 0) {

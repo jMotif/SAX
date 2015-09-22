@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
-import net.seninp.jmotif.sax.registry.MagicArray;
 
 /**
  * The collection for SAXRecords. This datastructure is used in the parallel SAX implementation.
@@ -32,7 +31,7 @@ public class SAXRecords implements Iterable<SAXRecord> {
   private HashMap<Integer, Integer> stringPosToRealPos;
 
   /**
-   * Disable this.
+   * Constructor. The structure id will be set as System.currentTimeMillis().
    */
   public SAXRecords() {
     super();
@@ -63,14 +62,13 @@ public class SAXRecords implements Iterable<SAXRecord> {
   }
 
   /**
-   * Returns an iterator which is backed by a hash map (i.e. there is no guarantee for keys
-   * ordering).
+   * Returns an iterator which is backed by a hash map with no guarantee for ordering.
    * 
    * @return an iterator.
    */
   @Override
   public Iterator<SAXRecord> iterator() {
-    return this.realTSindex.values().iterator();
+    return this.records.values().iterator();
   }
 
   /**
@@ -298,12 +296,4 @@ public class SAXRecords implements Iterable<SAXRecord> {
     return this.records.values();
   }
 
-  public MagicArray getVisitRegistry() {
-    HashMap<Integer, boolean[]> res = new HashMap<Integer, boolean[]>(this.realTSindex.size(),
-        1.0f);
-    for (Entry<Integer, SAXRecord> e : this.realTSindex.entrySet()) {
-      res.put(e.getKey(), new boolean[2]);
-    }
-    return new MagicArray(res);
-  }
 }

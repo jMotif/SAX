@@ -11,7 +11,7 @@ import net.seninp.util.StackTrace;
 
 public class TestDiscordDiscovery {
 
-  private static final String TEST_DATA_FNAME = "src/resources/test-data/ann_gun_CentroidA1.csv";
+  private static final String TEST_DATA_FNAME = "src/resources/test-data/ecg0606_1.csv";
 
   private static final int WIN_SIZE = 100;
   private static final int PAA_SIZE = 4;
@@ -33,6 +33,7 @@ public class TestDiscordDiscovery {
 
     DiscordRecords discordsBruteForce = null;
     DiscordRecords discordsHash = null;
+    DiscordRecords discordsOle = null;
 
     try {
 
@@ -48,9 +49,9 @@ public class TestDiscordDiscovery {
         System.out.println("hotsax hash discord " + d.toString());
       }
 
-      DiscordRecords discordsOle = HOTSAXImplementation.series2DiscordsVariant(series,
-          DISCORDS_TO_TEST, WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(),
-          NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
+      discordsOle = HOTSAXImplementation.series2DiscordsVariant(series, DISCORDS_TO_TEST, WIN_SIZE,
+          PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(), NumerosityReductionStrategy.NONE,
+          NORM_THRESHOLD);
       for (DiscordRecord d : discordsOle) {
         System.out.println("old hash discord " + d.toString());
       }
@@ -65,8 +66,10 @@ public class TestDiscordDiscovery {
 
       Double d1 = discordsBruteForce.get(i).getNNDistance();
       Double d2 = discordsHash.get(i).getNNDistance();
+      Double d3 = discordsOle.get(i).getNNDistance();
 
       assertEquals(d1, d2);
+      assertEquals(d1, d3);
 
     }
 

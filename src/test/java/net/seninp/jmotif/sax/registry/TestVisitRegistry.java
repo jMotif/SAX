@@ -132,8 +132,8 @@ public class TestVisitRegistry {
 
     // check the interval checker
     assertTrue(vr.isVisited(mark1Start, mark1End));
-    assertFalse(vr.isVisited(mark1Start - 1, mark1End));
-    assertFalse(vr.isVisited(mark1Start, mark1End + 1));
+    assertTrue(vr.isVisited(mark1Start - 1, mark1End));
+    assertTrue(vr.isVisited(mark1Start, mark1End + 1));
   }
 
   /**
