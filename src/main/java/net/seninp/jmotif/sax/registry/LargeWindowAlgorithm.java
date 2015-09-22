@@ -29,14 +29,14 @@ public class LargeWindowAlgorithm implements SlidingWindowMarkerAlgorithm {
   public void markVisited(VisitRegistry registry, int startPosition, int intervalLength) {
 
     consoleLogger
-        .trace("marking as visited interval [" + String.valueOf(startPosition - intervalLength)
+        .debug("marking as visited interval [" + String.valueOf(startPosition - intervalLength)
             + ", " + String.valueOf(startPosition + intervalLength) + ")");
 
     // mark the interval, this shall fit into the registry
     registry.markVisited(startPosition, startPosition + intervalLength);
 
     // grow left
-    for (int i = 0; i < intervalLength; i++) {
+    for (int i = 0; i <= intervalLength; i++) {
       if (startPosition - i <= 0) {
         break;
       }

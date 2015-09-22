@@ -10,7 +10,7 @@ import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
 import net.seninp.util.StackTrace;
 
-public class TestDiscordDiscovery {
+public class TestDiscordDiscoveryNONE {
 
   private static final String TEST_DATA_FNAME = "src/resources/test-data/ecg0606_1.csv";
 
@@ -20,16 +20,16 @@ public class TestDiscordDiscovery {
 
   private static final double NORM_THRESHOLD = 0.01;
 
-  private static final int DISCORDS_TO_TEST = 4;
+  private static final int DISCORDS_TO_TEST = 5;
 
-  private static final NumerosityReductionStrategy STRATEGY = NumerosityReductionStrategy.MINDIST;
+  private static final NumerosityReductionStrategy STRATEGY = NumerosityReductionStrategy.NONE;
 
   private double[] series;
 
   @Before
   public void setUp() throws Exception {
     series = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
-    series = Arrays.copyOfRange(series, 0, 800);
+    series = Arrays.copyOf(series, 800);
   }
 
   @Test

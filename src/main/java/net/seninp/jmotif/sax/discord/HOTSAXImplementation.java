@@ -42,7 +42,7 @@ public class HOTSAXImplementation {
   //
   private static Logger consoleLogger;
 
-  private static final Level LOGGING_LEVEL = Level.DEBUG;
+  private static final Level LOGGING_LEVEL = Level.INFO;
 
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(HOTSAXImplementation.class);
@@ -72,6 +72,7 @@ public class HOTSAXImplementation {
       int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
       double nThreshold) throws Exception {
 
+    // fix the start time
     Date start = new Date();
 
     // get the SAX transform done
@@ -79,13 +80,14 @@ public class HOTSAXImplementation {
     SAXRecords sax = sp.ts2saxViaWindow(series, windowSize, alphabetSize,
         normalA.getCuts(alphabetSize), strategy, nThreshold);
     Date saxEnd = new Date();
-    consoleLogger.debug("Time series discretized in : "
-        + SAXProcessor.timeToString(start.getTime(), saxEnd.getTime()));
+    consoleLogger.debug(
+        "Time series discretized in " + SAXProcessor.timeToString(start.getTime(), saxEnd.getTime())
+            + ", words: " + sax.getRecords().size() + ", indexes: " + sax.getIndexes().size());
 
     // fill the array for the outer loop
-    ArrayList<MagicArrayEntry> allWords = new ArrayList<MagicArrayEntry>(sax.getRecords().size());
+    ArrayList<MagicArrayEntry> magicArray = new ArrayList<MagicArrayEntry>(sax.getRecords().size());
     for (SAXRecord sr : sax.getRecords()) {
-      allWords.add(new MagicArrayEntry(String.valueOf(sr.getPayload()), sr.getIndexes().size()));
+      magicArray.add(new MagicArrayEntry(String.valueOf(sr.getPayload()), sr.getIndexes().size()));
     }
     Date hashEnd = new Date();
     consoleLogger.debug("Magic array filled in : "
@@ -96,7 +98,7 @@ public class HOTSAXImplementation {
       reportNum = discordsNumToReport;
     }
 
-    DiscordRecords discords = getDiscordsWithMagic(series, sax, windowSize, allWords, reportNum);
+    DiscordRecords discords = getDiscordsWithMagic(series, sax, windowSize, magicArray, reportNum);
 
     Date end = new Date();
 
@@ -107,11 +109,11 @@ public class HOTSAXImplementation {
   }
 
   private static DiscordRecords getDiscordsWithMagic(double[] series, SAXRecords sax,
-      int windowSize, ArrayList<MagicArrayEntry> allWords, int discordCollectionSize)
+      int windowSize, ArrayList<MagicArrayEntry> magicArray, int discordCollectionSize)
           throws Exception {
 
     // sort the candidates
-    Collections.sort(allWords);
+    Collections.sort(magicArray);
 
     // resulting discords collection
     DiscordRecords discords = new DiscordRecords();
@@ -128,7 +130,7 @@ public class HOTSAXImplementation {
           "currently known discords: " + discords.getSize() + " out of " + discordCollectionSize);
 
       Date start = new Date();
-      DiscordRecord bestDiscord = findBestDiscordWithMagic(series, windowSize, sax, allWords,
+      DiscordRecord bestDiscord = findBestDiscordWithMagic(series, windowSize, sax, magicArray,
           visitRegistry);
       Date end = new Date();
 
@@ -159,6 +161,7 @@ public class HOTSAXImplementation {
       if (markEnd > series.length) {
         markEnd = series.length;
       }
+      consoleLogger.debug("marking as globally visited [" + markStart + ", " + markEnd + "]");
       for (int i = markStart; i < markEnd; i++) {
         visitRegistry.add(i);
       }
@@ -201,6 +204,7 @@ public class HOTSAXImplementation {
     int distanceCalls = 0;
 
     // System.err.println(frequencies.size() + " left to iterate over");
+    consoleLogger.debug("iterating over  " + allWords.size() + " entries");
 
     for (MagicArrayEntry currentEntry : allWords) {
 
@@ -213,10 +217,6 @@ public class HOTSAXImplementation {
 
         iterationCounter++;
 
-        if (currentPos == 658) {
-          System.out.println("gotcha!");
-        }
-
         // make sure it is not previously found discord passed through the parameters array
         boolean shallSkipThisOccurrence = false;
         for (int i = currentPos; i < currentPos + windowSize; i++) {
@@ -226,7 +226,7 @@ public class HOTSAXImplementation {
           }
         }
         if (shallSkipThisOccurrence) {
-          break;
+          continue;
         }
         consoleLogger.trace("conducting search for " + currentWord + " at " + currentPos
             + ", iteration " + iterationCounter);
@@ -393,8 +393,9 @@ public class HOTSAXImplementation {
     SAXRecords sax = sp.ts2saxViaWindow(series, windowSize, alphabetSize,
         normalA.getCuts(alphabetSize), strategy, nThreshold);
     Date saxEnd = new Date();
-    consoleLogger.debug("Time series discretized in : "
-        + SAXProcessor.timeToString(start.getTime(), saxEnd.getTime()));
+    consoleLogger.debug(
+        "Time series discretized in " + SAXProcessor.timeToString(start.getTime(), saxEnd.getTime())
+            + ", words: " + sax.getRecords().size() + ", indexes: " + sax.getIndexes().size());
 
     // instantiate the hash
     HashMap<String, ArrayList<Integer>> hash = new HashMap<String, ArrayList<Integer>>();
