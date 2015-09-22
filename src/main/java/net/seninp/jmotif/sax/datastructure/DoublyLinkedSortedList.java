@@ -10,7 +10,7 @@ import net.seninp.util.StackTrace;
  * 
  * @author psenin
  * 
- * @param <T>
+ * @param <T> the elemnt type.
  */
 public class DoublyLinkedSortedList<T> {
 
@@ -48,7 +48,8 @@ public class DoublyLinkedSortedList<T> {
         return current.data;
       }
       catch (Exception e) {
-        throw new NoSuchElementException("There was an exception thrown: " + StackTrace.toString(e));
+        throw new NoSuchElementException(
+            "There was an exception thrown: " + StackTrace.toString(e));
       }
     }
 

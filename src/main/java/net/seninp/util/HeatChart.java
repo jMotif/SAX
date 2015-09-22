@@ -348,14 +348,18 @@ public class HeatChart {
    * Sets the x-values which are plotted along the x-axis. The x-values are calculated based upon
    * the indexes of the z-values array:
    * 
-   * <pre> 
+   * <pre>
+   *  
    * {@code
    * 
    * <pre>
    * x-value = x-offset + (column-index * x-interval)
-   * </pre>
    * 
-   * } * </pre>
+  </pre>
+  
+   * 
+   * } *
+   * </pre>
    * 
    * <p>
    * The x-interval defines the gap between each x-value and the x-offset is applied to each value
@@ -391,14 +395,17 @@ public class HeatChart {
    * Sets the y-values which are plotted along the y-axis. The y-values are calculated based upon
    * the indexes of the z-values array:
    * 
-   * <pre> 
+   * <pre>
+   *  
    * {@code
    * 
    * <pre>
    * y-value = y-offset + (column-index * y-interval)
-   * </pre>
    * 
-   * } 
+  </pre>
+  
+   * 
+   * }
    * </pre>
    * 
    * <p>
@@ -1683,6 +1690,8 @@ public class HeatChart {
   /**
    * Finds and returns the maximum value in a 2-dimensional array of doubles.
    * 
+   * @param values the data to use.
+   * 
    * @return the largest value in the array.
    */
   public static double max(double[][] values) {
@@ -1697,6 +1706,8 @@ public class HeatChart {
 
   /**
    * Finds and returns the minimum value in a 2-dimensional array of doubles.
+   * 
+   * @param values the data to use.
    * 
    * @return the smallest value in the array.
    */

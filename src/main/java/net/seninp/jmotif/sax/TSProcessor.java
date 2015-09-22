@@ -129,7 +129,7 @@ public class TSProcessor {
    * @param loadLimit the load limit.
    * @return the read data or empty array if nothing to load.
    * @throws SAXException if error occurs.
-   * @throws IOException
+   * @throws IOException if error occurs.
    */
   public double[] readTS(String dataFileName, int loadLimit) throws SAXException, IOException {
 

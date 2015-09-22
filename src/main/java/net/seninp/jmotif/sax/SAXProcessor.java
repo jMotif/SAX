@@ -316,13 +316,13 @@ public final class SAXProcessor {
   /**
    * Converts a single time-series into map of shingle frequencies.
    * 
-   * @param series
-   * @param windowSize
-   * @param paaSize
-   * @param alphabetSize
-   * @param strategy
-   * @param nrThreshold
-   * @param shingleSize
+   * @param series the time series.
+   * @param windowSize the sliding window size.
+   * @param paaSize the PAA segments number.
+   * @param alphabetSize the alphabet size.
+   * @param strategy the numerosity reduction strategy.
+   * @param nrThreshold the SAX normalization threshold.
+   * @param shingleSize the shingle size.
    * 
    * @return map of shingle frequencies.
    * @throws SAXException if error occurs.
@@ -367,7 +367,7 @@ public final class SAXProcessor {
    * @param winSize SAX window size.
    * @param paaSize SAX PAA size.
    * @param alphabetSize SAX alphabet size.
-   * @param strategy
+   * @param strategy the numerosity reduction strategy.
    * @param normThreshold the normalization threshold.
    * @return the distance value.
    * @throws Exception if error occurs.
@@ -463,7 +463,7 @@ public final class SAXProcessor {
     // iterate ofer all training series
     //
     for (Entry<String, ArrayList<double[]>> e : data.entrySet()) {
-//      System.out.println(e.getKey());
+      // System.out.println(e.getKey());
       for (double[] series : e.getValue()) {
 
         // discretize the timeseries
@@ -478,7 +478,7 @@ public final class SAXProcessor {
           String word = String.valueOf(sr.getPayload());
           Integer idx = indexTable.get(word);
           if (null == idx) {
-//            System.out.println(word);
+            // System.out.println(word);
           }
           weights[idx] = sr.getIndexes().size();
         }
