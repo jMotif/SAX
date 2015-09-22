@@ -2,12 +2,10 @@ package net.seninp.jmotif.sax.registry;
 
 public class MagicArrayEntry implements Cloneable, Comparable<MagicArrayEntry> {
 
-  protected int pos;
   protected String word;
   protected int freq;
 
-  public MagicArrayEntry(Integer location, String payload, int frequency) {
-    this.pos = location;
+  public MagicArrayEntry(String payload, int frequency) {
     this.word = payload;
     this.freq = frequency;
   }
@@ -24,10 +22,6 @@ public class MagicArrayEntry implements Cloneable, Comparable<MagicArrayEntry> {
       return -1;
     }
     return 0;
-  }
-
-  public int getPosition() {
-    return this.pos;
   }
 
   public String getStr() {

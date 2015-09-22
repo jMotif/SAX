@@ -1,7 +1,6 @@
 package net.seninp.jmotif.sax.registry;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -27,19 +26,21 @@ public class MagicArray {
 
   public MagicArray(HashMap<Integer, boolean[]> res) {
     this.registry = res;
-    // this.index = new int[res.size()];
-    // int i = 0;
-    // for (Entry<Integer, boolean[]> e : res.entrySet()) {
-    // this.index[i] = e.getKey();
-    // i++;
-    // }
-    // Arrays.sort(this.index);
     this.locallyUnvisitedCount = this.registry.size();
     this.globallyUnvisitedCount = this.registry.size();
   }
 
   public boolean isGloballyVisited(int loc) {
     return registry.get(loc)[0];
+  }
+
+  public boolean isGloballyVisited(int from, int upTo) {
+    for (int i = from; i < upTo; i++) {
+      if (this.registry.containsKey(i) && (this.registry.get(i)[0] == true)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public boolean isLocallyVisited(int loc) {

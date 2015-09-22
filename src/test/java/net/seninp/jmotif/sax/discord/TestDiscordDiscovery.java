@@ -11,7 +11,7 @@ import net.seninp.util.StackTrace;
 
 public class TestDiscordDiscovery {
 
-  private static final String TEST_DATA_FNAME = "src/resources/test-data/ecg0606_1.csv";
+  private static final String TEST_DATA_FNAME = "src/resources/test-data/ann_gun_CentroidA1.csv";
 
   private static final int WIN_SIZE = 100;
   private static final int PAA_SIZE = 4;

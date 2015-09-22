@@ -131,11 +131,11 @@ public class VisitRegistry implements Cloneable {
       // perform the visit check
       //
       for (int i = from; i < upTo; i++) {
-        if (ZERO == this.registry[i]) {
-          return false;
+        if (ONE == this.registry[i]) {
+          return true;
         }
       }
-      return true;
+      return false;
     }
     else {
       throw new RuntimeException("The location " + from + "," + upTo + " out of bounds [0,"
@@ -152,7 +152,6 @@ public class VisitRegistry implements Cloneable {
   public boolean isVisited(int loc) {
     if (checkBounds(loc)) {
       return (ONE == this.registry[loc]);
-
     }
     else {
       throw new RuntimeException(

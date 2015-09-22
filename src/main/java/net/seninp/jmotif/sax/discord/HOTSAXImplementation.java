@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -71,7 +74,8 @@ public class HOTSAXImplementation {
       double nThreshold) throws Exception {
 
     Date start = new Date();
-    // get the SAX transform
+
+    // get the SAX transform done
     NormalAlphabet normalA = new NormalAlphabet();
     SAXRecords sax = sp.ts2saxViaWindow(series, windowSize, alphabetSize,
         normalA.getCuts(alphabetSize), strategy, nThreshold);
@@ -79,31 +83,21 @@ public class HOTSAXImplementation {
     consoleLogger.debug("Time series discretized in : "
         + SAXProcessor.timeToString(start.getTime(), saxEnd.getTime()));
 
-    // instantiate the hash
-    HashMap<String, ArrayList<Integer>> hash = new HashMap<String, ArrayList<Integer>>(
-        sax.getIndexes().size());
-
-    // fill the trie
+    // fill the array for the outer loop
+    ArrayList<MagicArrayEntry> allWords = new ArrayList<MagicArrayEntry>(sax.getRecords().size());
     for (SAXRecord sr : sax.getRecords()) {
-      for (Integer pos : sr.getIndexes()) {
-        // add to hash
-        String word = String.valueOf(sr.getPayload());
-        if (!(hash.containsKey(word))) {
-          hash.put(word, new ArrayList<Integer>());
-        }
-        hash.get(String.valueOf(word)).add(pos);
-      }
+      allWords.add(new MagicArrayEntry(String.valueOf(sr.getPayload()), sr.getIndexes().size()));
     }
     Date hashEnd = new Date();
-    consoleLogger.debug(
-        "Hash filled in : " + SAXProcessor.timeToString(saxEnd.getTime(), hashEnd.getTime()));
+    consoleLogger.debug("Magic array filled in : "
+        + SAXProcessor.timeToString(saxEnd.getTime(), hashEnd.getTime()));
 
     int reportNum = DEFAULT_COLLECTION_SIZE;
-    if (discordsNumToReport > 0 && discordsNumToReport < 50) {
+    if (discordsNumToReport > 0 && discordsNumToReport < 20) {
       reportNum = discordsNumToReport;
     }
 
-    DiscordRecords discords = getDiscordsWithMagic(series, sax, windowSize, hash, reportNum);
+    DiscordRecords discords = getDiscordsWithMagic(series, sax, windowSize, allWords, reportNum);
 
     Date end = new Date();
 
@@ -114,8 +108,11 @@ public class HOTSAXImplementation {
   }
 
   private static DiscordRecords getDiscordsWithMagic(double[] series, SAXRecords sax,
-      int windowSize, HashMap<String, ArrayList<Integer>> hash, int discordCollectionSize)
+      int windowSize, ArrayList<MagicArrayEntry> allWords, int discordCollectionSize)
           throws Exception {
+
+    // sort the candidates
+    Collections.sort(allWords);
 
     // resulting discords collection
     DiscordRecords discords = new DiscordRecords();
@@ -132,7 +129,8 @@ public class HOTSAXImplementation {
           "currently known discords: " + discords.getSize() + " out of " + discordCollectionSize);
 
       Date start = new Date();
-      DiscordRecord bestDiscord = findBestDiscordWithMagic(series, windowSize, hash, registry);
+      DiscordRecord bestDiscord = findBestDiscordWithMagic(series, windowSize, sax, allWords,
+          registry);
       Date end = new Date();
 
       // if the discord is null we getting out of the search
@@ -178,18 +176,18 @@ public class HOTSAXImplementation {
    * 
    * @param series The series we are looking for discord in.
    * @param windowSize The sliding window size.
-   * @param hash The hash-based magic array.
+   * @param sax The SAX data structure for the reference.
+   * @param allWords The hash-based magic array.
    * @param registry The magic visit array.
    * @return The best discord instance.
    * @throws Exception If error occurs.
    * @throws TrieException If error occurs.
    */
   private static DiscordRecord findBestDiscordWithMagic(double[] series, int windowSize,
-      HashMap<String, ArrayList<Integer>> hash, MagicArray registry) throws Exception {
+      SAXRecords sax, ArrayList<MagicArrayEntry> allWords, MagicArray registry) throws Exception {
 
-    // we extract all seen words from the trie and sort them by the frequency decrease
-    ArrayList<MagicArrayEntry> frequencies = hashToFrequencies(hash);
-    Collections.sort(frequencies);
+    // prepare the visits array, note that there can't be more points to visit that in a SAX index
+    int[] visitArray = new int[sax.getIndexes().size()];
 
     // init tracking variables
     int bestSoFarPosition = -1;
@@ -202,130 +200,152 @@ public class HOTSAXImplementation {
 
     // System.err.println(frequencies.size() + " left to iterate over");
 
-    while (!frequencies.isEmpty()) {
+    for (MagicArrayEntry currentEntry : allWords) {
 
       iterationCounter++;
 
-      // the head of this array has the rarest word
-      MagicArrayEntry currentEntry = frequencies.remove(0);
-      // if (frequencies.size() % 10000 == 0) {
-      // System.err.println(frequencies.size() + " left to iterate over");
-      // }
+      // // the head of this array has the rarest word
+      // MagicArrayEntry currentEntry = allWords.remove(0);
+
+      // look into that entry
       String currentWord = currentEntry.getStr();
-      int currentPos = currentEntry.getPosition();
+      Set<Integer> occurrences = sax.getByWord(currentWord).getIndexes();
 
-      // make sure it is not previously found discord passed through the parameters array
-      if (registry.isGloballyVisited(currentPos)) {
-        continue;
-      }
+      // we shall iterate over these candidate positions first
+      for (int currentPos : occurrences) {
 
-      // all the candidates we are going to try
-      registry.resetLocal();
-      int markStart = currentPos - windowSize;
-      if (markStart < 0) {
-        markStart = 0;
-      }
-      int markEnd = currentPos + windowSize;
-      if (markEnd > series.length) {
-        markEnd = series.length;
-      }
-      registry.markLocallyVisited(markStart, markEnd);
-
-      consoleLogger.trace("conducting search for " + currentWord + " at " + currentPos
-          + ", iteration " + iterationCounter + ", to go: " + frequencies.size());
-
-      // fix the current subsequence trace
-      double[] currentCandidateSeq = tp.subseriesByCopy(series, currentPos,
-          currentPos + windowSize);
-
-      // let the search begin ..
-      double nearestNeighborDist = Double.MAX_VALUE;
-      boolean doRandomSearch = true;
-
-      // WE ARE GOING TO ITERATE OVER THE CURRENT WORD OCCURENCES HERE FIRST
-      List<Integer> currentWordOccurences = hash.get(currentWord);
-
-      for (Integer nextOccurrence : currentWordOccurences) {
-
-        // just in case there is an overlap
-        if (registry.isLocallyVisited(nextOccurrence)) {
+        // make sure it is not previously found discord passed through the parameters array
+        if (registry.isGloballyVisited(currentPos, currentPos + windowSize)) {
           continue;
         }
-        else {
-          registry.markLocallyVisited(nextOccurrence.intValue());
+        consoleLogger.trace("conducting search for " + currentWord + " at " + currentPos
+            + ", iteration " + iterationCounter + ", to go: " + allWords.size());
+
+        int markStart = currentPos - windowSize;
+        if (markStart < 0) {
+          markStart = 0;
+        }
+        int markEnd = currentPos + windowSize;
+        if (markEnd > series.length) {
+          markEnd = series.length;
         }
 
-        // get the subsequence and the distance
-        double[] occurrenceSubsequence = tp.subseriesByCopy(series, nextOccurrence,
-            nextOccurrence + windowSize);
-        double dist = ed.distance(currentCandidateSeq, occurrenceSubsequence);
-        distanceCalls++;
-
-        // keep track of best so far distance
-        if (dist < nearestNeighborDist) {
-          nearestNeighborDist = dist;
-          consoleLogger.trace(" ** current NN at " + nextOccurrence + ", distance: "
-              + nearestNeighborDist + ", pos " + currentPos);
-        }
-        if (dist < bestSoFarDistance) {
-          consoleLogger.trace(" ** abandoning the occurrences loop, distance " + dist
-              + " is less than best so far " + bestSoFarDistance);
-          doRandomSearch = false;
-          break;
+        // all the candidates we are not going to try
+        HashSet<Integer> alreadyVisited = new HashSet<Integer>(
+            occurrences.size() + (markEnd - markStart));
+        for (int i = markStart; i < markEnd; i++) {
+          alreadyVisited.add(i);
         }
 
-      }
+        // fix the current subsequence trace
+        double[] currentCandidateSeq = tp.subseriesByCopy(series, currentPos,
+            currentPos + windowSize);
 
-      // check if we must continue with random neighbors
+        // let the search begin ..
+        double nearestNeighborDist = Double.MAX_VALUE;
+        boolean doRandomSearch = true;
 
-      if (doRandomSearch) {
-        consoleLogger.trace("starting random search");
+        for (Integer nextOccurrence : occurrences) {
 
-        int visitCounter = 0;
+          // just in case there is an overlap
+          if (alreadyVisited.contains(nextOccurrence)) {
+            continue;
+          }
+          else {
+            alreadyVisited.add(nextOccurrence);
+          }
 
-        // while there are unvisited locations
-        int randomPos = -1;
-        registry.RandomLocalSearchRedify();
-        while (-1 != (randomPos = registry.getNextLocallyUnvisitedPosition())) {
-
-          registry.markLocallyVisited(randomPos);
-
-          double[] randomSubsequence = tp.subseriesByCopy(series, randomPos,
-              randomPos + windowSize);
-          double dist = ed.distance(currentCandidateSeq, randomSubsequence);
+          // get the subsequence and the distance
+          double[] occurrenceSubsequence = tp.subseriesByCopy(series, nextOccurrence,
+              nextOccurrence + windowSize);
+          double dist = ed.distance(currentCandidateSeq, occurrenceSubsequence);
           distanceCalls++;
 
-          // early abandoning of the search:
-          // the current word is not discord, we have seen better
-          if (dist < bestSoFarDistance) {
+          // keep track of best so far distance
+          if (dist < nearestNeighborDist) {
             nearestNeighborDist = dist;
-            consoleLogger.trace(" ** abandoning random visits loop, seen distance "
-                + nearestNeighborDist + " at iteration " + visitCounter);
+            consoleLogger.trace(" ** current NN at " + nextOccurrence + ", distance: "
+                + nearestNeighborDist + ", pos " + currentPos);
+          }
+          if (dist < bestSoFarDistance) {
+            consoleLogger.trace(" ** abandoning the occurrences loop, distance " + dist
+                + " is less than best so far " + bestSoFarDistance);
+            doRandomSearch = false;
             break;
           }
 
-          // keep track
-          if (dist < nearestNeighborDist) {
-            consoleLogger.trace(" ** current NN at " + randomPos + ", distance: " + dist);
-            nearestNeighborDist = dist;
+        }
+
+        // check if we must continue with random neighbors
+
+        if (doRandomSearch) {
+          consoleLogger.trace("starting random search");
+
+          // init the visit array
+          //
+          int visitCounter = 0;
+          int cIndex = 0;
+          for (int i : sax.getIndexes()) {
+            if (!(alreadyVisited.contains(i))) {
+              visitArray[cIndex] = i;
+              cIndex++;
+            }
+          }
+          cIndex--;
+
+          // shuffle the visit array
+          //
+          Random rnd = new Random();
+          for (int i = cIndex; i > 0; i--) {
+            int index = rnd.nextInt(i + 1);
+            int a = visitArray[index];
+            visitArray[index] = visitArray[i];
+            visitArray[i] = a;
           }
 
-          visitCounter = visitCounter + 1;
+          // while there are unvisited locations
+          while (cIndex >= 0) {
 
-        } // while inner loop
+            cIndex--;
+            int randomPos = visitArray[cIndex + 1];
 
-      } // end of random search loop
+            double[] randomSubsequence = tp.subseriesByCopy(series, randomPos,
+                randomPos + windowSize);
+            double dist = ed.distance(currentCandidateSeq, randomSubsequence);
+            distanceCalls++;
 
-      if (nearestNeighborDist > bestSoFarDistance) {
-        consoleLogger.debug("discord updated: pos " + currentPos + ", dist " + bestSoFarDistance);
-        bestSoFarDistance = nearestNeighborDist;
-        bestSoFarPosition = currentPos;
-        bestSoFarWord = currentWord;
-      }
+            // early abandoning of the search:
+            // the current word is not discord, we have seen better
+            if (dist < bestSoFarDistance) {
+              nearestNeighborDist = dist;
+              consoleLogger.trace(" ** abandoning random visits loop, seen distance "
+                  + nearestNeighborDist + " at iteration " + visitCounter);
+              break;
+            }
 
-      consoleLogger.trace(" . . iterated " + iterationCounter + " times, best distance:  "
-          + bestSoFarDistance + " for a string " + bestSoFarWord + " at " + bestSoFarPosition);
+            // keep track
+            if (dist < nearestNeighborDist) {
+              consoleLogger.trace(" ** current NN at " + randomPos + ", distance: " + dist);
+              nearestNeighborDist = dist;
+            }
 
+            visitCounter = visitCounter + 1;
+
+          } // while inner loop
+
+        } // end of random search loop
+
+        if (nearestNeighborDist > bestSoFarDistance) {
+          consoleLogger.debug("discord updated: pos " + currentPos + ", dist " + bestSoFarDistance);
+          bestSoFarDistance = nearestNeighborDist;
+          bestSoFarPosition = currentPos;
+          bestSoFarWord = currentWord;
+        }
+
+        consoleLogger.trace(" . . iterated " + iterationCounter + " times, best distance:  "
+            + bestSoFarDistance + " for a string " + bestSoFarWord + " at " + bestSoFarPosition);
+
+      } // outer loop inner part
     } // outer loop
 
     consoleLogger.trace("Distance calls: " + distanceCalls);
@@ -340,8 +360,8 @@ public class HOTSAXImplementation {
    * Old implementation. Nearest neighbot for a candidate subsequence is searched among all other
    * time-series subsequences, regardless of their exclusion by EXACT or MINDIST. This also accepts
    * a marker implementation which is responsible for marking a segment as visited.
-   * 
-   * 
+   *
+   *
    * @param series The timeseries.
    * @param discordsNumToReport The number of discords to report.
    * @param windowSize SAX sliding window size.
@@ -459,7 +479,7 @@ public class HOTSAXImplementation {
    * This method reports the best found discord. Note, that this discord is approximately the best.
    * Due to the fuzzy-logic search with randomization and aggressive labeling of the magic array
    * locations.
-   * 
+   *
    * @param series The series we are looking for discord in.
    * @param windowSize The sliding window size.
    * @param hash The hash-based magic array.
@@ -500,7 +520,7 @@ public class HOTSAXImplementation {
       int currentPos = currentEntry.getPosition();
 
       // make sure it is not previously found discord passed through the parameters array
-      if (globalRegistry.isVisited(currentPos)) {
+      if (globalRegistry.isVisited(currentPos, currentPos + windowSize)) {
         continue;
       }
 
@@ -609,7 +629,7 @@ public class HOTSAXImplementation {
         bestSoFarWord = currentWord;
       }
 
-      consoleLogger.trace(" . . iterated " + iterationCounter + " times, best distance:  "
+      consoleLogger.trace(" . . iterated " + iterationCounter + " times, best distance: "
           + bestSoFarDistance + " for a string " + bestSoFarWord + " at " + bestSoFarPosition);
 
     } // outer loop
@@ -624,7 +644,7 @@ public class HOTSAXImplementation {
 
   /**
    * Translates the hash table into sortable array of substrings.
-   * 
+   *
    * @param hash
    * @return
    */
@@ -640,23 +660,23 @@ public class HOTSAXImplementation {
     }
     return res;
   }
-
-  /**
-   * Translates the hash table into sortable array of substrings.
-   * 
-   * @param hash
-   * @return
-   */
-  private static ArrayList<MagicArrayEntry> hashToFrequencies(
-      HashMap<String, ArrayList<Integer>> hash) {
-    ArrayList<MagicArrayEntry> res = new ArrayList<MagicArrayEntry>();
-    for (Entry<String, ArrayList<Integer>> e : hash.entrySet()) {
-      String payload = e.getKey();
-      int frequency = e.getValue().size();
-      for (Integer i : e.getValue()) {
-        res.add(new MagicArrayEntry(i, payload, frequency));
-      }
-    }
-    return res;
-  }
+  //
+  // /**
+  // * Translates the hash table into sortable array of substrings.
+  // *
+  // * @param hash
+  // * @return
+  // */
+  // private static ArrayList<MagicArrayEntry> hashToFrequencies(
+  // HashMap<String, ArrayList<Integer>> hash) {
+  // ArrayList<MagicArrayEntry> res = new ArrayList<MagicArrayEntry>();
+  // for (Entry<String, ArrayList<Integer>> e : hash.entrySet()) {
+  // String payload = e.getKey();
+  // int frequency = e.getValue().size();
+  // for (Integer i : e.getValue()) {
+  // res.add(new MagicArrayEntry(i, payload, frequency));
+  // }
+  // }
+  // return res;
+  // }
 }
