@@ -162,25 +162,26 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
     	   		topMotif.getIndexes().size() + " times.");
 
 #### 5.2 Time series rare pattern (discord, anomaly) detection using HOT-SAX
-Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/HOTSAXImplementation.java) implements two methods for rare patterns discovery:
 
-##### 5.2.1 Trie-based time series discord discovery  
+First, note that class [BruteForceDiscordImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/BruteForceDiscordImplementation.java) implements a brute-force search for discords and intended to be used as a reference.
 
-	Alphabet na = new NormalAlphabet();
-	double[] series = TSProcessor.readFileColumn(DATA_FNAME, 0, 0);
-	
-	discordsTrie = HOTSAXImplementation.series2Discords(series, WIN_SIZE, ALPHABET_SIZE, 
-	DISCORDS_TO_REPORT, new LargeWindowAlgorithm(), NORM_THRESHOLD);
-          
-	System.out.println("The best discord: " + discordsTrie.get(0));
+ 	discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series, 
+ 	   WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
+        
+        for (DiscordRecord d : discordsBruteForce) {
+           System.out.println("brute force discord " + d.toString());
+        }
+
+Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/HOTSAXImplementation.java) implements a HOTSAX algorithm for time series discord discovery:
 
 
-##### 5.2.2 Hash-table-based time series discord discovery (allows PAA and alphabet sizes to differ)  
+      discordsHOTSAX = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
+          PAA_SIZE, ALPHABET_SIZE, STRATEGY, NORM_THRESHOLD);
+      for (DiscordRecord d : discordsHOTSAX) {
+        System.out.println("hotsax hash discord " + d.toString());
+      }
 
-	discordsHash = HOTSAXImplementation.series2DiscordsWithHash(series, WIN_SIZE, PAA_SIZE, 
-		ALPHABET_SIZE, DISCORDS_TO_REPORT, new LargeWindowAlgorithm(), NORM_THRESHOLD);
-          
-	System.out.println("The best discord: " + discordsHash.get(0));
+The soursecode has examples for using these [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryNONE.java) and [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryEXACT.java)
 	
 	
 ## Made with Aloha!
