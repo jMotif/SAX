@@ -84,7 +84,7 @@ There two classes which implement sequential end-to-end workflow for SAX and a p
 
 ##### Discretizing time-series *by chunking*:
 
-	// instantiate needed classes
+	// instantiate classes
 	NormalAlphabet na = new NormalAlphabet();
 	SAXProcessor sp = new SAXProcessor();
 	
@@ -99,7 +99,7 @@ There two classes which implement sequential end-to-end workflow for SAX and a p
 
 ##### Discretizing time-series *via sliding window*:
 
-	// instantiate needed classes
+	// instantiate classes
 	NormalAlphabet na = new NormalAlphabet();
 	SAXProcessor sp = new SAXProcessor();
 	
@@ -118,7 +118,7 @@ There two classes which implement sequential end-to-end workflow for SAX and a p
 
 ##### Multi-threaded discretization *via sliding window*:
 
-	// instantiate needed classes
+	// instantiate classes
 	NormalAlphabet na = new NormalAlphabet();
 	SAXProcessor sp = new SAXProcessor();
   
@@ -148,16 +148,22 @@ The plot below shows the speedup achieved when using the parallelized SAX versio
 #### 5.1 Time series recurrent pattern (motif) discovery
 Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/datastructure/SAXRecords.java) implements a method for getting the most frequent SAX words:
 
-	Alphabet na = new NormalAlphabet();
+        // read the data
 	double[] series = TSProcessor.readFileColumn(DATA_FNAME, 0, 0);
 	
+	// instantiate classes
+	Alphabet na = new NormalAlphabet();
 	SAXProcessor sp = new SAXProcessor();
+	
+	// perform discretization
 	saxData = sp.ts2saxViaWindow(series, WIN_SIZE, PAA_SIZE, na.getCuts(ALPHABET_SIZE),
         		NR_STRATEGY, NORM_THRESHOLD);
         		
+        // get the list of 10 most frequent SAX words
 	ArrayList<SAXRecord> motifs = saxData.getMotifs(10);
 	SAXRecord topMotif = motifs.get(0);
         
+        // print motifs
 	System.out.println("top motif " + String.valueOf(topMotif.getPayload()) + " seen " + 
     	   		topMotif.getIndexes().size() + " times.");
 
