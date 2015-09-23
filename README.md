@@ -177,9 +177,12 @@ Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/
 
       discordsHOTSAX = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
           PAA_SIZE, ALPHABET_SIZE, STRATEGY, NORM_THRESHOLD);
+          
       for (DiscordRecord d : discordsHOTSAX) {
         System.out.println("hotsax hash discord " + d.toString());
       }
+
+Note, that the "proper" strategy to use with HOTSAX is `NumerosityReductionStrategy.NONE` but you may try others in order to speed-up the search, exactness however, is not be guaranteed.
 
 The soursecode has examples for using these [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryNONE.java) and [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryEXACT.java)
 	
