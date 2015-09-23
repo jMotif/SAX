@@ -30,14 +30,17 @@ If you are interested in more advance techniques for time series pattern discove
 
 1.0 Building
 ------------
-The code is written in Java and I use maven to build it:
+The code is written in Java and I use maven to build it. Use the profile `single` to build an executable jar containing all the dependencies:
 	
 	$ mvn package -P single
+	
 	[INFO] Scanning for projects...
 	[INFO] ------------------------------------------------------------------------
 	[INFO] Building jmotif-sax
 	[INFO]    task-segment: [package]
+	
 	...
+	
 	[INFO] Building jar: /media/Stock/git/jmotif-sax/target/jmotif-sax-1.0.1-SNAPSHOT-jar-with-dependencies.jar
 	[INFO] ------------------------------------------------------------------------
 	[INFO] BUILD SUCCESSFUL
