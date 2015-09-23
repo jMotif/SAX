@@ -146,7 +146,7 @@ The plot below shows the speedup achieved when using the parallelized SAX versio
 ------------
 
 #### 5.1 Time series recurrent pattern (motif) discovery
-Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/datastructures/SAXRecords.java) implements a method for getting the most frequent SAX words:
+Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/datastructure/SAXRecords.java) implements a method for getting the most frequent SAX words:
 
 	Alphabet na = new NormalAlphabet();
 	double[] series = TSProcessor.readFileColumn(DATA_FNAME, 0, 0);
