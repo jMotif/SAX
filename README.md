@@ -139,7 +139,7 @@ There two classes implementing end-to-end workflow for SAX. These are [TSProcess
 		System.out.println(idx + ", " + String.valueOf(res.getByIndex(idx).getPayload()));
 	}
 
-#### 3.4 Time series recurrent pattern (motif) discovery
+#### 3.4 Time series motif (recurrent pattern) discovery
 Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/datastructure/SAXRecords.java) implements a method for getting the most frequent SAX words:
 
         // read the data
@@ -161,7 +161,7 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
 	System.out.println("top motif " + String.valueOf(topMotif.getPayload()) + " seen " + 
     	   		topMotif.getIndexes().size() + " times.");
 
-#### 3.5 Time series discord detection using brute-force search
+#### 3.5 Time series discord discovery using brute-force search
 
 The [BruteForceDiscordImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/BruteForceDiscordImplementation.java) class implements a brute-force search for discords, which intended to be used as a reference.
 
