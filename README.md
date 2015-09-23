@@ -3,15 +3,15 @@ Time series discretization with SAX
 
 Implements Symbolic Aggregate Approximation of time series in Java; implements a multi-threaded SAX discretization. This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
 
-The library is **[available through Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22)** and is built by TravisCI: [![Build Status](https://travis-ci.org/jMotif/SAX.svg?branch=master)](https://travis-ci.org/jMotif/SAX).
+The library is [available through Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmotif-sax%22) and is built by TravisCI: [![Build Status](https://travis-ci.org/jMotif/SAX.svg?branch=master)](https://travis-ci.org/jMotif/SAX).
 
 0.0 SAX transform in a nutshell
 ------------
-An illustration of a time series of 128 points converted into the word of 8 letters:
+SAX is used to transform a sequence of rational numbers (i.e., a time series) into a sequence of letters (i.e., a string). An illustration of a time series of 128 points converted into the word of 8 letters:
 
 ![SAX in a nutshell](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/sax.png)
 
-Find more information about SAX at its authors pages: [SAX overview by Jessica Lin](http://cs.gmu.edu/~jessica/sax.htm), [Eamonn Keogh's SAX page](http://www.cs.ucr.edu/~eamonn/SAX.htm), or at [sax-vsm wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html).
+As the discretization is the probably the most used transformation in data mining, SAX has been widely used throughout the field. Find more information about SAX at its authors pages: [SAX overview by Jessica Lin](http://cs.gmu.edu/~jessica/sax.htm), [Eamonn Keogh's SAX page](http://www.cs.ucr.edu/~eamonn/SAX.htm), or at [sax-vsm wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html).
 
 ##### The key publications introducing SAX:
 
@@ -26,7 +26,7 @@ If you are using this implementation for you academic work, please cite our [Gra
 [Citation] Senin, P., Lin, J., Wang, X., Oates, T., Gandhi, S., Boedihardjo, A.P., Chen, C., Frankenstein, S., Lerner, M.,  [*GrammarViz 2.0: a tool for grammar-based pattern discovery in time series*](http://www2.hawaii.edu/~senin/assets/papers/grammarviz2.pdf), ECML/PKDD Conference, 2014.
 
 ##### Variable-length time series recurrent and anomalous patterns detection
-If you are interested in the time series motif and discord discovery, please check out our new tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html) -- based on SAX, Grammatical Inference, and algorithmic (Kolmogorv complexity) it enables *variable-length* time series recurrent and anomalous patterns detection.
+If you are interested in more advance techniques for time series pattern discovery, please check out our new tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html) -- based on SAX, Grammatical Inference, and algorithmic (Kolmogorv complexity) it enables *variable-length* time series recurrent and anomalous patterns detection.
 
 1.0 Building
 ------------
