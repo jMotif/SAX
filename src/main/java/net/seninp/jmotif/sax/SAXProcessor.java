@@ -456,10 +456,6 @@ public final class SAXProcessor {
       indexTable.put(allStrings[i], i);
     }
 
-    // // some info printout
-    // System.out.println("Using " + allStrings.length + " words: "
-    // + Arrays.toString(allStrings).replace(", ", "\", \""));
-
     // iterate ofer all training series
     //
     for (Entry<String, ArrayList<double[]>> e : data.entrySet()) {
@@ -477,9 +473,6 @@ public final class SAXProcessor {
         for (SAXRecord sr : saxData) {
           String word = String.valueOf(sr.getPayload());
           Integer idx = indexTable.get(word);
-          if (null == idx) {
-            // System.out.println(word);
-          }
           weights[idx] = sr.getIndexes().size();
         }
 

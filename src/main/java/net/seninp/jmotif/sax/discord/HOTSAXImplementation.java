@@ -447,7 +447,7 @@ public class HOTSAXImplementation {
 
       Date start = new Date();
       DiscordRecord bestDiscord = findBestDiscordWithHash(series, windowSize, hash,
-          globalTrackVisitRegistry, markerAlgorithm);
+          globalTrackVisitRegistry);
       Date end = new Date();
 
       // if the discord is null we getting out of the search
@@ -492,8 +492,7 @@ public class HOTSAXImplementation {
    * @throws TrieException If error occurs.
    */
   private static DiscordRecord findBestDiscordWithHash(double[] series, int windowSize,
-      HashMap<String, ArrayList<Integer>> hash, VisitRegistry globalRegistry,
-      SlidingWindowMarkerAlgorithm marker) throws Exception {
+      HashMap<String, ArrayList<Integer>> hash, VisitRegistry globalRegistry) throws Exception {
 
     // we extract all seen words from the trie and sort them by the frequency decrease
     ArrayList<FrequencyTableEntry> frequencies = hashToFreqEntries(hash);
