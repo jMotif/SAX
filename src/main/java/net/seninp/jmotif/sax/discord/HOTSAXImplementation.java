@@ -80,8 +80,8 @@ public class HOTSAXImplementation {
     SAXRecords sax = sp.ts2saxViaWindow(series, windowSize, alphabetSize,
         normalA.getCuts(alphabetSize), strategy, nThreshold);
     Date saxEnd = new Date();
-    consoleLogger.info(
-        "discretized in " + SAXProcessor.timeToString(start.getTime(), saxEnd.getTime())
+    consoleLogger
+        .info("discretized in " + SAXProcessor.timeToString(start.getTime(), saxEnd.getTime())
             + ", words: " + sax.getRecords().size() + ", indexes: " + sax.getIndexes().size());
 
     // fill the array for the outer loop
@@ -102,7 +102,7 @@ public class HOTSAXImplementation {
 
     Date end = new Date();
 
-    consoleLogger.debug("hash-based discords search finished in : "
+    consoleLogger.info("discords search finished in : "
         + SAXProcessor.timeToString(start.getTime(), end.getTime()));
 
     return discords;
@@ -386,8 +386,8 @@ public class HOTSAXImplementation {
     SAXRecords sax = sp.ts2saxViaWindow(series, windowSize, alphabetSize,
         normalA.getCuts(alphabetSize), strategy, nThreshold);
     Date saxEnd = new Date();
-    consoleLogger.debug(
-        "Time series discretized in " + SAXProcessor.timeToString(start.getTime(), saxEnd.getTime())
+    consoleLogger
+        .info("discretized in " + SAXProcessor.timeToString(start.getTime(), saxEnd.getTime())
             + ", words: " + sax.getRecords().size() + ", indexes: " + sax.getIndexes().size());
 
     // instantiate the hash
@@ -418,7 +418,7 @@ public class HOTSAXImplementation {
 
     Date end = new Date();
 
-    consoleLogger.debug("hash-based discords search finished in : "
+    consoleLogger.info("discords search finished in : "
         + SAXProcessor.timeToString(start.getTime(), end.getTime()));
 
     return discords;
