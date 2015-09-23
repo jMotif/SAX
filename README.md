@@ -85,7 +85,7 @@ When run, it prints the time series point index and a corresponding word:
 ------------	
 There two classes which implement sequential end-to-end workflow for SAX and a parallel implementation of the discretization. These are [TSProcessor](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/TSProcessor.java) and [SAXProcessor](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/SAXProcessor.java).
 
-##### Discretizing time-series *by chunking*:
+#### 3.1 Discretizing time-series *by chunking*:
 
 	// instantiate classes
 	NormalAlphabet na = new NormalAlphabet();
@@ -100,7 +100,7 @@ There two classes which implement sequential end-to-end workflow for SAX and a p
 	// print the output
 	System.out.println(str);
 
-##### Discretizing time-series *via sliding window*:
+#### 3.2 Discretizing time-series *via sliding window*:
 
 	// instantiate classes
 	NormalAlphabet na = new NormalAlphabet();
@@ -119,7 +119,7 @@ There two classes which implement sequential end-to-end workflow for SAX and a p
 		System.out.println(idx + ", " + String.valueOf(res.getByIndex(idx).getPayload()));
 	}
 
-##### Multi-threaded discretization *via sliding window*:
+#### 3.3 Multi-threaded discretization *via sliding window*:
 
 	// instantiate classes
 	NormalAlphabet na = new NormalAlphabet();
@@ -139,16 +139,7 @@ There two classes which implement sequential end-to-end workflow for SAX and a p
 		System.out.println(idx + ", " + String.valueOf(res.getByIndex(idx).getPayload()));
 	}
 
-The plot below shows the speedup achieved when using the parallelized SAX version on the dataset [`300_signal1.txt`](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/test-data/300_signal1.txt) of length 536,976 points. Parameters used in the experiment: sliding window size 200, PAA size 11, alphabet size 7, and three different NR strategies.
-
-4.0 Threaded performance
-------------	
-![Performance plot](https://raw.githubusercontent.com/jMotif/SAX/master/src/RCode/performance/profiling.png)
-
-5.0 Use cases
-------------
-
-#### 5.1 Time series recurrent pattern (motif) discovery
+#### 3.4 Time series recurrent pattern (motif) discovery
 Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/datastructure/SAXRecords.java) implements a method for getting the most frequent SAX words:
 
         // read the data
@@ -170,9 +161,9 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
 	System.out.println("top motif " + String.valueOf(topMotif.getPayload()) + " seen " + 
     	   		topMotif.getIndexes().size() + " times.");
 
-#### 5.2 Time series rare pattern (discord, anomaly) detection using HOT-SAX
+#### 3.5 Time series discord detection using brute-force search
 
-First, note that class [BruteForceDiscordImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/BruteForceDiscordImplementation.java) implements a brute-force search for discords and intended to be used as a reference.
+The [BruteForceDiscordImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/BruteForceDiscordImplementation.java) class implements a brute-force search for discords, which intended to be used as a reference.
 
  	discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series, 
  	   WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
@@ -181,8 +172,9 @@ First, note that class [BruteForceDiscordImplementation](https://github.com/jMot
            System.out.println("brute force discord " + d.toString());
         }
 
-Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/HOTSAXImplementation.java) implements a HOTSAX algorithm for time series discord discovery:
+#### 3.6 Time series discord detection using HOTSAX
 
+The [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/HOTSAXImplementation.java) class implements a HOTSAX algorithm for time series discord discovery:
 
       discordsHOTSAX = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
           PAA_SIZE, ALPHABET_SIZE, STRATEGY, NORM_THRESHOLD);
@@ -191,10 +183,16 @@ Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/
         System.out.println("hotsax hash discord " + d.toString());
       }
 
-Note, that the "proper" strategy to use with HOTSAX is `NumerosityReductionStrategy.NONE` but you may try others in order to speed-up the search, exactness however, is not be guaranteed.
+Note, that the "proper" strategy to use with HOTSAX is `NumerosityReductionStrategy.NONE` but you may try others in order to speed-up the search, exactness however, is not guaranteed.
 
 The library source code has examples (tests) for using these [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryNONE.java) and [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryEXACT.java).
 	
-	
+
+4.0 Threaded performance
+------------	
+The plot shows the speedup achieved when using the parallelized SAX version on the dataset [`300_signal1.txt`](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/test-data/300_signal1.txt) of length 536,976 points. Parameters used in the experiment: sliding window size 200, PAA size 11, alphabet size 7, and three different NR strategies.
+
+![Performance plot](https://raw.githubusercontent.com/jMotif/SAX/master/src/RCode/performance/profiling.png)
+
 ## Made with Aloha!
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
