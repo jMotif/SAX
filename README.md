@@ -38,7 +38,7 @@ The code is written in Java and I use maven to build it:
 	[INFO] Building jmotif-sax
 	[INFO]    task-segment: [package]
 	...
-	[INFO] Building jar: /media/Stock/git/jmotif-sax/target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar
+	[INFO] Building jar: /media/Stock/git/jmotif-sax/target/jmotif-sax-1.0.1-SNAPSHOT-jar-with-dependencies.jar
 	[INFO] ------------------------------------------------------------------------
 	[INFO] BUILD SUCCESSFUL
 
@@ -69,7 +69,7 @@ The jar file can be used to convert a time series (represented as a single-colum
 
 When run, it prints the time series point index and a corresponding word:
 
- 	$ java -jar "target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar" \ 
+ 	$ java -jar "target/jmotif-sax-1.0.1-SNAPSHOT-jar-with-dependencies.jar" \ 
  	                      -d src/resources/test-data/ecg0606_1.csv -o test.txt
  	$ head test.txt
  	0, aabc
@@ -184,7 +184,7 @@ Class [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/
 
 Note, that the "proper" strategy to use with HOTSAX is `NumerosityReductionStrategy.NONE` but you may try others in order to speed-up the search, exactness however, is not be guaranteed.
 
-The soursecode has examples for using these [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryNONE.java) and [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryEXACT.java)
+The soursecode has examples for using these [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryNONE.java) and [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryEXACT.java).
 	
 	
 ## Made with Aloha!
