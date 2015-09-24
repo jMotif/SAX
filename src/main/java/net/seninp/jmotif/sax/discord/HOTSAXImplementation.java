@@ -102,7 +102,7 @@ public class HOTSAXImplementation {
 
     Date end = new Date();
 
-    consoleLogger.info("discords search finished in : "
+    consoleLogger.info(discords.getSize() + " discords found in "
         + SAXProcessor.timeToString(start.getTime(), end.getTime()));
 
     return discords;
@@ -418,7 +418,7 @@ public class HOTSAXImplementation {
 
     Date end = new Date();
 
-    consoleLogger.info("discords search finished in : "
+    consoleLogger.info(discords.getSize() + " discords found in "
         + SAXProcessor.timeToString(start.getTime(), end.getTime()));
 
     return discords;
