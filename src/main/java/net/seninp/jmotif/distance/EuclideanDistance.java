@@ -52,30 +52,6 @@ public final class EuclideanDistance {
   }
 
   /**
-   * Calculates the square of the Euclidean distance between two multidimensional points represented
-   * by integer vectors.
-   * 
-   * @param point1 The first point.
-   * @param point2 The second point.
-   * @return The Euclidean distance.
-   * @throws Exception In the case of error.
-   */
-  public double distance2(int[] point1, int[] point2) throws Exception {
-    if (point1.length == point2.length) {
-      Double sum = 0D;
-      for (int i = 0; i < point1.length; i++) {
-        sum = sum
-            + (Integer.valueOf(point2[i]).doubleValue() - Integer.valueOf(point1[i]).doubleValue())
-            * (Integer.valueOf(point2[i]).doubleValue() - Integer.valueOf(point1[i]).doubleValue());
-      }
-      return sum;
-    }
-    else {
-      throw new Exception("Exception in Euclidean distance: array lengths are not equal");
-    }
-  }
-
-  /**
    * Calculates the Euclidean distance between two points.
    * 
    * @param p1 The first point.
@@ -112,6 +88,28 @@ public final class EuclideanDistance {
   }
 
   /**
+   * Calculates the square of the Euclidean distance between two multidimensional points represented
+   * by integer vectors.
+   * 
+   * @param point1 The first point.
+   * @param point2 The second point.
+   * @return The Euclidean distance.
+   * @throws Exception In the case of error.
+   */
+  public long distance2(int[] point1, int[] point2) throws Exception {
+    if (point1.length == point2.length) {
+      long sum = 0;
+      for (int i = 0; i < point1.length; i++) {
+        sum = sum + (point2[i] - point1[i]) * (point2[i] - point1[i]);
+      }
+      return sum;
+    }
+    else {
+      throw new Exception("Exception in Euclidean distance: array lengths are not equal");
+    }
+  }
+
+  /**
    * Calculates the Euclidean distance between two points.
    * 
    * @param point1 The first point.
@@ -120,7 +118,7 @@ public final class EuclideanDistance {
    * @throws Exception In the case of error.
    */
   public double distance(int[] point1, int[] point2) throws Exception {
-    return Math.sqrt(distance2(point1, point2));
+    return Math.sqrt(Long.valueOf(distance2(point1, point2)).doubleValue());
   }
 
   /**

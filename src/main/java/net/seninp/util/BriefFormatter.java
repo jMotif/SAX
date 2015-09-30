@@ -8,7 +8,7 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /**
- * Implements log formatter.
+ * Implements a custom log formatter.
  * 
  * @author psenin
  * 

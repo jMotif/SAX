@@ -2,6 +2,14 @@ package net.seninp.util;
 
 import java.util.Map;
 
+/**
+ * Implements a map entry. Used for custom data structures.
+ * 
+ * @author psenin
+ *
+ * @param <K>
+ * @param <V>
+ */
 public class JmotifMapEntry<K, V> implements Map.Entry<K, V> {
   private final K key;
   private V value;
@@ -66,7 +74,5 @@ public class JmotifMapEntry<K, V> implements Map.Entry<K, V> {
   public String toString() {
     return "JmotifMapEntry [key=" + key + ", value=" + value + "]";
   }
-  
-  
 
 }

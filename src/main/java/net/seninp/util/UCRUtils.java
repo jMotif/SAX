@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * This implements variety utils for UCR-formatted data.
+ * This implements few useful functions for reading/writing for UCR-formatted data.
  * 
  * @author psenin
  * 

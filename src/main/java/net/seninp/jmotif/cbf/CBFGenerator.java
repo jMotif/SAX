@@ -1,8 +1,7 @@
 package net.seninp.jmotif.cbf;
 
-
 /**
- * CBF Domain data generator.
+ * CBF data generator.
  * 
  * @author psenin
  * 

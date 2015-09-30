@@ -1,7 +1,7 @@
 package net.seninp.jmotif.cbf;
 
 // StdRandom.java
-// Below is the syntax highlighted version of StdRandom.java from § Standard Libraries.   Here is the Javadoc.
+// Below is the syntax highlighted version of StdRandom.java from Standard Libraries. 
 // Copyright © 2000–2011, Robert Sedgewick and Kevin Wayne. 
 //Last updated: Tue Mar 25 20:35:06 EDT 2014.
 
@@ -77,7 +77,9 @@ public final class StdRandom {
     random = new Random(seed);
   }
 
-  // don't instantiate
+  /**
+   * Disable the constructor, do not instantiate.
+   */
   private StdRandom() {
   }
 
