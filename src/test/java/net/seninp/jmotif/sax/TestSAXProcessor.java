@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import org.junit.Test;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
@@ -90,6 +91,10 @@ public class TestSAXProcessor {
     double[] ts2 = TSProcessor.readFileColumn(ts2File, 0, length);
 
     // series #1 based test
+    double[] ser = { -1.0, -2.0, -1.0, 0.0, 2.0, 1.0, 1.0, 0.0 };
+    TSProcessor tp = new TSProcessor();
+    System.out.println(" ** " + Arrays.toString(tp.paa(ser, 3)));
+
     String ts1sax = sp.ts2saxByChunking(ts1, 10, normalA.getCuts(11), delta).getSAXString("");
     assertEquals("testing SAX", strLength, ts1sax.length());
     assertTrue("testing SAX", ts1StrRep10.equalsIgnoreCase(ts1sax));
@@ -156,147 +161,5 @@ public class TestSAXProcessor {
         new Integer(7));
 
   }
-
-  // /**
-  // * Test the distance function.
-  // *
-  // * @throws TSException if error occurs.
-  // */
-  // @Test
-  // public void testStringDistance() throws TSException {
-  // assertEquals("testing SAX distance", 0,
-  // SAXProcessor.strDistance(new char[] { 'a' }, new char[] { 'b' }));
-  // assertEquals("testing SAX distance", 2,
-  // SAXProcessor.strDistance(new char[] { 'a', 'a', 'a' }, new char[] { 'b', 'c', 'b' }));
-  //
-  // Alphabet a = new NormalAlphabet();
-  // assertEquals(
-  // "testing SAX distance",
-  // 0.861D,
-  // SAXProcessor.saxMinDist(new char[] { 'a', 'a', 'a' }, new char[] { 'b', 'c', 'b' },
-  // a.getDistanceMatrix(3)), delta);
-  //
-  // assertEquals(
-  // "testing SAX distance",
-  // 0.0D,
-  // SAXProcessor.saxMinDist(new char[] { 'a', 'a', 'a' }, new char[] { 'b', 'b', 'b' },
-  // a.getDistanceMatrix(3)), delta);
-  // }
-  //
-  // /**
-  // * Test the SAX conversion when NaN's presented in the timeseries.
-  // *
-  // * @throws Exception if error occurs.
-  // */
-  // @Test
-  // public void testTs2stringWithNAN() throws Exception {
-  //
-  // // read the timeseries first
-  // ts1 = TSProcessor.readTS(ts1File, length);
-  // ts2 = TSProcessor.readTS(ts2File, length);
-  //
-  // // series #1 based test
-  // String ts1sax = SAXProcessor.ts2string(ts1, 10, normalA, 11);
-  // assertEquals("testing SAX", strLength, ts1sax.length());
-  // assertTrue("testing SAX", ts1StrRep10.equalsIgnoreCase(ts1sax));
-  //
-  // Timeseries ts1WithNaN = new Timeseries(ts1.values(), ts1.tstamps(), ts1.values()[2]);
-  // String tsWithNaN1sax = String.valueOf(TSProcessor.ts2StringWithNaNByCuts(ts1WithNaN,
-  // normalA.getCuts(11)));
-  // assertSame("Checking Z conversion", tsWithNaN1sax.charAt(2), '_');
-  // }
-  //
-  // /**
-  // * Test the SAX conversion when NaN's presented in the timeseries.
-  // *
-  // * @throws Exception if error occurs.
-  // */
-  // @Test
-  // public void testTs2saxZnormByCuts() throws Exception {
-  // //
-  // // get series
-  // ts1 = TSProcessor.readTS(ts1File, length);
-  // ts2 = TSProcessor.readTS(ts2File, length);
-  //
-  // //
-  // // convert to sax with 2 letters alphabet and internal normalization
-  //
-  // double[] cut = { 0.0D };
-  // SAXRecords sax = SAXProcessor.ts2saxZnormByCuts(ts1, 14, 10, cut);
-  // Iterator<SaxRecord> i = sax.iterator();
-  // SaxRecord entry0 = i.next();
-  // assertTrue("Testing SAX routines",
-  // String.valueOf(entry0.getPayload()).equalsIgnoreCase("aabbbbaaaa"));
-  //
-  // sax = SAXProcessor.ts2saxZnormByCuts(ts1, 2, 2, cut);
-  // i = sax.iterator();
-  // entry0 = i.next();
-  // SaxRecord entry1 = i.next();
-  // assertFalse("Testing SAX routines",
-  // String.valueOf(entry0.getPayload()).equalsIgnoreCase(String.valueOf(entry1.getPayload())));
-  //
-  // // test double[] version here
-  // double[] data = new double[ts1.size()];
-  // for (int k = 0; k < data.length; k++) {
-  // data[k] = ts1.elementAt(k).value();
-  // }
-  //
-  // sax = SAXProcessor.ts2saxZnormByCuts(data, 14, 10, cut);
-  // i = sax.iterator();
-  // entry0 = i.next();
-  // assertTrue("Testing SAX routines",
-  // String.valueOf(entry0.getPayload()).equalsIgnoreCase("aabbbbaaaa"));
-  //
-  // }
-  //
-  // /**
-  // * Test the SAX conversion when NaN's presented in the timeseries.
-  // *
-  // * @throws Exception if error occurs.
-  // */
-  // @Test
-  // public void testTs2saxNoZnormByCuts() throws Exception {
-  // //
-  // // get series
-  // ts1 = TSProcessor.readTS(ts1File, length);
-  // ts2 = TSProcessor.readTS(ts2File, length);
-  //
-  // //
-  // // convert to sax with 2 letters alphabet and internal normalization
-  // double[] cut = { 0.0D };
-  // SAXRecords sax = SAXProcessor.ts2saxNoZnormByCuts(ts1, 14, 10, cut);
-  // Iterator<SaxRecord> i = sax.iterator();
-  // SaxRecord entry0 = i.next();
-  // assertTrue("Testing SAX routines",
-  // String.valueOf(entry0.getPayload()).equalsIgnoreCase("bbbbbbbbbb"));
-  //
-  // //
-  // // now add two negatives
-  // ts1.elementAt(5).setValue(-5.0D);
-  // ts1.elementAt(4).setValue(-5.0D);
-  // sax = SAXProcessor.ts2saxNoZnormByCuts(ts1, 14, 10, cut);
-  // i = sax.iterator();
-  // entry0 = i.next();
-  // assertTrue("Testing SAX routines",
-  // String.valueOf(entry0.getPayload()).equalsIgnoreCase("bbbabbbbbb"));
-  //
-  // //
-  // //
-  // sax = SAXProcessor.ts2saxNoZnormByCuts(ts1, 2, 2, cut);
-  // i = sax.iterator();
-  // entry0 = i.next();
-  // SaxRecord entry1 = i.next();
-  // assertFalse("Testing SAX routines",
-  // String.valueOf(entry0.getPayload()).equalsIgnoreCase(String.valueOf(entry1.getPayload())));
-  // }
-  //
-  // /**
-  // * Test the distance function (between strings).
-  // */
-  // @Test
-  // public void testStrDistance() {
-  // assertEquals("Testing StrDistance", 1, SAXProcessor.charDistance('a', 'b'));
-  // assertEquals("Testing StrDistance", 5, SAXProcessor.charDistance('a', 'f'));
-  // }
 
 }
