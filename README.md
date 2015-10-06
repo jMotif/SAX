@@ -1,7 +1,6 @@
 Time series discretization with SAX
 ====
-[![Build Status](https://travis-ci.org/jMotif/SAX.svg?branch=master)](https://travis-ci.org/jMotif/SAX)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax)
+[![Build Status](https://travis-ci.org/jMotif/SAX.svg?branch=master)](https://travis-ci.org/jMotif/SAX) [![codecov.io](http://codecov.io/github/jMotif/SAX/coverage.svg?branch=master)](http://codecov.io/github/jMotif/SAX?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax)
 
 Implements Symbolic Aggregate Approximation of time series in Java; implements a multi-threaded SAX discretization. This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
 
