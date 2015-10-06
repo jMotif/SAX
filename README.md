@@ -16,7 +16,7 @@ The 2nd Workshop onTemporal Data Mining, the 8th ACM Int'l Conference on KDD (20
 In Proc. ICDM (2002)
 
 [3] Keogh, E., Lin, J., Fu, A.,
-[*HOT SAX: Efficiently finding the most unusual time series*]subsequence(http://www.cs.ucr.edu/~eamonn/HOT%20SAX%20%20long-ver.pdf),
+[*HOT SAX: Efficiently finding the most unusual time series subsequence*](http://www.cs.ucr.edu/~eamonn/HOT%20SAX%20%20long-ver.pdf),
 In Proc. ICDM (2005)
 
 ##### Citing this work:
