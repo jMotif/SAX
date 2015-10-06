@@ -91,13 +91,10 @@ public class VisitRegistry implements Cloneable {
 
     // if there is space continue with random sampling
     //
-    // int calls = 1;
     int i = this.randomizer.nextInt(this.registry.length);
     while (ONE == registry[i]) {
       i = this.randomizer.nextInt(this.registry.length);
-      // calls++;
     }
-    // System.err.println("after " + calls + " calls, picked " + i);
     return i;
   }
 
