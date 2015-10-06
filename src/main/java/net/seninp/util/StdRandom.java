@@ -1,4 +1,4 @@
-package net.seninp.jmotif.cbf;
+package net.seninp.util;
 
 // StdRandom.java
 // Below is the syntax highlighted version of StdRandom.java from Standard Libraries. 

@@ -1,5 +1,7 @@
 package net.seninp.jmotif.cbf;
 
+import net.seninp.util.StdRandom;
+
 /**
  * CBF data generator.
  * 
