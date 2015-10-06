@@ -43,7 +43,7 @@ public class DiscordDiscoveryPerformanceDoubleLong {
     }
 
     discordsHash = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
-        PAA_SIZE, ALPHABET_SIZE, NumerosityReductionStrategy.MINDIST, NORM_THRESHOLD);
+        PAA_SIZE, ALPHABET_SIZE, NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
     for (DiscordRecord d : discordsHash) {
       System.out.println("hotsax hash discord " + d.toString());
     }
