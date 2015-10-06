@@ -125,15 +125,14 @@ public class UCRUtils {
    * Saves the dataset.
    * 
    * @param data the dataset.
-   * @param outFilename the filename.
+   * @param file the file handler.
    * @throws IOException if error occurs.
    */
-  public static void saveData(Map<String, ArrayList<double[]>> data, String outFilename)
-      throws IOException {
+  public static void saveData(Map<String, List<double[]>> data, File file) throws IOException {
 
-    BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outFilename)));
+    BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 
-    for (Entry<String, ArrayList<double[]>> classEntry : data.entrySet()) {
+    for (Entry<String, List<double[]>> classEntry : data.entrySet()) {
       String classLabel = classEntry.getKey();
       for (double[] arr : classEntry.getValue()) {
         String arrStr = Arrays.toString(arr).replaceAll("[\\]\\[\\s]+", "");
