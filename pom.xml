@@ -80,8 +80,8 @@
             <exclude>**/cbf/**</exclude>
             <exclude>**/bitmap/**</exclude>
             <exclude>**/SAXCLI*.*</exclude>
-            <exclude>**/util/HeatChart.java</exclude>
-            <exclude>**/util/StdRandom.java</exclude>
+            <exclude>**/util/HeatChart.*</exclude>
+            <exclude>**/util/StdRandom.*</exclude>
           </excludes>
         </configuration>
         <executions>
