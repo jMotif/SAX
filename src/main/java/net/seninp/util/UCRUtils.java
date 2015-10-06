@@ -66,7 +66,14 @@ public class UCRUtils {
 
   }
 
-  public static String datasetStats(Map<String, List<double[]>> data, String prefix) {
+  /**
+   * Prints the dataset statistics.
+   * 
+   * @param data the UCRdataset.
+   * @param name the dataset name to use.
+   * @return stats.
+   */
+  public static String datasetStats(Map<String, List<double[]>> data, String name) {
 
     int globalMinLength = Integer.MAX_VALUE;
     int globalMaxLength = Integer.MIN_VALUE;
@@ -89,13 +96,13 @@ public class UCRUtils {
     }
     StringBuffer sb = new StringBuffer();
 
-    sb.append(prefix).append("classes: ").append(data.size());
+    sb.append(name).append("classes: ").append(data.size());
     sb.append(", series length min: ").append(globalMinLength);
     sb.append(", max: ").append(globalMaxLength);
     sb.append(", min value: ").append(globalMinValue);
     sb.append(", max value: ").append(globalMaxValue).append(";");
     for (Entry<String, List<double[]>> e : data.entrySet()) {
-      sb.append(prefix).append(" class: ").append(e.getKey());
+      sb.append(name).append(" class: ").append(e.getKey());
       sb.append(" series: ").append(e.getValue().size()).append(";");
     }
 
