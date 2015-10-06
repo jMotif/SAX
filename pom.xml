@@ -228,7 +228,7 @@
               </descriptorRefs>
               <archive>
                 <manifest>
-                  <mainClass>net.seninp.jmotif.sax.SAXcliConverter</mainClass>
+                  <mainClass>net.seninp.jmotif.sax.SAXCLIConverter</mainClass>
                 </manifest>
               </archive>
               <!-- <filters> <filter>src/assembly/filter.properties</filter> 
