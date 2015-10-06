@@ -25,7 +25,7 @@ If you are using this implementation for you academic work, please cite our [Gra
 
 [[Citation]](https://raw.githubusercontent.com/jMotif/SAX/master/citation.bib) Senin, P., Lin, J., Wang, X., Oates, T., Gandhi, S., Boedihardjo, A.P., Chen, C., Frankenstein, S., Lerner, M.,  [*GrammarViz 2.0: a tool for grammar-based pattern discovery in time series*](http://www2.hawaii.edu/~senin/assets/papers/grammarviz2.pdf), ECML/PKDD Conference, 2014.
 
-##### Variable-length time series recurrent and anomalous patterns detection
+##### an alternative solution for recurrent and anomalous patterns detection:
 If you are interested in more advance techniques for time series pattern discovery, please check out our new tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html) -- based on SAX, Grammatical Inference, and algorithmic (Kolmogorv complexity) it enables *variable-length* time series recurrent and anomalous patterns detection.
 
 0.0 SAX transform in a nutshell
