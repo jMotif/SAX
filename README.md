@@ -19,13 +19,15 @@ In Proc. ICDM (2002)
 [*HOT SAX: Efficiently finding the most unusual time series subsequence*](http://www.cs.ucr.edu/~eamonn/HOT%20SAX%20%20long-ver.pdf),
 In Proc. ICDM (2005)
 
-##### Citing this work:
+##### _Currently I am working on the similar in functionality [R code](https://github.com/jMotif/jmotif-R)_
+
+#### Citing this work:
 
 If you are using this implementation for you academic work, please cite our [Grammarviz 2.0 paper](http://link.springer.com/chapter/10.1007/978-3-662-44845-8_37):
 
 [[Citation]](https://raw.githubusercontent.com/jMotif/SAX/master/citation.bib) Senin, P., Lin, J., Wang, X., Oates, T., Gandhi, S., Boedihardjo, A.P., Chen, C., Frankenstein, S., Lerner, M.,  [*GrammarViz 2.0: a tool for grammar-based pattern discovery in time series*](http://www2.hawaii.edu/~senin/assets/papers/grammarviz2.pdf), ECML/PKDD Conference, 2014.
 
-##### an alternative solution for recurrent and anomalous patterns detection:
+#### an alternative solution for recurrent and anomalous patterns detection:
 If you are interested in more advance techniques for time series pattern discovery, please check out our new tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html) -- based on SAX, Grammatical Inference, and algorithmic (Kolmogorv complexity) it enables *variable-length* time series recurrent and anomalous patterns detection.
 
 0.0 SAX transform in a nutshell
