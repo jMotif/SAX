@@ -10,7 +10,7 @@ import com.beust.jcommander.Parameter;
  * @author psenin
  * 
  */
-public class SAXCliParameters {
+public class SAXCLIParameters {
 
   // general setup
   //

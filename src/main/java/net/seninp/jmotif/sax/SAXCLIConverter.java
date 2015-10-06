@@ -21,7 +21,7 @@ import net.seninp.util.StackTrace;
  * @author Pavel Senin
  * 
  */
-public final class SAXcliConverter {
+public final class SAXCLIConverter {
 
   private static final String CR = "\n";
   private static final String COMMA = ", ";
@@ -31,14 +31,14 @@ public final class SAXcliConverter {
   private static Logger consoleLogger;
   private static Level LOGGING_LEVEL = Level.INFO;
   static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(SAXcliConverter.class);
+    consoleLogger = (Logger) LoggerFactory.getLogger(SAXCLIConverter.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
   }
 
   /**
    * Constructor.
    */
-  private SAXcliConverter() {
+  private SAXCLIConverter() {
     assert true;
   }
 
@@ -51,7 +51,7 @@ public final class SAXcliConverter {
 
     try {
 
-      SAXCliParameters params = new SAXCliParameters();
+      SAXCLIParameters params = new SAXCLIParameters();
       JCommander jct = new JCommander(params, args);
 
       if (0 == args.length) {
@@ -64,25 +64,25 @@ public final class SAXcliConverter {
         sb.append("SAX CLI converter v.1").append(CR);
         sb.append("parameters:").append(CR);
 
-        sb.append("  input file:                  ").append(SAXCliParameters.IN_FILE).append(CR);
-        sb.append("  output file:                 ").append(SAXCliParameters.OUT_FILE).append(CR);
-        sb.append("  SAX sliding window size:     ").append(SAXCliParameters.SAX_WINDOW_SIZE).append(CR);
-        sb.append("  SAX PAA size:                ").append(SAXCliParameters.SAX_PAA_SIZE).append(CR);
-        sb.append("  SAX alphabet size:           ").append(SAXCliParameters.SAX_ALPHABET_SIZE).append(CR);
-        sb.append("  SAX numerosity reduction:    ").append(SAXCliParameters.SAX_NR_STRATEGY).append(CR);
-        sb.append("  SAX normalization threshold: ").append(SAXCliParameters.SAX_NORM_THRESHOLD).append(CR);
-        sb.append("  threads to use:              ").append(SAXCliParameters.THREADS_NUM).append(CR);
+        sb.append("  input file:                  ").append(SAXCLIParameters.IN_FILE).append(CR);
+        sb.append("  output file:                 ").append(SAXCLIParameters.OUT_FILE).append(CR);
+        sb.append("  SAX sliding window size:     ").append(SAXCLIParameters.SAX_WINDOW_SIZE).append(CR);
+        sb.append("  SAX PAA size:                ").append(SAXCLIParameters.SAX_PAA_SIZE).append(CR);
+        sb.append("  SAX alphabet size:           ").append(SAXCLIParameters.SAX_ALPHABET_SIZE).append(CR);
+        sb.append("  SAX numerosity reduction:    ").append(SAXCLIParameters.SAX_NR_STRATEGY).append(CR);
+        sb.append("  SAX normalization threshold: ").append(SAXCLIParameters.SAX_NORM_THRESHOLD).append(CR);
+        sb.append("  threads to use:              ").append(SAXCLIParameters.THREADS_NUM).append(CR);
 
-        String dataFName = SAXCliParameters.IN_FILE;
+        String dataFName = SAXCLIParameters.IN_FILE;
         double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
 
-        Integer slidingWindowSize = Integer.valueOf(SAXCliParameters.SAX_WINDOW_SIZE);
-        Integer paaSize = Integer.valueOf(SAXCliParameters.SAX_PAA_SIZE);
-        Integer alphabetSize = Integer.valueOf(SAXCliParameters.SAX_ALPHABET_SIZE);
+        Integer slidingWindowSize = Integer.valueOf(SAXCLIParameters.SAX_WINDOW_SIZE);
+        Integer paaSize = Integer.valueOf(SAXCLIParameters.SAX_PAA_SIZE);
+        Integer alphabetSize = Integer.valueOf(SAXCLIParameters.SAX_ALPHABET_SIZE);
 
-        NumerosityReductionStrategy nrStrategy = SAXCliParameters.SAX_NR_STRATEGY;
+        NumerosityReductionStrategy nrStrategy = SAXCLIParameters.SAX_NR_STRATEGY;
 
-        Double nThreshold = SAXCliParameters.SAX_NORM_THRESHOLD;
+        Double nThreshold = SAXCLIParameters.SAX_NORM_THRESHOLD;
 
         NormalAlphabet na = new NormalAlphabet();
         SAXProcessor sp = new SAXProcessor();
@@ -108,7 +108,7 @@ public final class SAXcliConverter {
         indexes.addAll(res.getIndexes());
         Collections.sort(indexes);
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(SAXCliParameters.OUT_FILE)));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(SAXCLIParameters.OUT_FILE)));
         for (Integer idx : indexes) {
           bw.write(idx + COMMA + String.valueOf(res.getByIndex(idx).getPayload()) + CR);
         }

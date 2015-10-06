@@ -1,10 +1,11 @@
-package net.seninp.jmotif.sax.parallel;
+package net.seninp.jmotif.sax.tinker;
 
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
+import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
 
 /**
  * This runs the performance evaluation code - we are looking on the speedup.
@@ -12,7 +13,7 @@ import net.seninp.jmotif.sax.datastructure.SAXRecords;
  * @author psenin
  * 
  */
-public final class PerformanceEvaluation {
+public final class ParallelPerformanceEvaluation {
 
   private static final Integer NRUNS = 20;
 
