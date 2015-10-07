@@ -207,7 +207,7 @@ public final class SAXProcessor {
   }
 
   /**
-   * Check for mindist.
+   * Check for trivial mindist case.
    * 
    * @param a first string.
    * @param b second string.
@@ -269,9 +269,7 @@ public final class SAXProcessor {
       int distance = 0;
       for (int i = 0; i < a.length; i++) {
         int tDist = Math.abs(Character.getNumericValue(a[i]) - Character.getNumericValue(b[i]));
-        if (tDist > 1) {
-          distance += tDist;
-        }
+        distance += tDist;
       }
       return distance;
     }

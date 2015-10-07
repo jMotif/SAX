@@ -1,6 +1,7 @@
 package net.seninp.jmotif.sax;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -84,7 +85,7 @@ public class TestSAXProcessor {
    * @throws Exception if error occurs.
    */
   @Test
-  public void testTs2string() throws Exception {
+  public void testTs2SAXByChunks() throws Exception {
 
     final SAXProcessor sp = new SAXProcessor();
     final TSProcessor tp = new TSProcessor();
@@ -96,7 +97,9 @@ public class TestSAXProcessor {
 
     System.out.println(" ** " + Arrays.toString(tp.paa(ser, 3)));
 
+    // series #1 goes here
     String ts1sax = sp.ts2saxByChunking(ts1, 10, normalA.getCuts(11), delta).getSAXString("");
+
     assertEquals("testing SAX", strLength, ts1sax.length());
     assertTrue("testing SAX", ts1StrRep10.equalsIgnoreCase(ts1sax));
 
@@ -110,6 +113,7 @@ public class TestSAXProcessor {
 
     // series #2 goes here
     String ts2sax = sp.ts2saxByChunking(ts2, 10, normalA.getCuts(11), delta).getSAXString("");
+
     assertEquals("testing SAX", strLength, ts2sax.length());
     assertTrue("testing SAX", ts2StrRep10.equalsIgnoreCase(ts2sax));
 
@@ -193,6 +197,65 @@ public class TestSAXProcessor {
           sp.saxMinDist(a.toCharArray(), b.toCharArray(), normalA.getDistanceMatrix(2), 128, 8),
           refDist, delta);
       fail("exception not thrown!");
+    }
+    catch (SAXException e) {
+      assert true;
+    }
+
+    assertFalse(sp.checkMinDistIsZero(a.toCharArray(), b.toCharArray()));
+    assertTrue(sp.checkMinDistIsZero("aabbccdd".toCharArray(), "bbccddee".toCharArray()));
+
+  }
+
+  /**
+   * Test to string conversion.
+   *
+   */
+  @Test
+  public void testTs2String() {
+    final double[] series = { -1., -2., -1., 0., 2., 1., 1., 0. };
+    final SAXProcessor sp = new SAXProcessor();
+    try {
+      assertTrue(String.valueOf(sp.ts2string(series, 3, normalA.getCuts(3), 0.001)).equals("acc"));
+    }
+    catch (SAXException e) {
+      fail("exception shall not be thrown!");
+    }
+  }
+
+  /**
+   * Test char distance.
+   *
+   */
+  @Test
+  public void testCharDistance() {
+    final SAXProcessor sp = new SAXProcessor();
+    assertEquals(sp.charDistance('a', 'a'), 0);
+    assertEquals(sp.charDistance('a', 'c'), 2);
+    assertEquals(sp.charDistance('a', 'e'), 4);
+  }
+
+  /**
+   * Test str distance.
+   *
+   */
+  @Test
+  public void testStrDistance() {
+
+    final SAXProcessor sp = new SAXProcessor();
+
+    try {
+      assertEquals(sp.strDistance("aaa".toCharArray(), "aaa".toCharArray()), 0);
+      assertEquals(sp.strDistance("aaa".toCharArray(), "aac".toCharArray()), 2);
+      assertEquals(sp.strDistance("aaa".toCharArray(), "abc".toCharArray()), 3);
+    }
+    catch (SAXException e) {
+      fail("exception shall not be thrown!");
+    }
+
+    try {
+      assertEquals(sp.strDistance("aaa".toCharArray(), "aaaa".toCharArray()), 0);
+      fail("exception shall be thrown!");
     }
     catch (SAXException e) {
       assert true;
