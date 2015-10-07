@@ -286,27 +286,33 @@ public final class SAXProcessor {
    * @param a The SAX string.
    * @param b The SAX string.
    * @param distanceMatrix The distance matrix to use.
+   * @param n the time series length (sliding window length).
+   * @param w the number of PAA segments.
    * @return distance between strings.
    * @throws SAXException If error occurs.
    */
-  public double saxMinDist(char[] a, char[] b, double[][] distanceMatrix) throws SAXException {
+  public double saxMinDist(char[] a, char[] b, double[][] distanceMatrix, int n, int w)
+      throws SAXException {
     if (a.length == b.length) {
       double dist = 0.0D;
       for (int i = 0; i < a.length; i++) {
         if (Character.isLetter(a[i]) && Character.isLetter(b[i])) {
+          // ... forms have numeric values from 10 through 35
           int numA = Character.getNumericValue(a[i]) - 10;
           int numB = Character.getNumericValue(b[i]) - 10;
-          if (numA > 19 || numA < 0 || numB > 19 || numB < 0) {
-            throw new SAXException("The character index greater than 19 or less than 0!");
+          int maxIdx = distanceMatrix[0].length;
+          if (numA > maxIdx || numA < 0 || numB > maxIdx || numB < 0) {
+            throw new SAXException(
+                "The character index greater than " + maxIdx + " or less than 0!");
           }
           double localDist = distanceMatrix[numA][numB];
-          dist += localDist;
+          dist = dist + localDist;
         }
         else {
           throw new SAXException("Non-literal character found!");
         }
       }
-      return dist;
+      return Math.sqrt((double) n / (double) w) * Math.sqrt(dist);
     }
     else {
       throw new SAXException("Data arrays lengths are not equal!");
@@ -402,7 +408,7 @@ public final class SAXProcessor {
       }
       else if ((null != previousString) && NumerosityReductionStrategy.MINDIST.equals(strategy)) {
         double dist = saxMinDist(previousString, currentString,
-            normalA.getDistanceMatrix(alphabetSize));
+            normalA.getDistanceMatrix(alphabetSize), winSize, paaSize);
         if (0.0D == dist) {
           continue;
         }
