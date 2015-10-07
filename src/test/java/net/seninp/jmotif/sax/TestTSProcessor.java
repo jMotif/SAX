@@ -126,6 +126,27 @@ public class TestTSProcessor {
       assertEquals("normalization", ts2Norm[i], ts2NormTest[i], delta);
     }
 
+    // get the norm 1 data
+    double[] ts1normOne = tsp.normOne(ts1);
+    double[] ts2normOne = tsp.normOne(ts2);
+
+    boolean seenOne = false;
+    for (int i = 0; i < ts1normOne.length; i++) {
+      assertTrue(ts1normOne[i] <= 1);
+      if (ts1normOne[i] == 1.0) {
+        seenOne = true;
+      }
+    }
+    assertTrue(seenOne);
+
+    seenOne = false;
+    for (int i = 0; i < ts2normOne.length; i++) {
+      assertTrue(ts2normOne[i] <= 1);
+      if (ts2normOne[i] == 1.0) {
+        seenOne = true;
+      }
+    }
+    assertTrue(seenOne);
   }
 
   /**
