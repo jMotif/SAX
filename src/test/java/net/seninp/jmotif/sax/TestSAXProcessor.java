@@ -3,6 +3,7 @@ package net.seninp.jmotif.sax;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,8 +50,8 @@ public class TestSAXProcessor {
   @Test
   public void testConnectedConversion() throws NumberFormatException, IOException, SAXException {
 
-    SAXProcessor sp = new SAXProcessor();
-    double[] ts = TSProcessor.readFileColumn(ts3File, 0, 0);
+    final SAXProcessor sp = new SAXProcessor();
+    final double[] ts = TSProcessor.readFileColumn(ts3File, 0, 0);
 
     ArrayList<Integer> skips = new ArrayList<Integer>();
     for (int i = 30 - 6; i < 30; i++) {
@@ -85,14 +86,14 @@ public class TestSAXProcessor {
   @Test
   public void testTs2string() throws Exception {
 
-    SAXProcessor sp = new SAXProcessor();
+    final SAXProcessor sp = new SAXProcessor();
+    final TSProcessor tp = new TSProcessor();
 
-    double[] ts1 = TSProcessor.readFileColumn(ts1File, 0, length);
-    double[] ts2 = TSProcessor.readFileColumn(ts2File, 0, length);
+    final double[] ts1 = TSProcessor.readFileColumn(ts1File, 0, length);
+    final double[] ts2 = TSProcessor.readFileColumn(ts2File, 0, length);
 
-    // series #1 based test
-    double[] ser = { -1.0, -2.0, -1.0, 0.0, 2.0, 1.0, 1.0, 0.0 };
-    TSProcessor tp = new TSProcessor();
+    final double[] ser = { -1.0, -2.0, -1.0, 0.0, 2.0, 1.0, 1.0, 0.0 };
+
     System.out.println(" ** " + Arrays.toString(tp.paa(ser, 3)));
 
     String ts1sax = sp.ts2saxByChunking(ts1, 10, normalA.getCuts(11), delta).getSAXString("");
@@ -122,15 +123,15 @@ public class TestSAXProcessor {
   }
 
   /**
-   * Test the distance function.
+   * Test the discretization.
    *
    * @throws Exception if error occur.
    */
   @Test
   public void testTs2sax() throws Exception {
 
-    TSProcessor tp = new TSProcessor();
-    SAXProcessor sp = new SAXProcessor();
+    final TSProcessor tp = new TSProcessor();
+    final SAXProcessor sp = new SAXProcessor();
 
     double[] ts2 = TSProcessor.readFileColumn(ts2File, 0, length);
 
@@ -159,6 +160,43 @@ public class TestSAXProcessor {
         new Integer(3));
     assertEquals("Testing ts2sax", ts2SAX.getByWord(ts2str_7).getIndexes().iterator().next(),
         new Integer(7));
+
+  }
+
+  /**
+   * Test the MINDIST distance.
+   *
+   * @throws Exception if error occur.
+   */
+  @Test
+  public void testMINDIST() {
+
+    final double a3distValue = 0.861455;
+    final double refDist = Math.sqrt(128.0 / 8.0)
+        * Math.sqrt(a3distValue * a3distValue + a3distValue * a3distValue);
+    final String a = "baabccbc";
+    final String b = "babcacca";
+
+    final SAXProcessor sp = new SAXProcessor();
+
+    try {
+      assertEquals(
+          sp.saxMinDist(a.toCharArray(), b.toCharArray(), normalA.getDistanceMatrix(3), 128, 8),
+          refDist, delta);
+    }
+    catch (SAXException e) {
+      fail("exception shall not be thrown!");
+    }
+
+    try {
+      assertEquals(
+          sp.saxMinDist(a.toCharArray(), b.toCharArray(), normalA.getDistanceMatrix(2), 128, 8),
+          refDist, delta);
+      fail("exception not thrown!");
+    }
+    catch (SAXException e) {
+      assert true;
+    }
 
   }
 

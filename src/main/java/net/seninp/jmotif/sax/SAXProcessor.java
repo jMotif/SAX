@@ -301,12 +301,12 @@ public final class SAXProcessor {
           int numA = Character.getNumericValue(a[i]) - 10;
           int numB = Character.getNumericValue(b[i]) - 10;
           int maxIdx = distanceMatrix[0].length;
-          if (numA > maxIdx || numA < 0 || numB > maxIdx || numB < 0) {
+          if (numA > (maxIdx - 1) || numA < 0 || numB > (maxIdx - 1) || numB < 0) {
             throw new SAXException(
                 "The character index greater than " + maxIdx + " or less than 0!");
           }
           double localDist = distanceMatrix[numA][numB];
-          dist = dist + localDist;
+          dist = dist + localDist * localDist;
         }
         else {
           throw new SAXException("Non-literal character found!");
