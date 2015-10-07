@@ -2,6 +2,9 @@ package net.seninp.jmotif.sax;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
@@ -193,6 +196,27 @@ public class TestTSProcessor {
     assertEquals("Testing ts2index", Integer.valueOf(idx1[1]), Integer.valueOf(2));
     assertEquals("Testing ts2index", Integer.valueOf(idx1[3]), Integer.valueOf(9));
     assertEquals("Testing ts2index", Integer.valueOf(idx1[7]), Integer.valueOf(4));
+  }
+
+  /**
+   * Test series2string.
+   * 
+   */
+  @Test
+  public void series2String() {
+
+    final NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+    final DecimalFormat df = (DecimalFormat) nf;
+    df.applyPattern("#.0");
+
+    final double[] formattedTs = { -1.07, -0.57, -0.18, 0.18, 0.57, 1.07 };
+
+    String seriesAsString = tsp.seriesToString(formattedTs, df);
+
+    assertTrue(seriesAsString.contains("-1.1"));
+    assertTrue(seriesAsString.contains(".6"));
+    assertTrue(seriesAsString.contains("-.6"));
+
   }
 
 }
