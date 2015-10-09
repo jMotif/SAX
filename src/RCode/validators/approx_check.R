@@ -9,8 +9,17 @@ sum = 0
 for (i in c(1:4)) {
   sum = sum + dist(rbind(X[i], p1))
 }
-sim
+sum
+
+sum = 0
 for (i in c(5:8)) {
   sum = sum + dist(rbind(X[i], p2))
 }
 sum
+
+jmotif::ts2string(X, 3)
+
+
+x <- c(0, 0, 1, 1, 1, 1)
+y <- c(1, 0, 1, 1, 0, 1)
+dist(rbind(x, y))
