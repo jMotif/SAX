@@ -40,7 +40,7 @@ public class HOTSAXImplementation {
   //
   private static Logger consoleLogger;
 
-  private static final Level LOGGING_LEVEL = Level.INFO;
+  private static final Level LOGGING_LEVEL = Level.INFO; // change to NONE to disable logging
 
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(HOTSAXImplementation.class);
