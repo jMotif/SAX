@@ -1,9 +1,14 @@
 package net.seninp.jmotif.sax;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +25,7 @@ import net.seninp.jmotif.sax.alphabet.Alphabet;
  */
 public class TSProcessor {
 
-  // private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+  private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
   /** The latin alphabet, lower case letters a-z. */
   public static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
@@ -58,14 +63,15 @@ public class TSProcessor {
       throws IOException, SAXException {
 
     // make sure the path exists
-    File f = new File(filename);
-    if (!(f.exists() && !f.isDirectory())) {
+    Path path = Paths.get(filename);
+    if (!(Files.exists(path))) {
       throw new SAXException("unable to load data - data source not found.");
     }
 
-    BufferedReader reader = new BufferedReader(new FileReader(f));
+    BufferedReader br = new BufferedReader(
+        new InputStreamReader(new FileInputStream(filename), "UTF-8"));
 
-    return readTS(reader, columnIdx, sizeLimit);
+    return readTS(br, columnIdx, sizeLimit);
   }
 
   /**
@@ -127,12 +133,12 @@ public class TSProcessor {
    */
   public double[] readTS(String dataFileName, int loadLimit) throws SAXException, IOException {
 
-    File f = new File(dataFileName);
-    if (!(f.exists() && !f.isDirectory())) {
+    Path path = Paths.get(dataFileName);
+    if (!(Files.exists(path))) {
       throw new SAXException("unable to load data - data source not found.");
     }
 
-    BufferedReader reader = new BufferedReader(new FileReader(f));
+    BufferedReader reader = Files.newBufferedReader(path, DEFAULT_CHARSET);
 
     return readTS(reader, 0, loadLimit);
 
