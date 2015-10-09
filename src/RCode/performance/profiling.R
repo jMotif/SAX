@@ -5,7 +5,7 @@ require(ggplot2)
 require(grid)
 require(gridExtra)
 
-data=read.csv("performance/comparison.txt",header=T,sep=" ")
+data = read.csv("performance/comparison.txt", header=T, sep=" ", as.is = T)
 str(data)
 df=melt(data,id.vars=c("THREADS"))
 names(df)<-c("threads_num","NR_strategy","ms")
