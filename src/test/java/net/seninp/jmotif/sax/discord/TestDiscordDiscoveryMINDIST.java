@@ -30,6 +30,7 @@ public class TestDiscordDiscoveryMINDIST {
     series = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
   }
 
+  @SuppressWarnings("deprecation")
   @Test
   public void test() {
 

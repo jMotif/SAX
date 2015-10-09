@@ -32,6 +32,7 @@ public class TestDiscordDiscoveryNONE {
     series = Arrays.copyOf(series, 800);
   }
 
+  @SuppressWarnings("deprecation")
   @Test
   public void test() {
 
