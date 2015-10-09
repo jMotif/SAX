@@ -120,6 +120,17 @@ public class TestEuclideanDistance {
       assert true;
     }
 
+    // test with integers
+    //
+    int[] x = { 0, 0, 1, 1, 1, 1 };
+    int[] y = { 1, 0, 1, 1, 0, 1 };
+    try {
+      assertEquals(1.414214, ed.distance(x, y), 0.001);
+    }
+    catch (Exception e) {
+      fail("should throw an exception");
+    }
+
   }
 
 }
