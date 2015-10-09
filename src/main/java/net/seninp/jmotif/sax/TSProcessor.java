@@ -2,13 +2,8 @@ package net.seninp.jmotif.sax;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,15 +58,14 @@ public class TSProcessor {
       throws IOException, SAXException {
 
     // make sure the path exists
-    Path path = Paths.get(filename);
-    if (!(Files.exists(path))) {
+    File f = new File(filename);
+    if (!(f.exists() && !f.isDirectory())) {
       throw new SAXException("unable to load data - data source not found.");
     }
 
-    BufferedReader br = new BufferedReader(
-        new InputStreamReader(new FileInputStream(filename), "UTF-8"));
+    BufferedReader reader = new BufferedReader(new FileReader(f));
 
-    return readTS(br, columnIdx, sizeLimit);
+    return readTS(reader, columnIdx, sizeLimit);
   }
 
   /**
