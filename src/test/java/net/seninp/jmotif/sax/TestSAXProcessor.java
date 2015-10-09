@@ -183,6 +183,7 @@ public class TestSAXProcessor {
 
     final SAXProcessor sp = new SAXProcessor();
 
+    // try the normal operation
     try {
       assertEquals(
           sp.saxMinDist(a.toCharArray(), b.toCharArray(), normalA.getDistanceMatrix(3), 128, 8),
@@ -192,6 +193,27 @@ public class TestSAXProcessor {
       fail("exception shall not be thrown!");
     }
 
+    // try the abnormal operation -- not letter is in the word
+    try {
+      assertEquals(sp.saxMinDist("baabcc4c".toCharArray(), b.toCharArray(),
+          normalA.getDistanceMatrix(2), 128, 8), refDist, delta);
+      fail("exception not thrown!");
+    }
+    catch (SAXException e) {
+      assert true;
+    }
+
+    // try the abnormal operation -- length is not equal
+    try {
+      assertEquals(sp.saxMinDist("baabccc".toCharArray(), b.toCharArray(),
+          normalA.getDistanceMatrix(2), 128, 8), refDist, delta);
+      fail("exception not thrown!");
+    }
+    catch (SAXException e) {
+      assert true;
+    }
+
+    // try the abnormal operation -- "c" is not in the alphabet
     try {
       assertEquals(
           sp.saxMinDist(a.toCharArray(), b.toCharArray(), normalA.getDistanceMatrix(2), 128, 8),
@@ -217,6 +239,8 @@ public class TestSAXProcessor {
     final SAXProcessor sp = new SAXProcessor();
     try {
       assertTrue(String.valueOf(sp.ts2string(series, 3, normalA.getCuts(3), 0.001)).equals("acc"));
+      assertTrue(
+          String.valueOf(sp.ts2string(series, 8, normalA.getCuts(3), 0.001)).equals("aaabcccb"));
     }
     catch (SAXException e) {
       fail("exception shall not be thrown!");
