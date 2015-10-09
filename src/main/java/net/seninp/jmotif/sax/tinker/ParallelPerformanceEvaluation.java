@@ -38,17 +38,17 @@ public final class ParallelPerformanceEvaluation {
     Integer slidingWindowSize = Integer.valueOf(args[1]);
     Integer paaSize = Integer.valueOf(args[2]);
     Integer alphabetSize = Integer.valueOf(args[3]);
-    NumerosityReductionStrategy nrStrategy = NumerosityReductionStrategy.valueOf(args[4]
-        .toUpperCase());
+    NumerosityReductionStrategy nrStrategy = NumerosityReductionStrategy
+        .valueOf(args[4].toUpperCase());
 
-    double[] ts = TSProcessor.readFileColumn(dataFileName, 0, 0);
     System.out.println("data file: " + dataFileName);
+    double[] ts = TSProcessor.readFileColumn(dataFileName, 0, 0);
     System.out.println("data size: " + ts.length);
     System.out.println("SAX parameters: sliding window size " + slidingWindowSize + ", PAA size "
         + paaSize + ", alphabet size " + alphabetSize + ", NR strategy " + nrStrategy.toString());
 
-    System.out.println("Performing " + NRUNS
-        + " SAX conversion runs for each algorithm implementation ... ");
+    System.out.println(
+        "Performing " + NRUNS + " SAX conversion runs for each algorithm implementation ... ");
 
     // conventional
     //

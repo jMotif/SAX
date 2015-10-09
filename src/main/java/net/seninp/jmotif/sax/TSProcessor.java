@@ -1,11 +1,11 @@
 package net.seninp.jmotif.sax;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +25,7 @@ import net.seninp.jmotif.sax.alphabet.Alphabet;
  */
 public class TSProcessor {
 
-  private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+  // private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
   /** The latin alphabet, lower case letters a-z. */
   public static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
@@ -133,12 +133,12 @@ public class TSProcessor {
    */
   public double[] readTS(String dataFileName, int loadLimit) throws SAXException, IOException {
 
-    Path path = Paths.get(dataFileName);
-    if (!(Files.exists(path))) {
+    File f = new File(dataFileName);
+    if (!(f.exists() && !f.isDirectory())) {
       throw new SAXException("unable to load data - data source not found.");
     }
 
-    BufferedReader reader = Files.newBufferedReader(path, DEFAULT_CHARSET);
+    BufferedReader reader = new BufferedReader(new FileReader(f));
 
     return readTS(reader, 0, loadLimit);
 
