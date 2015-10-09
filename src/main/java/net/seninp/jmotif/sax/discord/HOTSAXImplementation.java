@@ -32,8 +32,6 @@ import net.seninp.jmotif.sax.registry.VisitRegistry;
  */
 public class HOTSAXImplementation {
 
-  private static final int DEFAULT_COLLECTION_SIZE = 10;
-
   private static TSProcessor tp = new TSProcessor();
   private static SAXProcessor sp = new SAXProcessor();
   private static EuclideanDistance ed = new EuclideanDistance();
@@ -93,12 +91,8 @@ public class HOTSAXImplementation {
     consoleLogger.debug("Magic array filled in : "
         + SAXProcessor.timeToString(saxEnd.getTime(), hashEnd.getTime()));
 
-    int reportNum = DEFAULT_COLLECTION_SIZE;
-    if (discordsNumToReport > 0 && discordsNumToReport < 20) {
-      reportNum = discordsNumToReport;
-    }
-
-    DiscordRecords discords = getDiscordsWithMagic(series, sax, windowSize, magicArray, reportNum);
+    DiscordRecords discords = getDiscordsWithMagic(series, sax, windowSize, magicArray,
+        discordsNumToReport);
 
     Date end = new Date();
 
@@ -376,6 +370,7 @@ public class HOTSAXImplementation {
    * @return Discords found within the series.
    * @throws Exception if error occurs.
    */
+  @Deprecated
   public static DiscordRecords series2DiscordsDeprecated(double[] series, int discordsNumToReport,
       int windowSize, int paaSize, int alphabetSize, SlidingWindowMarkerAlgorithm markerAlgorithm,
       NumerosityReductionStrategy strategy, double nThreshold) throws Exception {
@@ -408,12 +403,7 @@ public class HOTSAXImplementation {
     consoleLogger.debug(
         "Hash filled in : " + SAXProcessor.timeToString(saxEnd.getTime(), hashEnd.getTime()));
 
-    int reportNum = DEFAULT_COLLECTION_SIZE;
-    if (discordsNumToReport > 0 && discordsNumToReport < 50) {
-      reportNum = discordsNumToReport;
-    }
-
-    DiscordRecords discords = getDiscordsWithHash(series, windowSize, hash, reportNum,
+    DiscordRecords discords = getDiscordsWithHash(series, windowSize, hash, discordsNumToReport,
         markerAlgorithm);
 
     Date end = new Date();
@@ -424,6 +414,7 @@ public class HOTSAXImplementation {
     return discords;
   }
 
+  @Deprecated
   private static DiscordRecords getDiscordsWithHash(double[] series, int windowSize,
       HashMap<String, ArrayList<Integer>> hash, int discordCollectionSize,
       SlidingWindowMarkerAlgorithm markerAlgorithm) throws Exception {
@@ -491,6 +482,7 @@ public class HOTSAXImplementation {
    * @throws Exception If error occurs.
    * @throws TrieException If error occurs.
    */
+  @Deprecated
   private static DiscordRecord findBestDiscordWithHash(double[] series, int windowSize,
       HashMap<String, ArrayList<Integer>> hash, VisitRegistry globalRegistry) throws Exception {
 
@@ -651,6 +643,7 @@ public class HOTSAXImplementation {
    * @param hash
    * @return
    */
+  @Deprecated
   private static ArrayList<FrequencyTableEntry> hashToFreqEntries(
       HashMap<String, ArrayList<Integer>> hash) {
     ArrayList<FrequencyTableEntry> res = new ArrayList<FrequencyTableEntry>();
@@ -663,23 +656,5 @@ public class HOTSAXImplementation {
     }
     return res;
   }
-  //
-  // /**
-  // * Translates the hash table into sortable array of substrings.
-  // *
-  // * @param hash
-  // * @return
-  // */
-  // private static ArrayList<MagicArrayEntry> hashToFrequencies(
-  // HashMap<String, ArrayList<Integer>> hash) {
-  // ArrayList<MagicArrayEntry> res = new ArrayList<MagicArrayEntry>();
-  // for (Entry<String, ArrayList<Integer>> e : hash.entrySet()) {
-  // String payload = e.getKey();
-  // int frequency = e.getValue().size();
-  // for (Integer i : e.getValue()) {
-  // res.add(new MagicArrayEntry(i, payload, frequency));
-  // }
-  // }
-  // return res;
-  // }
+
 }

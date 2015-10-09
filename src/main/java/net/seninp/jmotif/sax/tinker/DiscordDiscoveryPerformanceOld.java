@@ -32,12 +32,20 @@ public class DiscordDiscoveryPerformanceOld {
 
     series = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
 
+    @SuppressWarnings("deprecation")
     DiscordRecords discordsOle = HOTSAXImplementation.series2DiscordsDeprecated(series,
         DISCORDS_TO_TEST, WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(),
         NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
 
+    DiscordRecords discordsNew = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST,
+        WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
+
     for (DiscordRecord d : discordsOle) {
       System.out.println("old hash discord " + d.toString());
+    }
+
+    for (DiscordRecord d : discordsNew) {
+      System.out.println("new hash discord " + d.toString());
     }
 
   }
