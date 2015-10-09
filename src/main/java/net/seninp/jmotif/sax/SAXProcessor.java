@@ -93,6 +93,11 @@ public final class SAXProcessor {
       saxFrequencyData.add(currentString, i);
     }
 
+    // ArrayList<Integer> keys = saxFrequencyData.getAllIndices();
+    // for (int i : keys) {
+    // System.out.println(i + "," + String.valueOf(saxFrequencyData.getByIndex(i).getPayload()));
+    // }
+
     return saxFrequencyData;
 
   }

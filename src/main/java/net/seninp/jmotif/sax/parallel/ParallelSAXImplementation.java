@@ -2,6 +2,7 @@ package net.seninp.jmotif.sax.parallel;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,14 +65,14 @@ public class ParallelSAXImplementation {
    * @param slidingWindowSize the SAX sliding window size.
    * @param paaSize the SAX PAA size.
    * @param alphabetSize the SAX alphabet size.
-   * @param nrStrategy the SAX numerosity reduction strategy.
+   * @param numRedStrategy the SAX numerosity reduction strategy.
    * @param normalizationThreshold the normalization threshold.
    * @return a SAX representation of the input time series.
    * 
    * @throws SAXException if error occurs.
    */
   public SAXRecords process(double[] timeseries, int threadsNum, int slidingWindowSize, int paaSize,
-      int alphabetSize, NumerosityReductionStrategy nrStrategy, double normalizationThreshold)
+      int alphabetSize, NumerosityReductionStrategy numRedStrategy, double normalizationThreshold)
           throws SAXException {
 
     consoleLogger.debug("Starting the parallel SAX");
@@ -84,6 +85,16 @@ public class ParallelSAXImplementation {
 
     executorService = Executors.newFixedThreadPool(threadsNum);
     consoleLogger.debug("Created thread pool of " + threadsNum + " threads");
+
+    NumerosityReductionStrategy nrStrategy = NumerosityReductionStrategy
+        .fromValue(numRedStrategy.index());
+    //
+    // *** I can't figure out how to process MINDIST in parallel for now, rolling back onto failsafe
+    // implementation
+    //
+    if (NumerosityReductionStrategy.MINDIST.equals(nrStrategy)) {
+      nrStrategy = NumerosityReductionStrategy.NONE;
+    }
 
     completionService = new ExecutorCompletionService<HashMap<Integer, char[]>>(executorService);
 
@@ -141,7 +152,7 @@ public class ParallelSAXImplementation {
     // the last chunk
     {
       int lastChunkStart = timeseries.length - evenIncrement;
-      int lastChunkEnd = timeseries.length-1;
+      int lastChunkEnd = timeseries.length - 1;
       final SAXWorker jobN = new SAXWorker(tstamp + totalTaskCounter, timeseries, lastChunkStart,
           lastChunkEnd, slidingWindowSize, paaSize, alphabetSize, nrStrategy,
           normalizationThreshold);
@@ -175,6 +186,15 @@ public class ParallelSAXImplementation {
           // get the result out
           //
           HashMap<Integer, char[]> chunkRes = finished.get();
+
+          // ArrayList<Integer> keys = new ArrayList<Integer>();
+          // for (int i : chunkRes.keySet()) {
+          // keys.add(i);
+          // }
+          // Collections.sort(keys);
+          // for (int i : keys) {
+          // System.out.println(i + "," + String.valueOf(chunkRes.get(i)));
+          // }
 
           // get the real job index out
           //
@@ -230,13 +250,13 @@ public class ParallelSAXImplementation {
                       + " is dropped in favor of head tail " + tailStr + " at " + chunkTailIndex);
                   res.dropByIndex(resultHeadIndex);
                 }
-                else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                    && (sp.checkMinDistIsZero(tailStr.toCharArray(), resultHead.getPayload()))) {
-                  consoleLogger.debug("res head " + headStr + " at " + resultHeadIndex
-                      + " is dropped in favor of head tail " + tailStr + " at " + chunkTailIndex);
-                  res.dropByIndex(resultHeadIndex);
-
-                }
+                // else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
+                // && (sp.checkMinDistIsZero(tailStr.toCharArray(), headStr.toCharArray()))) {
+                // consoleLogger.debug("res head " + headStr + " at " + resultHeadIndex
+                // + " is dropped in favor of head tail " + tailStr + " at " + chunkTailIndex);
+                // res.dropByIndex(resultHeadIndex);
+                //
+                // }
               }
               else {
                 consoleLogger.debug(
@@ -269,12 +289,12 @@ public class ParallelSAXImplementation {
                       + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
                   chunkRes.remove(chunkHeadIndex);
                 }
-                else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                    && (sp.checkMinDistIsZero(headStr.toCharArray(), resTail.getPayload()))) {
-                  consoleLogger.debug("chunk head " + headStr + " at " + chunkHeadIndex
-                      + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
-                  chunkRes.remove(chunkHeadIndex);
-                }
+                // else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
+                // && (sp.checkMinDistIsZero(headStr.toCharArray(), resStr.toCharArray()))) {
+                // consoleLogger.debug("chunk head " + headStr + " at " + chunkHeadIndex
+                // + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
+                // chunkRes.remove(chunkHeadIndex);
+                // }
               }
               else {
                 consoleLogger.debug(
@@ -315,12 +335,12 @@ public class ParallelSAXImplementation {
                       + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
                   chunkRes.remove(chunkHeadIndex);
                 }
-                else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                    && (sp.checkMinDistIsZero(headStr.toCharArray(), resTail.getPayload()))) {
-                  consoleLogger.debug("chunk head " + headStr + " at " + chunkHeadIndex
-                      + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
-                  chunkRes.remove(chunkHeadIndex);
-                }
+                // else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
+                // && (sp.checkMinDistIsZero(headStr.toCharArray(), resStr.toCharArray()))) {
+                // consoleLogger.debug("chunk head " + headStr + " at " + chunkHeadIndex
+                // + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
+                // chunkRes.remove(chunkHeadIndex);
+                // }
               }
 
               if (completedChunks[idx + 1] == COMPLETED_FLAG) {
@@ -351,13 +371,12 @@ public class ParallelSAXImplementation {
                       + " is dropped in favor of chunk tail " + tailStr + " at " + chunkTailIdx);
                   res.dropByIndex(resultHeadIndex);
                 }
-                else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                    && (sp.checkMinDistIsZero(tailStr.toCharArray(), resultHead.getPayload()))) {
-                  consoleLogger.debug("res head " + headStr + " at " + resultHeadIndex
-                      + " is dropped in favor of chunk tail " + tailStr + " at " + chunkTailIdx);
-                  res.dropByIndex(resultHeadIndex);
-
-                }
+                // else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
+                // && (sp.checkMinDistIsZero(tailStr.toCharArray(), headStr.toCharArray()))) {
+                // consoleLogger.debug("res head " + headStr + " at " + resultHeadIndex
+                // + " is dropped in favor of chunk tail " + tailStr + " at " + chunkTailIdx);
+                // res.dropByIndex(resultHeadIndex);
+                // }
               }
 
               res.addAll(chunkRes);
@@ -393,6 +412,30 @@ public class ParallelSAXImplementation {
         // Preserve interrupt status
         Thread.currentThread().interrupt();
       }
+
+    }
+
+    if (NumerosityReductionStrategy.MINDIST.equals(numRedStrategy)) {
+
+      // need to prune the result according to MINDIST strategy
+
+      SAXRecords newRes = new SAXRecords();
+      ArrayList<Integer> keys = res.getAllIndices();
+      char[] oldStr = null;
+      for (int i : keys) {
+
+        SAXRecord entry = res.getByIndex(i);
+
+        if (null != oldStr && sp.checkMinDistIsZero(entry.getPayload(), oldStr)) {
+          continue;
+        }
+
+        newRes.add(entry.getPayload(), i);
+        oldStr = entry.getPayload();
+
+      }
+
+      res = newRes;
 
     }
 

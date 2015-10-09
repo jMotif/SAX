@@ -71,6 +71,12 @@ public class TestMapEntry {
     assertTrue(e11.equals(e1));
     assertTrue(e1.equals(e2));
 
+    assertTrue(e1.equals(e1));
+    assertFalse(e1.equals(null));
+    assertFalse(e1.equals(Integer.valueOf(17)));
+    assertFalse((new JmotifMapEntry<String, String>(null, null)).equals(e1));
+    assertFalse((new JmotifMapEntry<String, Double>(KEY1, VALUE3)).equals(e1));
+
     System.out.println(e11.equals(e4));
 
     assertFalse(e11.equals(e4));

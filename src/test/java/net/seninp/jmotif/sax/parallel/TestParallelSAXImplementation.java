@@ -28,31 +28,31 @@ public class TestParallelSAXImplementation {
 
   /**
    * Test parallel SAX conversion.
-   * 
+   *
    * @throws Exception if error occurs.
    */
   @Test
-  public void testParallelSAX() throws Exception {
+  public void testParallelSAXNONE() throws Exception {
 
     SAXProcessor sp = new SAXProcessor();
     NormalAlphabet na = new NormalAlphabet();
 
     double[] ts = TSProcessor.readFileColumn(TEST_DATA, 0, 0);
 
+    // test EXACT
+    //
     SAXRecords sequentialRes = sp.ts2saxViaWindow(ts, WINDOW_SIZE, PAA_SIZE,
-        na.getCuts(ALPHABET_SIZE), NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
-
+        na.getCuts(ALPHABET_SIZE), NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
     String sequentialString = sequentialRes.getSAXString(" ");
 
     for (int threadsNum : THREADS_NUM) {
       ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
       SAXRecords parallelRes = ps1.process(ts, threadsNum, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
-          NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
-
-      String str2 = parallelRes.getSAXString(" ");
+          NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
+      String parallelStr = parallelRes.getSAXString(" ");
 
       String[] arr1 = sequentialString.split(" ");
-      String[] arr2 = str2.split(" ");
+      String[] arr2 = parallelStr.split(" ");
 
       for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
         if (!arr1[i].equalsIgnoreCase(arr2[i])) {
@@ -61,9 +61,86 @@ public class TestParallelSAXImplementation {
         }
       }
 
-      assertTrue("assert correctness", sequentialString.equalsIgnoreCase(str2));
-
+      assertTrue("assert correctness", sequentialString.equalsIgnoreCase(parallelStr));
     }
+  }
 
+  /**
+   * Test parallel SAX conversion.
+   *
+   * @throws Exception if error occurs.
+   */
+  @Test
+  public void testParallelSAXExact() throws Exception {
+
+    SAXProcessor sp = new SAXProcessor();
+    NormalAlphabet na = new NormalAlphabet();
+
+    double[] ts = TSProcessor.readFileColumn(TEST_DATA, 0, 0);
+
+    // test EXACT
+    //
+    SAXRecords sequentialRes = sp.ts2saxViaWindow(ts, WINDOW_SIZE, PAA_SIZE,
+        na.getCuts(ALPHABET_SIZE), NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
+    String sequentialString = sequentialRes.getSAXString(" ");
+
+    for (int threadsNum : THREADS_NUM) {
+      ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
+      SAXRecords parallelRes = ps1.process(ts, threadsNum, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
+          NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
+      String parallelStr = parallelRes.getSAXString(" ");
+
+      String[] arr1 = sequentialString.split(" ");
+      String[] arr2 = parallelStr.split(" ");
+
+      for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
+        if (!arr1[i].equalsIgnoreCase(arr2[i])) {
+          System.out.println("Error in index " + i + ", string " + arr1[i] + " versus " + arr2[i]);
+          break;
+        }
+      }
+
+      assertTrue("assert correctness", sequentialString.equalsIgnoreCase(parallelStr));
+    }
+  }
+
+  /**
+   * Test parallel SAX conversion.
+   * 
+   * @throws Exception if error occurs.
+   */
+  @Test
+  public void testParallelSAXMINDIST() throws Exception {
+
+    SAXProcessor sp = new SAXProcessor();
+    NormalAlphabet na = new NormalAlphabet();
+
+    double[] ts = TSProcessor.readFileColumn(TEST_DATA, 0, 0);
+
+    // test EXACT
+    //
+    SAXRecords sequentialRes = sp.ts2saxViaWindow(ts, WINDOW_SIZE, PAA_SIZE,
+        na.getCuts(ALPHABET_SIZE), NumerosityReductionStrategy.MINDIST, NORM_THRESHOLD);
+    String sequentialString = sequentialRes.getSAXString(" ");
+
+    for (int threadsNum : THREADS_NUM) {
+      ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
+      SAXRecords parallelRes = ps1.process(ts, threadsNum, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
+          NumerosityReductionStrategy.MINDIST, NORM_THRESHOLD);
+      String parallelStr = parallelRes.getSAXString(" ");
+
+      String[] arr1 = sequentialString.split(" ");
+      String[] arr2 = parallelStr.split(" ");
+
+      for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
+        if (!arr1[i].equalsIgnoreCase(arr2[i])) {
+          System.out.println("Error in index " + i + ", string " + arr1[i] + " versus " + arr2[i]
+              + ", threads: " + threadsNum);
+          break;
+        }
+      }
+
+      assertTrue("assert correctness", sequentialString.equalsIgnoreCase(parallelStr));
+    }
   }
 }
