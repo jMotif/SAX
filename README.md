@@ -173,7 +173,7 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
 
 #### 3.5 Time series discord discovery using brute-force search
 
-The [BruteForceDiscordImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/BruteForceDiscordImplementation.java) class implements a brute-force search for discords, which intended to be used as a reference.
+The [BruteForceDiscordImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/BruteForceDiscordImplementation.java) class implements a brute-force search for discords, which is intended to be used as a reference in tests (HOTSAX and NONE yield exactly the same discords).
 
  	discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series, 
  	   WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
@@ -202,7 +202,7 @@ The library source code has examples (tests) for using these [here](https://gith
 ------------	
 The plot shows the speedup achieved when using the parallelized SAX version on the dataset [`300_signal1.txt`](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/test-data/300_signal1.txt) of length 536,976 points. Parameters used in the experiment: sliding window size 200, PAA size 11, alphabet size 7, and three different NR strategies.
 
-Note, that for MINDIST numerosity reduction strategy the parallelized code first performs NONE-based discretization first and prunes the result second. 
+Note, that for MINDIST numerosity reduction strategy the parallelized code first performs NONE-based discretization first and prunes the result second. The difference in performance for 7+ CPUs on the plot below is due to the uneven server load, I guess.
 
 ![Performance plot](https://raw.githubusercontent.com/jMotif/SAX/master/src/RCode/performance/profiling.png)
 
