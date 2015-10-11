@@ -286,7 +286,8 @@ public class TSProcessor {
    * @param paaSize The desired length of approximated timeseries.
    * @return PAA-approximated timeseries.
    */
-  public double[] paa(double[] ts, int paaSize) {
+  @Deprecated
+  public double[] paa_old(double[] ts, int paaSize) {
     // fix the length
     int len = ts.length;
     // check for the trivial case
@@ -296,6 +297,52 @@ public class TSProcessor {
     else {
       if (len % paaSize == 0) {
         return colMeans(reshape(asMatrix(ts), len / paaSize, paaSize));
+      }
+      else {
+        double[] paa = new double[paaSize];
+        for (int i = 0; i < len * paaSize; i++) {
+          int idx = i / len; // the spot
+          int pos = i / paaSize; // the col spot
+          paa[idx] = paa[idx] + ts[pos];
+        }
+        for (int i = 0; i < paaSize; i++) {
+          paa[i] = paa[i] / (double) len;
+        }
+        return paa;
+      }
+    }
+
+  }
+
+  /**
+   * Approximate the timeseries using PAA. If the timeseries has some NaN's they are handled as
+   * follows: 1) if all values of the piece are NaNs - the piece is approximated as NaN, 2) if there
+   * are some (more or equal one) values happened to be in the piece - algorithm will handle it as
+   * usual - getting the mean.
+   * 
+   * @param ts The timeseries to approximate.
+   * @param paaSize The desired length of approximated timeseries.
+   * @return PAA-approximated timeseries.
+   */
+  public double[] paa(double[] ts, int paaSize) {
+    // fix the length
+    int len = ts.length;
+    // check for the trivial case
+    if (len == paaSize) {
+      return Arrays.copyOf(ts, ts.length);
+    }
+    else {
+      if (len % paaSize == 0) {
+        double[] paa = new double[paaSize];
+        int inc = len / paaSize;
+        for (int i = 0; i < len; i++) {
+          int idx = i / inc; // the spot
+          paa[idx] += ts[i];
+        }
+        for (int i = 0; i < paaSize; i++) {
+          paa[i] = paa[i] / (double) (inc);
+        }
+        return paa;
       }
       else {
         double[] paa = new double[paaSize];
