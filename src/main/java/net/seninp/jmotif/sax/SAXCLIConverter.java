@@ -3,6 +3,7 @@ package net.seninp.jmotif.sax;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +31,7 @@ public final class SAXCLIConverter {
   //
   private static Logger consoleLogger;
   private static Level LOGGING_LEVEL = Level.INFO;
+
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(SAXCLIConverter.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
@@ -66,12 +68,18 @@ public final class SAXCLIConverter {
 
         sb.append("  input file:                  ").append(SAXCLIParameters.IN_FILE).append(CR);
         sb.append("  output file:                 ").append(SAXCLIParameters.OUT_FILE).append(CR);
-        sb.append("  SAX sliding window size:     ").append(SAXCLIParameters.SAX_WINDOW_SIZE).append(CR);
-        sb.append("  SAX PAA size:                ").append(SAXCLIParameters.SAX_PAA_SIZE).append(CR);
-        sb.append("  SAX alphabet size:           ").append(SAXCLIParameters.SAX_ALPHABET_SIZE).append(CR);
-        sb.append("  SAX numerosity reduction:    ").append(SAXCLIParameters.SAX_NR_STRATEGY).append(CR);
-        sb.append("  SAX normalization threshold: ").append(SAXCLIParameters.SAX_NORM_THRESHOLD).append(CR);
-        sb.append("  threads to use:              ").append(SAXCLIParameters.THREADS_NUM).append(CR);
+        sb.append("  SAX sliding window size:     ").append(SAXCLIParameters.SAX_WINDOW_SIZE)
+            .append(CR);
+        sb.append("  SAX PAA size:                ").append(SAXCLIParameters.SAX_PAA_SIZE)
+            .append(CR);
+        sb.append("  SAX alphabet size:           ").append(SAXCLIParameters.SAX_ALPHABET_SIZE)
+            .append(CR);
+        sb.append("  SAX numerosity reduction:    ").append(SAXCLIParameters.SAX_NR_STRATEGY)
+            .append(CR);
+        sb.append("  SAX normalization threshold: ").append(SAXCLIParameters.SAX_NORM_THRESHOLD)
+            .append(CR);
+        sb.append("  threads to use:              ").append(SAXCLIParameters.THREADS_NUM)
+            .append(CR);
 
         String dataFName = SAXCLIParameters.IN_FILE;
         double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
@@ -116,7 +124,7 @@ public final class SAXCLIConverter {
 
       }
     }
-    catch (Exception e) {
+    catch (IOException | SAXException e) {
       System.err.println("error occured while parsing parameters " + Arrays.toString(args) + CR
           + StackTrace.toString(e));
       System.exit(-1);

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.ArrayList;
+import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -141,7 +142,8 @@ public class TestVisitRegistry {
    */
   @Test
   public void testRandomizer() {
-    ArrayList<Integer> seq = new ArrayList<Integer>(vr.size());
+
+    HashSet<Integer> seq = new HashSet<Integer>();
 
     int i = -1;
     while (-1 != (i = vr.getNextRandomUnvisitedPosition())) { // outer loop
@@ -150,6 +152,7 @@ public class TestVisitRegistry {
     }
 
     assertEquals(REG_SIZE, vr.getVisited().size());
+    assertEquals(seq.size(), vr.getVisited().size());
     assertTrue(vr.getUnvisited().isEmpty());
 
   }

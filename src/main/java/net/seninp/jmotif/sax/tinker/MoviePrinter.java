@@ -1,4 +1,4 @@
-package net.seninp.jmotif.tinker;
+package net.seninp.jmotif.sax.tinker;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -83,7 +83,7 @@ public class MoviePrinter {
     int startOffset = cPoint;
     while (cPoint < dat.length - startOffset - 1) {
 
-      if (0 == cPoint % 1) {
+      if (0 == cPoint % 2) {
 
         BufferedImage tsChart = getChart(dat, cPoint);
 

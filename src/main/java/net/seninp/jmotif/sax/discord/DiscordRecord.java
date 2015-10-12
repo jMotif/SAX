@@ -162,13 +162,7 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
     if (null == other) {
       throw new NullPointerException("Unable compare to null!");
     }
-    if (this.nnDistance < other.getNNDistance()) {
-      return 1;
-    }
-    else if (this.nnDistance > other.getNNDistance()) {
-      return -1;
-    }
-    return 0;
+    return Double.compare(other.getNNDistance(), this.nnDistance);
   }
 
   /**

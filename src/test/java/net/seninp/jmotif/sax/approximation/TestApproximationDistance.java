@@ -1,8 +1,8 @@
 package net.seninp.jmotif.sax.approximation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import java.util.Arrays;
-import org.junit.Before;
 import org.junit.Test;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
@@ -10,12 +10,7 @@ import net.seninp.jmotif.sax.SAXProcessor;
 public class TestApproximationDistance {
 
   private static final double[] testTS = { -1., -2., -1., 0., 2., 1., 1., 0. };
-  private static SAXProcessor sp;
-
-  @Before
-  public void setUp() throws Exception {
-    sp = new SAXProcessor();
-  }
+  private static final SAXProcessor sp = new SAXProcessor();
 
   @Test
   public void test() {

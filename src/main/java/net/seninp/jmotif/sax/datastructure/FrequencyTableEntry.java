@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class FrequencyTableEntry implements Cloneable, Comparable<FrequencyTableEntry> {
+public class FrequencyTableEntry implements Comparable<FrequencyTableEntry> {
 
   private int position;
   private char[] payload;
@@ -186,12 +186,12 @@ public class FrequencyTableEntry implements Cloneable, Comparable<FrequencyTable
   }
 
   /**
-   * {@inheritDoc}
+   * Makes the instance copy.
+   * 
+   * @return the object copy (a "clone").
    */
-  public FrequencyTableEntry clone() {
-    FrequencyTableEntry res = new FrequencyTableEntry(this.payload.length, this.position);
-    res.setStr(this.payload);
-    res.setFrequency(this.frequency);
+  public FrequencyTableEntry copy() {
+    FrequencyTableEntry res = new FrequencyTableEntry(this.position, this.payload, this.frequency);
     return res;
   }
 
