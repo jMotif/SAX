@@ -43,7 +43,7 @@ public class CBFGenerator {
     double[] res = new double[t.length];
     for (int i = 0; i < t.length; i++) {
       res[i] = (6.0d + StdRandom.gaussian()) * eks(t[i], a, b)
-          * ((double) (t[i] - a) / (double) ((b - a))) + StdRandom.gaussian();
+          * ((double) (t[i] - a) / (double) (b - a)) + StdRandom.gaussian();
     }
     return res;
   }
@@ -57,11 +57,6 @@ public class CBFGenerator {
           * ((double) (b - t[i]) / (double) (b - a)) + StdRandom.gaussian();
     }
     return res;
-  }
-
-  public static double[] twoPeriods(int seriesLength, int i) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }
