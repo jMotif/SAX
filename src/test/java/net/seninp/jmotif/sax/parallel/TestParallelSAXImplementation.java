@@ -45,8 +45,9 @@ public class TestParallelSAXImplementation {
         na.getCuts(ALPHABET_SIZE), NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
     String sequentialString = sequentialRes.getSAXString(" ");
 
+    ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
+
     for (int threadsNum : THREADS_NUM) {
-      ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
       SAXRecords parallelRes = ps1.process(ts, threadsNum, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
           NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
       String parallelStr = parallelRes.getSAXString(" ");
@@ -84,8 +85,9 @@ public class TestParallelSAXImplementation {
         na.getCuts(ALPHABET_SIZE), NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
     String sequentialString = sequentialRes.getSAXString(" ");
 
+    ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
+
     for (int threadsNum : THREADS_NUM) {
-      ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
       SAXRecords parallelRes = ps1.process(ts, threadsNum, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
           NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
       String parallelStr = parallelRes.getSAXString(" ");
@@ -123,8 +125,9 @@ public class TestParallelSAXImplementation {
         na.getCuts(ALPHABET_SIZE), NumerosityReductionStrategy.MINDIST, NORM_THRESHOLD);
     String sequentialString = sequentialRes.getSAXString(" ");
 
+    ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
+
     for (int threadsNum : THREADS_NUM) {
-      ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
       SAXRecords parallelRes = ps1.process(ts, threadsNum, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
           NumerosityReductionStrategy.MINDIST, NORM_THRESHOLD);
       String parallelStr = parallelRes.getSAXString(" ");
