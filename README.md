@@ -210,9 +210,12 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
 
 #### Versions:
+
 `1.0.3`
   * improved PAA performance for even length/paa case, now it is about 3 times faster
+
 `0.0.1 - 1.0.2`
   * additional testing and code test coverage control
+
 `0.0.1 - 1.0.0`
   * cleaning up the old JMotif code and decoupling the SAX code from the rest
