@@ -20,7 +20,7 @@ In Proc. ICDM (2002)
 [*HOT SAX: Efficiently finding the most unusual time series subsequence*](http://www.cs.ucr.edu/~eamonn/HOT%20SAX%20%20long-ver.pdf),
 In Proc. ICDM (2005)
 
-##### _Currently I am working on the similar in functionality [R code](https://github.com/jMotif/jmotif-R)_
+##### _I am working on the similar in functionality [R code](https://github.com/jMotif/jmotif-R)_
 
 #### Citing this work:
 
