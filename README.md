@@ -10,7 +10,7 @@ This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-license
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., 
 [*Finding Motifs in Time Series*](http://cs.gmu.edu/~jessica/Lin_motif.pdf), 
-The 2nd Workshop onTemporal Data Mining, the 8th ACM Int'l Conference on KDD (2002)
+The 2nd Workshop on Temporal Data Mining, the 8th ACM Int'l Conference on KDD (2002)
 
 [2] Patel, P., Keogh, E., Lin, J., Lonardi, S., 
 [*Mining Motifs in Massive Time Series Databases*](http://www.cs.gmu.edu/~jessica/publications/motif_icdm02.pdf), 
@@ -20,7 +20,7 @@ In Proc. ICDM (2002)
 [*HOT SAX: Efficiently finding the most unusual time series subsequence*](http://www.cs.ucr.edu/~eamonn/HOT%20SAX%20%20long-ver.pdf),
 In Proc. ICDM (2005)
 
-#### _Note that curretly I am working on the similar in functionality [R code](https://github.com/jMotif/jmotif-R)_
+##### _Note that curretly I am working on the similar in functionality [R code](https://github.com/jMotif/jmotif-R)_
 
 #### Citing this work:
 
