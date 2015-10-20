@@ -4,9 +4,9 @@ Time series discretization with SAX
 [![License](http://img.shields.io/:license-gpl2-green.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 
 This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) and implements in Java:
-  * Symbolic Aggregate approXimation (i.e., SAX) [1]
+  * Symbolic Aggregate approXimation (i.e., SAX) toolkit stack [1]
   * a simple function for time series motif discovery [2]
-  * time series discord discovery (i.e., HOT-SAX) [3]
+  * HOT-SAX - a time series discord discovery algorithm [3]
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., 
 [*Finding Motifs in Time Series*](http://cs.gmu.edu/~jessica/Lin_motif.pdf), 
