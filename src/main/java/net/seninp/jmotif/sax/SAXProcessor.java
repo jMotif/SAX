@@ -387,7 +387,7 @@ public final class SAXProcessor {
     double resDistance = 0d;
     int windowCounter = 0;
 
-    NormalAlphabet normalA = new NormalAlphabet();
+    // NormalAlphabet normalA = new NormalAlphabet();
     // char[] previousString = null;
 
     double pointsPerSegment = (double) winSize / (double) paaSize;
@@ -402,7 +402,7 @@ public final class SAXProcessor {
       double[] paa = tsProcessor.paa(subSection, paaSize);
 
       // Convert the PAA to a string.
-      char[] currentString = tsProcessor.ts2String(paa, normalA.getCuts(alphabetSize));
+      // char[] currentString = tsProcessor.ts2String(paa, normalA.getCuts(alphabetSize));
 
       // Check if need to leave the loop due to numerosity reduction
       //
