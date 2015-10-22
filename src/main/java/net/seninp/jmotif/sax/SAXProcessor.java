@@ -345,7 +345,7 @@ public final class SAXProcessor {
     for (int i = 0; i < alphabetSize; i++) {
       alphabet[i] = String.valueOf(TSProcessor.ALPHABET[i]);
     }
-    String[] allShingles = getAllLists(alphabet, shingleSize);
+    String[] allShingles = getAllPermutations(alphabet, shingleSize);
 
     // result
     HashMap<String, Integer> res = new HashMap<String, Integer>(allShingles.length);
@@ -447,7 +447,7 @@ public final class SAXProcessor {
    * @return shingled representation.
    * @throws SAXException if error occurs.
    */
-  public Map<String, List<double[]>> toShingles(Map<String, ArrayList<double[]>> data,
+  public Map<String, List<double[]>> manySeriesToShingles(Map<String, ArrayList<double[]>> data,
       int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
       double normalizationThreshold) throws SAXException {
 
@@ -459,7 +459,7 @@ public final class SAXProcessor {
     for (int i = 0; i < alphabetSize; i++) {
       alphabet[i] = String.valueOf(TSProcessor.ALPHABET[i]);
     }
-    String[] allStrings = getAllLists(alphabet, paaSize);
+    String[] allStrings = getAllPermutations(alphabet, paaSize);
 
     // and make an index table
     //
@@ -509,7 +509,7 @@ public final class SAXProcessor {
    * @param wordLength the word length.
    * @return set of permutation.
    */
-  public static String[] getAllLists(String[] alphabet, int wordLength) {
+  public static String[] getAllPermutations(String[] alphabet, int wordLength) {
 
     // initialize our returned list with the number of elements calculated above
     String[] allLists = new String[(int) Math.pow(alphabet.length, wordLength)];
@@ -519,7 +519,7 @@ public final class SAXProcessor {
       return alphabet;
     else {
       // the recursion--get all lists of length 3, length 2, all the way up to 1
-      String[] allSublists = getAllLists(alphabet, wordLength - 1);
+      String[] allSublists = getAllPermutations(alphabet, wordLength - 1);
 
       // append the sublists to each element
       int arrayIndex = 0;

@@ -23,13 +23,13 @@ public class TestShingling {
 
     String[] arr = { "a", "b", "c" };
 
-    String[] perm2 = SAXProcessor.getAllLists(arr, 2);
+    String[] perm2 = SAXProcessor.getAllPermutations(arr, 2);
     assertEquals("Testing the resulting array's length.", 9, perm2.length);
 
     String asString2 = Arrays.toString(perm2);
     assertTrue("Testing the specific word is present.", asString2.contains("ca"));
 
-    String[] perm5 = SAXProcessor.getAllLists(arr, 5);
+    String[] perm5 = SAXProcessor.getAllPermutations(arr, 5);
     assertEquals("Testing the resulting array's length.", 3 * 3 * 3 * 3 * 3, perm5.length);
 
     String asString5 = Arrays.toString(perm5);
