@@ -388,7 +388,7 @@ public final class SAXProcessor {
     int windowCounter = 0;
 
     NormalAlphabet normalA = new NormalAlphabet();
-    char[] previousString = null;
+    // char[] previousString = null;
 
     double pointsPerSegment = (double) winSize / (double) paaSize;
 
@@ -405,18 +405,22 @@ public final class SAXProcessor {
       char[] currentString = tsProcessor.ts2String(paa, normalA.getCuts(alphabetSize));
 
       // Check if need to leave the loop due to numerosity reduction
-      if (NumerosityReductionStrategy.EXACT.equals(strategy)
-          && Arrays.equals(previousString, currentString)) {
-        continue;
-      }
-      else if ((null != previousString) && NumerosityReductionStrategy.MINDIST.equals(strategy)) {
-        double dist = saxMinDist(previousString, currentString,
-            normalA.getDistanceMatrix(alphabetSize), winSize, paaSize);
-        if (0.0D == dist) {
-          continue;
-        }
-      }
-      previousString = currentString;
+      //
+      // **** Approximation distance is always computed for NOREDUCTION
+      //
+      // if (NumerosityReductionStrategy.EXACT.equals(strategy)
+      // && Arrays.equals(previousString, currentString)) {
+      // continue;
+      // }
+      // else if ((null != previousString) && NumerosityReductionStrategy.MINDIST.equals(strategy))
+      // {
+      // double dist = saxMinDist(previousString, currentString,
+      // normalA.getDistanceMatrix(alphabetSize), winSize, paaSize);
+      // if (0.0D == dist) {
+      // continue;
+      // }
+      // }
+      // previousString = currentString;
       windowCounter++;
 
       // if made it here compute the distance
