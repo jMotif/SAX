@@ -23,8 +23,8 @@ public class TestEuclideanDistance {
   private static final double[] testPoint3D1 = { 0.545, 0.856, 0.856 };
   private static final double[] testPoint3D2 = { 0.845, 0.654, 0.986 };
 
-  private static final double[] testPoint3D1I = { 545, 856, 856 };
-  private static final double[] testPoint3D2I = { 845, 654, 986 };
+  private static final int[] testPoint3D1I = { 545, 856, 856 };
+  private static final int[] testPoint3D2I = { 845, 654, 986 };
 
   // 2d series for the test
   private static final double[][] testSeries1 = { { 0.2, 0.6 }, { 0.3, 0.5 }, { 0.4, 0.4 },
@@ -82,19 +82,31 @@ public class TestEuclideanDistance {
       //
       assertEquals("test point distance", 384.32278100, ed.distance(testPoint3D1I, testPoint3D2I),
           DELTA);
-      assertEquals("test point distance", 147704.0, ed.distance2(testPoint3D1I, testPoint3D2I),
-          DELTA);
+
+      // test the normalized distance
+      //
+      assertEquals("test point distance", 0.3843228 / 3.0,
+          ed.normalizedDistance(testPoint3D1, testPoint3D2), DELTA);
 
     }
     catch (Exception e) {
       fail("Shouldn't throw any exception");
     }
 
+    // test for exceptions
     //
-    // test for exception
     try {
-      @SuppressWarnings("unused")
-      double distance = ed.distance(testPoint1D1, testPoint3D1);
+      assertEquals("test point distance", 0.3843228, ed.distance(testPoint1D1, testPoint3D2),
+          DELTA);
+      fail("Exception is not thrown!");
+    }
+    catch (Exception e) {
+      assert true;
+    }
+
+    try {
+      int[] badSeries = { 15, 16 };
+      assertEquals("test point distance", 147704.0, ed.distance2(testPoint3D1I, badSeries), DELTA);
       fail("Exception is not thrown!");
     }
     catch (Exception e) {
