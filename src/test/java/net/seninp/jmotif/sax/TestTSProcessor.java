@@ -77,12 +77,27 @@ public class TestTSProcessor {
   }
 
   /**
+   * Test the median calculation.
+   */
+  @Test
+  public void testMedian() {
+    assertEquals("testing the mean", 3.85, tsp.median(ts1), delta);
+    assertEquals("testing the mean", 3.83, tsp.median(ts2), delta);
+
+    final double[] badArray = {};
+    assertTrue("testing the mean", Double.isNaN(tsp.mean(badArray)));
+  }
+
+  /**
    * Test the mean calculation.
    */
   @Test
   public void testMean() {
-    assertEquals("mean", 4.606667, tsp.mean(ts1), delta);
-    assertEquals("mean", 4.01, tsp.mean(ts2), delta);
+    assertEquals("testing the mean", 4.606667, tsp.mean(ts1), delta);
+    assertEquals("testing the mean", 4.01, tsp.mean(ts2), delta);
+
+    final double[] badArray = {};
+    assertTrue("testing the mean", Double.isNaN(tsp.mean(badArray)));
   }
 
   /**
