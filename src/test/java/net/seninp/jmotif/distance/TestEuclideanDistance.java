@@ -73,18 +73,16 @@ public class TestEuclideanDistance {
 
       // test the distance between points: distance(double p1, double p2)
       //
-      assertEquals("test point distance", 384.32278100, ed.distance(testPoint3D1I, testPoint3D2I),
+      assertEquals("test point distance", 0.3843228, ed.distance(testPoint3D1, testPoint3D2),
           DELTA);
-      assertEquals("test point distance", 147704.0, ed.distance2(testPoint3D1I, testPoint3D2I),
+      assertEquals("test point distance", 0.147704, ed.distance2(testPoint3D1, testPoint3D2),
           DELTA);
 
       // test the distance between points: distance(int p1, int p2)
       //
-      assertEquals("test 1D distance",
-          ed.distance(Double.valueOf(testPoint1D1[0] * 10.0).intValue(),
-              Double.valueOf(testPoint1D2[0] * 10.0).intValue()),
-          Math.abs(Double.valueOf(testPoint1D1[0] * 10.0).intValue()
-              - Double.valueOf(testPoint1D2[0] * 10.0).intValue()),
+      assertEquals("test point distance", 384.32278100, ed.distance(testPoint3D1I, testPoint3D2I),
+          DELTA);
+      assertEquals("test point distance", 147704.0, ed.distance2(testPoint3D1I, testPoint3D2I),
           DELTA);
 
     }
