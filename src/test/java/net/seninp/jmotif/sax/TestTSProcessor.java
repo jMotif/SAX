@@ -83,9 +83,6 @@ public class TestTSProcessor {
   public void testMedian() {
     assertEquals("testing the mean", 3.85, tsp.median(ts1), delta);
     assertEquals("testing the mean", 3.83, tsp.median(ts2), delta);
-
-    final double[] badArray = {};
-    assertTrue("testing the mean", Double.isNaN(tsp.mean(badArray)));
   }
 
   /**
@@ -107,6 +104,8 @@ public class TestTSProcessor {
   public void testVar() {
     assertEquals("variance", 6.971267, tsp.var(ts1), delta);
     assertEquals("variance", 7.409971, tsp.var(ts2), delta);
+    final double[] badArray = {};
+    assertTrue("testing the mean", Double.isNaN(tsp.var(badArray)));
   }
 
   /**
@@ -190,6 +189,19 @@ public class TestTSProcessor {
     for (int i = 0; i < ts2PAA10.length; i++) {
       assertEquals("PAA", ts2PAA10[i], ts2PAATest[i], delta);
     }
+
+    // test implementations
+    //
+    @SuppressWarnings("deprecation")
+    double[] ts1PAAOld = tsp.paa_old(ts1Norm, PAAlength);
+    @SuppressWarnings("deprecation")
+    double[] ts2PAAOld = tsp.paa_old(ts2Norm, PAAlength);
+    for (int i = 0; i < ts1PAA10.length; i++) {
+      assertEquals("PAA", ts1PAA10[i], ts1PAAOld[i], delta);
+    }
+    for (int i = 0; i < ts2PAA10.length; i++) {
+      assertEquals("PAA", ts2PAA10[i], ts2PAAOld[i], delta);
+    }
   }
 
   /**
@@ -214,6 +226,8 @@ public class TestTSProcessor {
     double[] ts1 = { -0.179, -0.18, -0.1801 };
     assertTrue("test num2char",
         "ddc".equalsIgnoreCase(new String(tsp.ts2String(ts1, normalA.getCuts(7)))));
+
+    assertEquals("test num2char", 'a', tsp.num2char(0));
 
   }
 
