@@ -2,6 +2,8 @@ package net.seninp.jmotif.sax;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -253,7 +255,7 @@ public class TestTSProcessor {
    * 
    */
   @Test
-  public void series2String() {
+  public void testSeries2String() {
 
     final NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
     final DecimalFormat df = (DecimalFormat) nf;
@@ -266,6 +268,39 @@ public class TestTSProcessor {
     assertTrue(seriesAsString.contains("-1.1"));
     assertTrue(seriesAsString.contains(".6"));
     assertTrue(seriesAsString.contains("-.6"));
+
+  }
+
+  /**
+   * Test series copy.
+   * 
+   * @throws IOException if error occurs.
+   * @throws SAXException if error occurs.
+   * 
+   */
+  @Test
+  public void series2String() throws SAXException, IOException {
+
+    // read the normalized data
+    //
+    final double[] ts1Norm = tsp.readTS(ts1NormFile, length);
+    final double[] ts2Norm = tsp.readTS(ts2NormFile, length);
+
+    // test copy
+    //
+    double[] cp1 = tsp.subseriesByCopy(ts1Norm, 3, 7);
+    for (int i = 3; i < 7; i++) {
+      assertEquals("testing copy routines", cp1[i - 3], ts1Norm[i], delta);
+    }
+
+    try {
+      double[] cp2 = tsp.subseriesByCopy(ts2Norm, 3, 755);
+      assertEquals("testing copy routines", cp2[1], ts1Norm[3], delta);
+      fail("Exception is not thrown");
+    }
+    catch (IndexOutOfBoundsException e) {
+      assert true;
+    }
 
   }
 
