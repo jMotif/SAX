@@ -23,6 +23,9 @@ public class TestEuclideanDistance {
   private static final double[] testPoint3D1 = { 0.545, 0.856, 0.856 };
   private static final double[] testPoint3D2 = { 0.845, 0.654, 0.986 };
 
+  private static final double[] testPoint3D1I = { 545, 856, 856 };
+  private static final double[] testPoint3D2I = { 845, 654, 986 };
+
   // 2d series for the test
   private static final double[][] testSeries1 = { { 0.2, 0.6 }, { 0.3, 0.5 }, { 0.4, 0.4 },
       { 0.5, 0.3 }, { 0.6, 0.2 } };
@@ -32,6 +35,8 @@ public class TestEuclideanDistance {
 
   private static final double[][] testSeries3 = { { 1.0, 1.8 }, { 1.2, 1.6 }, { 1.4, 1.4 },
       { 1.6, 1.2 } };
+
+  private static final double DELTA = 0.000001D;
 
   @Before
   public void setUp() {
@@ -46,26 +51,42 @@ public class TestEuclideanDistance {
   public void testPointDistance() {
 
     try {
-      //
-      // test the distance between points
-      assertEquals("test 1D distance", ed.distance(testPoint1D1, testPoint1D2),
-          Math.abs(testPoint1D2[0] - testPoint1D1[0]), 0.01D);
-      assertEquals("test 1D distance", ed.distance(testPoint1D1[0], testPoint1D2[0]),
-          Math.abs(testPoint1D2[0] - testPoint1D1[0]), 0.01D);
 
+      // test the distance between points: distance(double p1, double p2)
       //
-      // compute the test value right here
-      double dist = 0D;
-      for (int i = 0; i < 3; i++) {
-        dist += (testPoint3D1[i] - testPoint3D2[i]) * (testPoint3D1[i] - testPoint3D2[i]);
-      }
-      dist = Math.sqrt(dist);
+      double dd = Math.abs(testPoint1D2[0] - testPoint1D1[0]);
+      assertEquals("test 1D distance", dd, ed.distance(testPoint1D1, testPoint1D2), DELTA);
+      assertEquals("test 1D distance", dd * dd, ed.distance2(testPoint1D1, testPoint1D2), DELTA);
 
+      assertEquals("test 1D distance", dd, ed.distance(testPoint1D1[0], testPoint1D2[0]), DELTA);
+      assertEquals("test 1D distance", dd * dd, ed.distance2(testPoint1D1[0], testPoint1D2[0]),
+          DELTA);
+
+      // test the distance between points: distance(int p1, int p2)
       //
-      // multi-dimensional points which in fact are series
-      assertEquals("test 1D distance", ed.distance(testPoint3D1, testPoint3D2), dist, 0.01D);
-      assertEquals("test series distance", ed.seriesDistance(testPoint3D1, testPoint3D2), dist,
-          0.01D);
+      int di = Math.abs(Double.valueOf(testPoint1D1[0] * 10.0).intValue()
+          - Double.valueOf(testPoint1D2[0] * 10.0).intValue());
+      assertEquals("test 1D distance", (double) di,
+          ed.distance(Double.valueOf(testPoint1D1[0] * 10.0).intValue(),
+              Double.valueOf(testPoint1D2[0] * 10.0).intValue()),
+          DELTA);
+
+      // test the distance between points: distance(double p1, double p2)
+      //
+      assertEquals("test point distance", 384.32278100, ed.distance(testPoint3D1I, testPoint3D2I),
+          DELTA);
+      assertEquals("test point distance", 147704.0, ed.distance2(testPoint3D1I, testPoint3D2I),
+          DELTA);
+
+      // test the distance between points: distance(int p1, int p2)
+      //
+      assertEquals("test 1D distance",
+          ed.distance(Double.valueOf(testPoint1D1[0] * 10.0).intValue(),
+              Double.valueOf(testPoint1D2[0] * 10.0).intValue()),
+          Math.abs(Double.valueOf(testPoint1D1[0] * 10.0).intValue()
+              - Double.valueOf(testPoint1D2[0] * 10.0).intValue()),
+          DELTA);
+
     }
     catch (Exception e) {
       fail("Shouldn't throw any exception");
@@ -82,17 +103,6 @@ public class TestEuclideanDistance {
       assert true;
     }
 
-    //
-    // test for exception
-    try {
-      @SuppressWarnings("unused")
-      double distance = ed.seriesDistance(testPoint1D1, testPoint3D1);
-      fail("Exception is not thrown!");
-    }
-    catch (Exception e) {
-      assert true;
-    }
-
   }
 
   /**
@@ -101,16 +111,19 @@ public class TestEuclideanDistance {
    */
   @Test
   public void testSeriesDistance() {
+
+    // test the normal case
+    //
     try {
       Double dist = ed.seriesDistance(testSeries1, testSeries2);
-      assertEquals("testing distance, ", 3.193743885, dist, 0.01D);
+      assertEquals("testing distance, ", 3.193743885, dist, DELTA);
     }
     catch (Exception e) {
       fail("Should not throw any exception here.");
     }
 
-    //
     // test for exception
+    //
     try {
       @SuppressWarnings("unused")
       Double dist = ed.seriesDistance(testSeries1, testSeries3);

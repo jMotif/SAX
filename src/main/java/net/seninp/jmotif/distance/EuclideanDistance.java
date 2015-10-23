@@ -16,42 +16,6 @@ public final class EuclideanDistance {
   }
 
   /**
-   * Calculates the square of the Euclidean distance between two 1D points represented by real
-   * values.
-   * 
-   * @param p1 The first point.
-   * @param p2 The second point.
-   * @return The Square of Euclidean distance.
-   */
-  public double distance2(double p1, double p2) {
-    return (p1 - p2) * (p1 - p2);
-  }
-
-  /**
-   * Calculates the square of the Euclidean distance between two multidimensional points represented
-   * by the real vectors.
-   * 
-   * @param point1 The first point.
-   * @param point2 The second point.
-   * @return The Euclidean distance.
-   * @throws Exception In the case of error.
-   */
-  public double distance2(double[] point1, double[] point2) throws Exception {
-    if (point1.length == point2.length) {
-      Double sum = 0D;
-      for (int i = 0; i < point1.length; i++) {
-        double tmp = point2[i] - point1[i];
-        sum = sum + tmp * tmp;
-        // sum = sum + Math.pow(point2[i] - point1[i], 2.0);
-      }
-      return sum;
-    }
-    else {
-      throw new Exception("Exception in Euclidean distance: array lengths are not equal");
-    }
-  }
-
-  /**
    * Calculates the Euclidean distance between two points.
    * 
    * @param p1 The first point.
@@ -76,15 +40,50 @@ public final class EuclideanDistance {
   }
 
   /**
-   * Calculates the Normalized Euclidean distance between two points.
+   * Calculates the Euclidean distance between two points.
    * 
    * @param point1 The first point.
    * @param point2 The second point.
    * @return The Euclidean distance.
    * @throws Exception In the case of error.
    */
-  public double normalizedDistance(double[] point1, double[] point2) throws Exception {
-    return Math.sqrt(distance2(point1, point2)) / point1.length;
+  public double distance(int[] point1, int[] point2) throws Exception {
+    return Math.sqrt(Long.valueOf(distance2(point1, point2)).doubleValue());
+  }
+
+  /**
+   * Calculates the square of the Euclidean distance between two 1D points represented by real
+   * values.
+   * 
+   * @param p1 The first point.
+   * @param p2 The second point.
+   * @return The Square of Euclidean distance.
+   */
+  public double distance2(double p1, double p2) {
+    return (p1 - p2) * (p1 - p2);
+  }
+
+  /**
+   * Calculates the square of the Euclidean distance between two multidimensional points represented
+   * by the rational vectors.
+   * 
+   * @param point1 The first point.
+   * @param point2 The second point.
+   * @return The Euclidean distance.
+   * @throws Exception In the case of error.
+   */
+  public double distance2(double[] point1, double[] point2) throws Exception {
+    if (point1.length == point2.length) {
+      Double sum = 0D;
+      for (int i = 0; i < point1.length; i++) {
+        double tmp = point2[i] - point1[i];
+        sum = sum + tmp * tmp;
+      }
+      return sum;
+    }
+    else {
+      throw new Exception("Exception in Euclidean distance: array lengths are not equal");
+    }
   }
 
   /**
@@ -110,39 +109,6 @@ public final class EuclideanDistance {
   }
 
   /**
-   * Calculates the Euclidean distance between two points.
-   * 
-   * @param point1 The first point.
-   * @param point2 The second point.
-   * @return The Euclidean distance.
-   * @throws Exception In the case of error.
-   */
-  public double distance(int[] point1, int[] point2) throws Exception {
-    return Math.sqrt(Long.valueOf(distance2(point1, point2)).doubleValue());
-  }
-
-  /**
-   * Calculates Euclidean distance between two one-dimensional time-series of equal length.
-   * 
-   * @param series1 The first series.
-   * @param series2 The second series.
-   * @return The eclidean distance.
-   * @throws Exception if error occures.
-   */
-  public double seriesDistance(double[] series1, double[] series2) throws Exception {
-    if (series1.length == series2.length) {
-      Double res = 0D;
-      for (int i = 0; i < series1.length; i++) {
-        res = res + distance2(series1[i], series2[i]);
-      }
-      return Math.sqrt(res);
-    }
-    else {
-      throw new Exception("Exception in Euclidean distance: array lengths are not equal");
-    }
-  }
-
-  /**
    * Calculates Euclidean distance between two multi-dimensional time-series of equal length.
    * 
    * @param series1 The first series.
@@ -161,6 +127,18 @@ public final class EuclideanDistance {
     else {
       throw new Exception("Exception in Euclidean distance: array lengths are not equal");
     }
+  }
+
+  /**
+   * Calculates the Normalized Euclidean distance between two points.
+   * 
+   * @param point1 The first point.
+   * @param point2 The second point.
+   * @return The Euclidean distance.
+   * @throws Exception In the case of error.
+   */
+  public double normalizedDistance(double[] point1, double[] point2) throws Exception {
+    return Math.sqrt(distance2(point1, point2)) / point1.length;
   }
 
   /**
