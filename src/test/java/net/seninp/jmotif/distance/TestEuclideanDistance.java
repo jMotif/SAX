@@ -105,8 +105,18 @@ public class TestEuclideanDistance {
     }
 
     try {
-      int[] badSeries = { 15, 16 };
+      final int[] badSeries = { 15, 16 };
       assertEquals("test point distance", 147704.0, ed.distance2(testPoint3D1I, badSeries), DELTA);
+      fail("Exception is not thrown!");
+    }
+    catch (Exception e) {
+      assert true;
+    }
+
+    try {
+      final double[] badSeries = { 15, 16 };
+      assertEquals("test point distance", 147704.0,
+          ed.earlyAbandonedDistance(testPoint3D1, badSeries, 0.01), DELTA);
       fail("Exception is not thrown!");
     }
     catch (Exception e) {
@@ -145,8 +155,8 @@ public class TestEuclideanDistance {
 
     // test with integers
     //
-    int[] x = { 0, 0, 1, 1, 1, 1 };
-    int[] y = { 1, 0, 1, 1, 0, 1 };
+    final int[] x = { 0, 0, 1, 1, 1, 1 };
+    final int[] y = { 1, 0, 1, 1, 0, 1 };
     try {
       assertEquals(1.414214, ed.distance(x, y), 0.001);
     }
