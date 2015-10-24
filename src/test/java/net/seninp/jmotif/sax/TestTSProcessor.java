@@ -95,8 +95,13 @@ public class TestTSProcessor {
     assertEquals("testing the mean", 4.606667, tsp.mean(ts1), delta);
     assertEquals("testing the mean", 4.01, tsp.mean(ts2), delta);
 
-    final double[] badArray = {};
-    assertTrue("testing the mean", Double.isNaN(tsp.mean(badArray)));
+    final double[] badArrayDouble = {};
+    assertTrue("testing the mean", Double.isNaN(tsp.mean(badArrayDouble)));
+
+    int[] arr = { 1, 5, 8, 7, 6 };
+    assertEquals("testing the mean", 5.4, tsp.mean(arr), delta);
+    final int[] badArrayInt = {};
+    assertTrue("testing the mean", Double.isNaN(tsp.mean(badArrayInt)));
   }
 
   /**

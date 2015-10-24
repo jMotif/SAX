@@ -197,6 +197,26 @@ public class TSProcessor {
   }
 
   /**
+   * Computes the mean value of timeseries.
+   * 
+   * @param series The timeseries.
+   * @return The mean value.
+   */
+  public double mean(int[] series) {
+    double res = 0D;
+    int count = 0;
+    for (int tp : series) {
+      res += (double) tp;
+      count += 1;
+
+    }
+    if (count > 0) {
+      return res / ((Integer) count).doubleValue();
+    }
+    return Double.NaN;
+  }
+  
+  /**
    * Computes the median value of timeseries.
    * 
    * @param series The timeseries.
