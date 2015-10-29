@@ -60,7 +60,7 @@ public final class SAXProcessor {
     // scan across the time series extract sub sequences, and convert them to strings
     char[] previousString = null;
 
-    for (int i = 0; i < ts.length - windowSize; i++) {
+    for (int i = 0; i <= ts.length - windowSize; i++) {
 
       // fix the current subsection
       double[] subSection = Arrays.copyOfRange(ts, i, i + windowSize);
