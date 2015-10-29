@@ -152,7 +152,7 @@ public class ParallelSAXImplementation {
     // the last chunk
     {
       int lastChunkStart = timeseries.length - evenIncrement;
-      int lastChunkEnd = timeseries.length - 1;
+      int lastChunkEnd = timeseries.length;
       final SAXWorker jobN = new SAXWorker(tstamp + totalTaskCounter, timeseries, lastChunkStart,
           lastChunkEnd, slidingWindowSize, paaSize, alphabetSize, nrStrategy,
           normalizationThreshold);

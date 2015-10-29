@@ -152,7 +152,7 @@ public class TestSAXProcessor {
     SAXRecords ts2SAX = sp.ts2saxViaWindow(ts2, 5, 5, normalA.getCuts(10),
         NumerosityReductionStrategy.NONE, delta);
 
-    assertEquals("Testing conversion", ts2.length - 5, ts2SAX.size());
+    assertEquals("Testing conversion", ts2.length - 5 + 1, ts2SAX.size());
 
     assertNotNull("Testing ts2sax", ts2SAX.getByWord(ts2str_0));
     assertNotNull("Testing ts2sax", ts2SAX.getByWord(ts2str_3));
