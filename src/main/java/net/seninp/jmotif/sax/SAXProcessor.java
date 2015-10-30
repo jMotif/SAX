@@ -375,14 +375,12 @@ public final class SAXProcessor {
    * @param ts the timeseries.
    * @param winSize SAX window size.
    * @param paaSize SAX PAA size.
-   * @param alphabetSize SAX alphabet size.
-   * @param strategy the numerosity reduction strategy.
    * @param normThreshold the normalization threshold.
    * @return the distance value.
    * @throws Exception if error occurs.
    */
-  public double approximationDistance(double[] ts, int winSize, int paaSize, int alphabetSize,
-      NumerosityReductionStrategy strategy, double normThreshold) throws Exception {
+  public double approximationDistance(double[] ts, int winSize, int paaSize, double normThreshold)
+      throws Exception {
 
     double resDistance = 0d;
     int windowCounter = 0;
