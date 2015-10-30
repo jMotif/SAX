@@ -387,50 +387,34 @@ public final class SAXProcessor {
     double resDistance = 0d;
     int windowCounter = 0;
 
-    // NormalAlphabet normalA = new NormalAlphabet();
-    // char[] previousString = null;
+    double pointsPerWindow = (double) winSize / (double) paaSize;
 
-    double pointsPerSegment = (double) winSize / (double) paaSize;
+    for (int i = 0; i < ts.length - winSize + 1; i++) {
 
-    for (int i = 0; i < ts.length - (winSize - 1); i++) {
+      double[] subseries = Arrays.copyOfRange(ts, i, i + winSize);
 
-      double[] subSection = Arrays.copyOfRange(ts, i, i + winSize);
-
-      if (tsProcessor.stDev(subSection) > normThreshold) {
-        subSection = tsProcessor.znorm(subSection, normThreshold);
+      if (tsProcessor.stDev(subseries) > normThreshold) {
+        subseries = tsProcessor.znorm(subseries, normThreshold);
       }
-      double[] paa = tsProcessor.paa(subSection, paaSize);
 
-      // Convert the PAA to a string.
-      // char[] currentString = tsProcessor.ts2String(paa, normalA.getCuts(alphabetSize));
+      double[] paa = tsProcessor.paa(subseries, paaSize);
 
-      // Check if need to leave the loop due to numerosity reduction
-      //
-      // **** Approximation distance is always computed for NOREDUCTION
-      //
-      // if (NumerosityReductionStrategy.EXACT.equals(strategy)
-      // && Arrays.equals(previousString, currentString)) {
-      // continue;
-      // }
-      // else if ((null != previousString) && NumerosityReductionStrategy.MINDIST.equals(strategy))
-      // {
-      // double dist = saxMinDist(previousString, currentString,
-      // normalA.getDistanceMatrix(alphabetSize), winSize, paaSize);
-      // if (0.0D == dist) {
-      // continue;
-      // }
-      // }
-      // previousString = currentString;
       windowCounter++;
 
-      // if made it here compute the distance
-      for (int j = 0; j < subSection.length; j++) {
-        int paaIdx = (int) Math.round((double) j / pointsPerSegment);
-        if (paaIdx >= paaSize) {
-          paaIdx = paaSize - 1;
+      // essentially the distance here is the distance between the segment's
+      // PAA value and the real TS value
+      //
+      for (int j = 0; j < subseries.length; j++) {
+        int paaIdx = (int) Math.round((double) j / pointsPerWindow) - 1;
+        if (paaIdx < 0) {
+          paaIdx = 0;
         }
-        resDistance = resDistance + ed.distance(paa[paaIdx], subSection[j]);
+        if (paaIdx > paa.length) {
+          paaIdx = paa.length - 1;
+        }
+        resDistance = resDistance + ed.distance(paa[paaIdx], subseries[j]);
       }
+
     }
     return resDistance / (double) windowCounter;
   }
