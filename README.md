@@ -212,6 +212,9 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 
 #### Versions:
 
+`1.0.4`
+  * fixed the SAX transform via sliding window, last window now added to the resulting pool
+
 `1.0.3`
   * improved PAA performance for even length/paa case, now it is about 3 times faster
 
