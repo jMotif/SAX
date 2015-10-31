@@ -21,7 +21,7 @@ public class TestApproxDistance {
     double dist;
     try {
       dist = sp.approximationDistance(series, 15, 7, 5.0);
-      assertEquals("testing approx distance", 4.472136, dist, 0.000001);
+      assertEquals("testing approx distance", 8.0, dist, 0.000001);
     }
     catch (Exception e) {
       fail("exception shall not be thrown!");

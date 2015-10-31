@@ -3,39 +3,33 @@ library(jmotif)
 x = 1:15 # series is 15 points long
 inc = 15/7 # there shall be 7 segments
 
-plot(x, type="l", xlim=c(0,16));points(x)
+plot(x, type="l", xlim=c(0,16), ylim=c(0,16), col="cornflowerblue",
+     main="Approximation distance computation"); 
+points(x, col="cornflowerblue", cex=1.2)
 breaks=seq(1-0.5,16,by=inc)
 abline(v=breaks,lty=2,col="cyan")
 
-0.1428*7
+paa7 = jmotif::paa(x, 7)
+paa_centers <- (breaks + (inc / 2))[1:7]
+points(x=paa_centers, y=paa7, pch=9, cex=0.7, col="brown")
+segments(x0=breaks[1:7],x1=breaks[2:8],y0=paa7,y1=paa7,col="brown")
 
+total = 0.
 for (i in 0:14) {
-  idx = floor(i/inc)
+  
+  idx = floor((i+0.5)/inc)
   if(idx<0){idx=0}
   if(idx>6){idx=6}
-  print(paste(i, " -> ", idx))
-  text(i+1-0.2,x[i+1]+0.2, idx)
+  
+  text(i+1-0.4,x[i+1]+0.45, idx, col="violet")
+  
+  dd = as.numeric(dist(t(cbind( c(x[i+1]), c(paa7[idx+1]) ))))
+  total = total + dd
+  
+  text(i+1+0.5,x[i+1]-0.45, paste(round(total,2)), col="blue")
 }
+legend("topleft", 
+       c("PAA index", "Total distance"), lty=c(1,1),
+       lwd=c(3,3),col=c("violet","blue"))
 
-p = paa(x,7)
-for(i in 1:(length(breaks)-1)){
-  segments(x0=breaks[i],x1=breaks[i+1],y0=p[i],y1=p[i],col="red")
-}
-segments(x0=breaks[7],x1=15,y0=p[7],y1=p[7],col="red")
-
-total = 0
-for (i in x) {
-  idx = round(i/inc - 1.5)
-  if(idx<0){idx=0}
-  if(idx>6){idx=6}
-  dd = dist(t(cbind( c(i), c(p[idx+1]) )))
-  print(paste(i, " -> ", dd))
-  total=total+dd
-  text(i+0.4,x[i]-0.2, round(total, digits = 2))
-}
-text(4, 10, paste("APPROX. DISTANCE:",total))
-
-points(x=breaks[1:7]+1, y=p, col="blue")
-lines(x=breaks[1:7]+1, y=p, col="blue")
-
-p
+text(4, 10, paste("total dist:",total), col="blue")

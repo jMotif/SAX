@@ -403,15 +403,19 @@ public final class SAXProcessor {
       // PAA value and the real TS value
       //
       for (int j = 0; j < subseries.length; j++) {
-        int paaIdx = (int) Math.round((double) j / (double) pointsPerWindow) - 1;
+
+        int paaIdx = (int) Math.floor(((double) j + 0.5) / (double) pointsPerWindow);
         if (paaIdx < 0) {
           paaIdx = 0;
         }
         if (paaIdx > paa.length) {
           paaIdx = paa.length - 1;
         }
+
         resDistance = resDistance + ed.distance(paa[paaIdx], subseries[j]);
-        System.out.println(paaIdx + " == " + resDistance);
+
+        // System.out.println(paaIdx + " == " + resDistance);
+
       }
 
     }
