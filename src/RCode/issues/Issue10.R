@@ -19,6 +19,7 @@ points(x=paa_centers, y=paa4, pch=8, cex=2, lwd=2, col="green")
 lines(x=c(1+6/8, 1+18/8, 1+30/8, 1+42/8), y=c(1.5, 3.5, 4.5, 6.5), type="l", col="violet", lwd=2)
 points(x=c(1+6/8, 1+18/8, 1+30/8, 1+42/8), y=c(1.5, 3.5, 4.5, 6.5), col="violet")
 
-legend("topleft", c("Time series", "PAA - jMotif", "PAA - Issue #10"), lty=c(1,1,1),lwd=c(1,2,2),col=c("blue","green", "violet"))
+legend("topleft", c("Time series", "PAA - jMotif", "PAA - Issue #10"), 
+    lty=c(1,1,1),lwd=c(1,2,2),col=c("blue","green", "violet"))
 
 dev.off()

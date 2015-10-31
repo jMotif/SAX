@@ -3,6 +3,10 @@ library(jmotif)
 x = 1:15 # series is 15 points long
 inc = 15/7 # there shall be 7 segments
 
+png(filename = "issues/Issue12.png", width = 850, height = 650, units = "px", pointsize = 18,
+    bg = "white", type = c("cairo", "cairo-png", "Xlib", "quartz"), antialias="subpixel")
+
+
 plot(x, type="l", xlim=c(0,16), ylim=c(0,16), col="cornflowerblue",
      main="Approximation distance computation"); 
 points(x, col="cornflowerblue", cex=1.2)
@@ -29,7 +33,10 @@ for (i in 0:14) {
   text(i+1+0.5,x[i+1]-0.45, paste(round(total,2)), col="blue")
 }
 legend("topleft", 
-       c("PAA index", "Total distance"), lty=c(1,1),
+       c("Assumed PAA index for original point",
+         "Cumulative distance along original points"), lty=c(1,1),
        lwd=c(3,3),col=c("violet","blue"))
 
-text(4, 10, paste("total dist:",total), col="blue")
+text(4, 10, paste("Total dist:",total), col="blue", adj=c(0,0))
+
+dev.off()
