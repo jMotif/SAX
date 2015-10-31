@@ -7,7 +7,7 @@ import org.junit.Test;
 public class TestApproxDistance {
 
   private static final double[] series = { 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13.,
-      14., 15 };
+      14., 15. };
 
   private SAXProcessor sp;
 
@@ -20,7 +20,7 @@ public class TestApproxDistance {
   public void test() {
     double dist;
     try {
-      dist = sp.approximationDistance(series, 14, 7, 5.0);
+      dist = sp.approximationDistance(series, 15, 7, 5.0);
       assertEquals("testing approx distance", 4.472136, dist, 0.000001);
     }
     catch (Exception e) {

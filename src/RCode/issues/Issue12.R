@@ -1,17 +1,20 @@
 library(jmotif)
-x = 1:15
-inc = 14/7
 
-plot(x, type="l");points(x)
-breaks=seq(1,15,by=inc)
+x = 1:15 # series is 15 points long
+inc = 15/7 # there shall be 7 segments
+
+plot(x, type="l", xlim=c(0,16));points(x)
+breaks=seq(1-0.5,16,by=inc)
 abline(v=breaks,lty=2,col="cyan")
 
-for (i in x) {
-  idx = round(i/inc) - 1
+0.1428*7
+
+for (i in 0:14) {
+  idx = floor(i/inc)
   if(idx<0){idx=0}
   if(idx>6){idx=6}
   print(paste(i, " -> ", idx))
-  text(i-0.2,x[i]+0.2, idx)
+  text(i+1-0.2,x[i+1]+0.2, idx)
 }
 
 p = paa(x,7)
@@ -22,13 +25,13 @@ segments(x0=breaks[7],x1=15,y0=p[7],y1=p[7],col="red")
 
 total = 0
 for (i in x) {
-  idx = round(i/inc) - 1
+  idx = round(i/inc - 1.5)
   if(idx<0){idx=0}
   if(idx>6){idx=6}
   dd = dist(t(cbind( c(i), c(p[idx+1]) )))
   print(paste(i, " -> ", dd))
-  text(i+0.4,x[i]-0.2, round(dd, digits = 2))
   total=total+dd
+  text(i+0.4,x[i]-0.2, round(total, digits = 2))
 }
 text(4, 10, paste("APPROX. DISTANCE:",total))
 
