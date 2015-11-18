@@ -154,7 +154,10 @@ public final class EuclideanDistance {
   public Double earlyAbandonedDistance(double[] series1, double[] series2, double cutoff)
       throws Exception {
     if (series1.length == series2.length) {
-      double cutOff2 = cutoff * cutoff;
+      double cutOff2 = cutoff;
+      if (Double.MAX_VALUE != cutoff) {
+        cutOff2 = cutoff * cutoff;
+      }
       Double res = 0D;
       for (int i = 0; i < series1.length; i++) {
         res = res + distance2(series1[i], series2[i]);
