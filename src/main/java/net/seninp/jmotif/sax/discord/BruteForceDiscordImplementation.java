@@ -118,35 +118,34 @@ public class BruteForceDiscordImplementation {
 
     long distanceCallsCounter = 0;
 
-    double bestSoFarDistance = -1;
+    double bestSoFarDistance = -1.0;
     int bestSoFarPosition = -1;
 
-    VisitRegistry localRegistry = globalRegistry.clone();
+    VisitRegistry outerRegistry = globalRegistry.clone();
 
-    int i = -1;
-    while (-1 != (i = localRegistry.getNextRandomUnvisitedPosition())) { // outer loop
+    int outerIdx = -1;
+    while (-1 != (outerIdx = outerRegistry.getNextRandomUnvisitedPosition())) { // outer loop
 
-      localRegistry.markVisited(i);
+      outerRegistry.markVisited(outerIdx);
 
       // check the global visits registry
-      if (globalRegistry.isVisited(i)) {
+      if (globalRegistry.isVisited(outerIdx)) {
         continue;
       }
 
-      double[] cw = tsProcessor.subseriesByCopy(series, i, i + windowSize);
-
+      double[] candidateSeq = tsProcessor.subseriesByCopy(series, outerIdx, outerIdx + windowSize);
       double nearestNeighborDistance = Double.MAX_VALUE;
+      VisitRegistry innerRegistry = new VisitRegistry(series.length - windowSize);
+      
+      int innerIdx = -1;
+      while (-1 != (innerIdx = innerRegistry.getNextRandomUnvisitedPosition())) { // inner loop
+        innerRegistry.markVisited(innerIdx);
 
-      VisitRegistry visitRegistry = new VisitRegistry(series.length - windowSize);
-      int j = -1;
-      while (-1 != (j = visitRegistry.getNextRandomUnvisitedPosition())) { // outer loop
-        visitRegistry.markVisited(j);
+        if (Math.abs(outerIdx - innerIdx) > windowSize) { // > means they shall not overlap even over a single point
 
-        if (Math.abs(i - j) > windowSize) { // > means they shall not overlap even in a single point
+          double[] currentSubsequence = tsProcessor.subseriesByCopy(series, innerIdx, innerIdx + windowSize);
 
-          double[] currentSubsequence = tsProcessor.subseriesByCopy(series, j, j + windowSize);
-
-          double dist = ed.earlyAbandonedDistance(cw, currentSubsequence, nearestNeighborDistance);
+          double dist = ed.earlyAbandonedDistance(candidateSeq, currentSubsequence, nearestNeighborDistance);
 
           distanceCallsCounter++;
 
@@ -160,7 +159,7 @@ public class BruteForceDiscordImplementation {
       if (!(Double.isInfinite(nearestNeighborDistance))
           && nearestNeighborDistance > bestSoFarDistance) {
         bestSoFarDistance = nearestNeighborDistance;
-        bestSoFarPosition = i;
+        bestSoFarPosition = outerIdx;
         consoleLogger
             .trace("discord updated: pos " + bestSoFarPosition + ", dist " + bestSoFarDistance);
       }
