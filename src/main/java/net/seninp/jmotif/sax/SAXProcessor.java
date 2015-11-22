@@ -441,6 +441,8 @@ public final class SAXProcessor {
 
     double pointsPerWindow = (double) winSize / (double) paaSize;
 
+    double[] centralLines = na.getCentralCuts(alphabetSize);
+
     for (int i = 0; i < ts.length - winSize + 1; i++) {
 
       double[] subseries = Arrays.copyOfRange(ts, i, i + winSize);
@@ -450,6 +452,7 @@ public final class SAXProcessor {
       }
 
       double[] paa = tsProcessor.paa(subseries, paaSize);
+      int[] leterIndexes = tsProcessor.ts2Index(paa, na, alphabetSize);
 
       windowCounter++;
 
@@ -458,6 +461,7 @@ public final class SAXProcessor {
       //
       for (int j = 0; j < subseries.length; j++) {
 
+        // compute the paa index
         int paaIdx = (int) Math.floor(((double) j + 0.5) / (double) pointsPerWindow);
         if (paaIdx < 0) {
           paaIdx = 0;
@@ -465,8 +469,12 @@ public final class SAXProcessor {
         if (paaIdx > paa.length) {
           paaIdx = paa.length - 1;
         }
+        
+        // compute the alphabet central cut line
+        int letterIdx = leterIndexes[paaIdx];
+        double cLine = centralLines[letterIdx];
 
-        resDistance = resDistance + ed.distance(paa[paaIdx], subseries[j]);
+        resDistance = resDistance + ed.distance(cLine, subseries[j]);
 
         // System.out.println(paaIdx + " == " + resDistance);
 

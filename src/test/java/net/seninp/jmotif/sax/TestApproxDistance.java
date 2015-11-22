@@ -11,6 +11,7 @@ public class TestApproxDistance {
       14., 15. };
 
   private SAXProcessor sp;
+  private TSProcessor tp;
 
   @Before
   public void setUp() throws Exception {
@@ -19,10 +20,17 @@ public class TestApproxDistance {
 
   @Test
   public void test() {
-    double dist;
+    double dist, distZnorm;
     try {
+
       dist = sp.approximationDistance(series, 15, 7, 5.0);
       assertEquals("testing approx distance", 8.0, dist, 0.000001);
+
+      distZnorm = sp.approximationDistance(series, 15, 7, 0.01);
+      assertEquals("testing approx distance", 1.788854, distZnorm, 0.000001);
+
+      double newApproximationDistance = sp.approximationDistance(series, 15, 7, 3, 0.01);
+      assertEquals("testing approx distance", 4.47213595499958, newApproximationDistance, 0.01);
     }
     catch (Exception e) {
       fail("exception shall not be thrown!");
