@@ -3,7 +3,7 @@ library(jmotif)
 x = 1:15 # series is 15 points long
 inc = 15/7 # there shall be 7 segments
 
-png(filename = "issues/Issue12.png", width = 850, height = 650, units = "px", pointsize = 18,
+png(filename = "issues/Issue12.png", width = 900, height = 650, units = "px", pointsize = 18,
     bg = "white", type = c("cairo", "cairo-png", "Xlib", "quartz"), antialias="subpixel")
 
 
@@ -27,16 +27,19 @@ for (i in 0:14) {
   
   text(i+1-0.4,x[i+1]+0.45, idx, col="violet")
   
+  segments(i+1,x[i+1],i+1,paa7[idx+1],col="green",lwd=3)
   dd = as.numeric(dist(t(cbind( c(x[i+1]), c(paa7[idx+1]) ))))
   total = total + dd
   
-  text(i+1+0.5,x[i+1]-0.45, paste(round(total,2)), col="blue")
+  text(i+1+0.5,x[i+1]-0.45, paste(round(total,3)), col="blue")
 }
 legend("topleft", 
        c("Assumed PAA index for original point",
-         "Cumulative distance along original points"), lty=c(1,1),
-       lwd=c(3,3),col=c("violet","blue"))
+         "Cumulative distance along original points",
+         "Accounted distance segments"), 
+       lty=c(1,1,1),
+       lwd=c(3,3,3),col=c("violet","blue","green"))
 
-text(4, 10, paste("Total dist:",total), col="blue", adj=c(0,0))
+text(7, 2, paste("Total dist:",total), col="blue", adj=c(0,0))
 
 dev.off()

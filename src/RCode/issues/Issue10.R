@@ -1,6 +1,6 @@
 library("jmotif")
 
-png(filename = "issues/Issue10.png", width = 850, height = 650, units = "px", pointsize = 18,
+png(filename = "issues/Issue10.png", width = 900, height = 650, units = "px", pointsize = 18,
     bg = "white", type = c("cairo", "cairo-png", "Xlib", "quartz"), antialias="subpixel")
 
 x <- 1:7
