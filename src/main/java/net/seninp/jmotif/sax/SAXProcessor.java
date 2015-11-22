@@ -423,6 +423,60 @@ public final class SAXProcessor {
   }
 
   /**
+   * Computes the distance between approximated values and the real TS.
+   * 
+   * @param ts the timeseries.
+   * @param winSize SAX window size.
+   * @param paaSize SAX PAA size.
+   * @param alphabetSize SAX alphabet size.
+   * @param normThreshold the normalization threshold.
+   * @return the distance value.
+   * @throws Exception if error occurs.
+   */
+  public double approximationDistance(double[] ts, int winSize, int paaSize, int alphabetSize,
+      double normThreshold) throws Exception {
+
+    double resDistance = 0d;
+    int windowCounter = 0;
+
+    double pointsPerWindow = (double) winSize / (double) paaSize;
+
+    for (int i = 0; i < ts.length - winSize + 1; i++) {
+
+      double[] subseries = Arrays.copyOfRange(ts, i, i + winSize);
+
+      if (tsProcessor.stDev(subseries) > normThreshold) {
+        subseries = tsProcessor.znorm(subseries, normThreshold);
+      }
+
+      double[] paa = tsProcessor.paa(subseries, paaSize);
+
+      windowCounter++;
+
+      // essentially the distance here is the distance between the segment's
+      // PAA value and the real TS value
+      //
+      for (int j = 0; j < subseries.length; j++) {
+
+        int paaIdx = (int) Math.floor(((double) j + 0.5) / (double) pointsPerWindow);
+        if (paaIdx < 0) {
+          paaIdx = 0;
+        }
+        if (paaIdx > paa.length) {
+          paaIdx = paa.length - 1;
+        }
+
+        resDistance = resDistance + ed.distance(paa[paaIdx], subseries[j]);
+
+        // System.out.println(paaIdx + " == " + resDistance);
+
+      }
+
+    }
+    return resDistance / (double) windowCounter;
+  }
+
+  /**
    * Convert a time series into a shingled representation.
    * 
    * @param data the input data.
