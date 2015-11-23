@@ -24,13 +24,13 @@ public class TestApproxDistance {
     try {
 
       dist = sp.approximationDistance(series, 15, 7, 5.0);
-      assertEquals("testing approx distance", 8.0, dist, 0.000001);
+      assertEquals("testing approx distance", 0.53333333, dist, 0.000001);
 
       distZnorm = sp.approximationDistance(series, 15, 7, 0.01);
-      assertEquals("testing approx distance", 1.788854, distZnorm, 0.000001);
+      assertEquals("testing approx distance", 0.1192569, distZnorm, 0.000001);
 
       double newApproximationDistance = sp.approximationDistance(series, 15, 7, 3, 0.01);
-      assertEquals("testing approx distance", 4.47213595499958, newApproximationDistance, 0.01);
+      assertEquals("testing approx distance", 0.2764062, newApproximationDistance, 0.01);
     }
     catch (Exception e) {
       fail("exception shall not be thrown!");

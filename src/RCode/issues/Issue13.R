@@ -29,23 +29,19 @@ library(plyr)
 indexes = aaply(jmotif::series_to_chars(paa7, 3),1,jmotif::letter_to_idx)
 central_lines = c(-0.967421566101701,0,0.967421566101701)
 
-i=0
-idx=2
 total=0
-for (i in 0:14) {
+for (i in 0:(length(paa7)-1)) {
   
-  idx = floor((i+0.5)/inc)
-  if(idx<0){idx=0}
-  if(idx>6){idx=6}
+  text(paa_centers[i+1]-0.4,paa7[i+1]+0.45, paste(i+1), col="violet")
   
-  text(i+1-0.4,x[i+1]+0.45, idx, col="violet")
+  dd = dist(t(cbind( c(paa7[i+1]), c(central_lines[indexes[i+1]]) )))
   
-  dd = as.numeric(dist(t(cbind( c(x[i+1]), c(central_lines[indexes[idx+1]]) ))))
-  segments(paa_centers[idx+1],paa7[idx+1],paa_centers[idx+1],central_lines[indexes[idx+1]],
+  segments(paa_centers[i+1],paa7[i+1],paa_centers[i+1],central_lines[indexes[i+1]],
            col="green",lwd=2)
+  
   total = total + dd
   
-  text(i+1+0.5,x[i+1]-0.45, paste(round(total,2)), col="blue")
+  text(paa_centers[i+1]+0.5,paa7[i+1]-0.45, paste(round(total,2)), col="blue")
 }
 legend("topleft", 
        c("Assumed PAA index for original point",
@@ -55,6 +51,6 @@ legend("topleft",
          ), 
        lty=c(1,1,1,2),lwd=c(3,3,3,3),col=c("violet","blue","green","magenta"))
 
-text(10, -1.8, paste("Total dist:",total), col="blue", adj=c(0,0))
+text(10, -1.8, paste("Total dist:",total/length(paa7)), col="blue", adj=c(0,0))
 
 dev.off()

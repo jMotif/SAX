@@ -415,9 +415,8 @@ public final class SAXProcessor {
         resDistance = resDistance + ed.distance(paa[paaIdx], subseries[j]);
 
         // System.out.println(paaIdx + " == " + resDistance);
-
       }
-
+      resDistance = resDistance / subseries.length;
     }
     return resDistance / (double) windowCounter;
   }
@@ -459,27 +458,18 @@ public final class SAXProcessor {
       // essentially the distance here is the distance between the segment's
       // PAA value and the real TS value
       //
-      for (int j = 0; j < subseries.length; j++) {
+      for (int j = 0; j < paa.length; j++) {
 
-        // compute the paa index
-        int paaIdx = (int) Math.floor(((double) j + 0.5) / (double) pointsPerWindow);
-        if (paaIdx < 0) {
-          paaIdx = 0;
-        }
-        if (paaIdx > paa.length) {
-          paaIdx = paa.length - 1;
-        }
-        
         // compute the alphabet central cut line
-        int letterIdx = leterIndexes[paaIdx];
+        int letterIdx = leterIndexes[j];
         double cLine = centralLines[letterIdx];
 
-        resDistance = resDistance + ed.distance(cLine, subseries[j]);
+        resDistance = resDistance + ed.distance(cLine, paa[j]);
 
         // System.out.println(paaIdx + " == " + resDistance);
 
       }
-
+      resDistance = resDistance / paa.length;
     }
     return resDistance / (double) windowCounter;
   }

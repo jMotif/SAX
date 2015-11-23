@@ -40,6 +40,6 @@ legend("topleft",
        lty=c(1,1,1),
        lwd=c(3,3,3),col=c("violet","blue","green"))
 
-text(7, 2, paste("Total dist:",total), col="blue", adj=c(0,0))
+text(7, 2, paste("Total dist:",total/length(x)), col="blue", adj=c(0,0))
 
 dev.off()
