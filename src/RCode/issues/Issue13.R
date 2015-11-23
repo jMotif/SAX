@@ -45,7 +45,7 @@ for (i in 0:(length(paa7)-1)) {
 }
 legend("topleft", 
        c("Assumed PAA index for original point",
-         "Cumulative distance along original points",
+         "Cumulative distance along PAA segment centers",
          "Accounted distance segments",
          "Centers of cut segments, A=3"
          ), 
