@@ -23,13 +23,13 @@ public class TestApproxDistance {
     double dist, distZnorm;
     try {
 
-      dist = sp.approximationDistance(series, 15, 7, 5.0);
+      dist = sp.approximationDistancePAA(series, 15, 7, 5.0);
       assertEquals("testing approx distance", 0.53333333, dist, 0.000001);
 
-      distZnorm = sp.approximationDistance(series, 15, 7, 0.01);
+      distZnorm = sp.approximationDistancePAA(series, 15, 7, 0.01);
       assertEquals("testing approx distance", 0.1192569, distZnorm, 0.000001);
 
-      double newApproximationDistance = sp.approximationDistance(series, 15, 7, 3, 0.01);
+      double newApproximationDistance = sp.approximationDistanceAlphabet(series, 15, 7, 3, 0.01);
       assertEquals("testing approx distance", 0.2764062, newApproximationDistance, 0.01);
     }
     catch (Exception e) {

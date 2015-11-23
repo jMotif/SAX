@@ -379,8 +379,8 @@ public final class SAXProcessor {
    * @return the distance value.
    * @throws Exception if error occurs.
    */
-  public double approximationDistance(double[] ts, int winSize, int paaSize, double normThreshold)
-      throws Exception {
+  public double approximationDistancePAA(double[] ts, int winSize, int paaSize,
+      double normThreshold) throws Exception {
 
     double resDistance = 0d;
     int windowCounter = 0;
@@ -432,13 +432,11 @@ public final class SAXProcessor {
    * @return the distance value.
    * @throws Exception if error occurs.
    */
-  public double approximationDistance(double[] ts, int winSize, int paaSize, int alphabetSize,
-      double normThreshold) throws Exception {
+  public double approximationDistanceAlphabet(double[] ts, int winSize, int paaSize,
+      int alphabetSize, double normThreshold) throws Exception {
 
     double resDistance = 0d;
     int windowCounter = 0;
-
-    double pointsPerWindow = (double) winSize / (double) paaSize;
 
     double[] centralLines = na.getCentralCuts(alphabetSize);
 
@@ -471,6 +469,7 @@ public final class SAXProcessor {
       }
       resDistance = resDistance / paa.length;
     }
+
     return resDistance / (double) windowCounter;
   }
 
