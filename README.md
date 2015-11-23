@@ -211,6 +211,8 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
 
 #### Versions:
+`1.0.5 - 1.0.6`
+  * introduced the discretization approximation error
 
 `1.0.4`
   * fixed the SAX transform via sliding window, last window now added to the resulting pool
