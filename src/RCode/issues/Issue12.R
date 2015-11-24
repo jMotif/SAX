@@ -8,7 +8,7 @@ png(filename = "issues/Issue12.png", width = 900, height = 650, units = "px", po
 
 
 plot(x, type="l", xlim=c(0,16), ylim=c(0,16), col="cornflowerblue",
-     main="Approximation distance computation"); 
+     main="Approximation distance computation: PAA"); 
 points(x, col="cornflowerblue", cex=1.2)
 breaks=seq(1-0.5,16,by=inc)
 abline(v=breaks,lty=2,col="cyan")

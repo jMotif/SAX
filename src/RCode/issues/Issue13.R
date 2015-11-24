@@ -8,7 +8,7 @@ png(filename = "issues/Issue13.png", width = 850, height = 650, units = "px", po
 
 x = znorm(x)
 plot(x, type="l", xlim=c(0,16), ylim=c(-2,2), col="cornflowerblue",
-     main="Approximation distance computation"); 
+     main="Approximation distance computation: Alphabet"); 
 points(x, col="cornflowerblue", cex=1.2)
 breaks=seq(1-0.5,16,by=inc)
 abline(v=breaks,lty=2,col="cyan")
