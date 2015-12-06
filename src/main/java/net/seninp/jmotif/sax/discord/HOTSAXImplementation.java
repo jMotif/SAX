@@ -311,6 +311,12 @@ public class HOTSAXImplementation {
             double dist = ed.distance(currentCandidateSeq, randomSubsequence);
             distanceCalls++;
 
+            // keep track
+            if (dist < nearestNeighborDist) {
+              consoleLogger.trace(" ** current NN at " + randomPos + ", distance: " + dist);
+              nearestNeighborDist = dist;
+            }
+            
             // early abandoning of the search:
             // the current word is not discord, we have seen better
             if (dist < bestSoFarDistance) {
@@ -320,19 +326,13 @@ public class HOTSAXImplementation {
               break;
             }
 
-            // keep track
-            if (dist < nearestNeighborDist) {
-              consoleLogger.trace(" ** current NN at " + randomPos + ", distance: " + dist);
-              nearestNeighborDist = dist;
-            }
-
             visitCounter = visitCounter + 1;
 
           } // while inner loop
 
         } // end of random search loop
 
-        if (nearestNeighborDist > bestSoFarDistance) {
+        if (nearestNeighborDist > bestSoFarDistance && nearestNeighborDist < Double.MAX_VALUE) {
           consoleLogger.debug("discord updated: pos " + currentPos + ", dist " + bestSoFarDistance);
           bestSoFarDistance = nearestNeighborDist;
           bestSoFarPosition = currentPos;
