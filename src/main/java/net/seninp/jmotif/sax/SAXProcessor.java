@@ -38,6 +38,61 @@ public final class SAXProcessor {
   }
 
   /**
+   * Convert the timeseries into SAX string representation.
+   * 
+   * @param ts the timeseries.
+   * @param paaSize the PAA size.
+   * @param cuts the alphabet cuts.
+   * @param nThreshold the normalization thresholds.
+   * 
+   * @return The SAX representation for timeseries.
+   */
+  public char[] ts2string(double[] ts, int paaSize, double[] cuts, double nThreshold) {
+  
+    if (paaSize == ts.length) {
+      return tsProcessor.ts2String(tsProcessor.znorm(ts, nThreshold), cuts);
+    }
+    else {
+      // perform PAA conversion
+      double[] paa = tsProcessor.paa(tsProcessor.znorm(ts, nThreshold), paaSize);
+      return tsProcessor.ts2String(paa, cuts);
+    }
+  }
+
+  /**
+   * Converts the input time series into a SAX data structure via chunking and Z normalization.
+   * 
+   * @param ts the input data.
+   * @param paaSize the PAA size.
+   * @param cuts the Alphabet cuts.
+   * @param nThreshold the normalization threshold value.
+   * 
+   * @return SAX representation of the time series.
+   */
+  public SAXRecords ts2saxByChunking(double[] ts, int paaSize, double[] cuts, double nThreshold) {
+  
+    SAXRecords saxFrequencyData = new SAXRecords();
+  
+    // Z normalize it
+    double[] normalizedTS = tsProcessor.znorm(ts, nThreshold);
+  
+    // perform PAA conversion if needed
+    double[] paa = tsProcessor.paa(normalizedTS, paaSize);
+  
+    // Convert the PAA to a string.
+    char[] currentString = tsProcessor.ts2String(paa, cuts);
+  
+    // create the datastructure
+    for (int i = 0; i < currentString.length; i++) {
+      char c = currentString[i];
+      saxFrequencyData.add(String.valueOf(c).toCharArray(), i);
+    }
+  
+    return saxFrequencyData;
+  
+  }
+
+  /**
    * Converts the input time series into a SAX data structure via sliding window and Z
    * normalization.
    * 
@@ -179,77 +234,6 @@ public final class SAXProcessor {
   }
 
   /**
-   * Converts the input time series into a SAX data structure via chunking and Z normalization.
-   * 
-   * @param ts the input data.
-   * @param paaSize the PAA size.
-   * @param cuts the Alphabet cuts.
-   * @param nThreshold the normalization threshold value.
-   * 
-   * @return SAX representation of the time series.
-   */
-  public SAXRecords ts2saxByChunking(double[] ts, int paaSize, double[] cuts, double nThreshold) {
-
-    SAXRecords saxFrequencyData = new SAXRecords();
-
-    // Z normalize it
-    double[] normalizedTS = tsProcessor.znorm(ts, nThreshold);
-
-    // perform PAA conversion if needed
-    double[] paa = tsProcessor.paa(normalizedTS, paaSize);
-
-    // Convert the PAA to a string.
-    char[] currentString = tsProcessor.ts2String(paa, cuts);
-
-    // create the datastructure
-    for (int i = 0; i < currentString.length; i++) {
-      char c = currentString[i];
-      saxFrequencyData.add(String.valueOf(c).toCharArray(), i);
-    }
-
-    return saxFrequencyData;
-
-  }
-
-  /**
-   * Check for trivial mindist case.
-   * 
-   * @param a first string.
-   * @param b second string.
-   * @return true if mindist between strings is zero.
-   */
-  public boolean checkMinDistIsZero(char[] a, char[] b) {
-    for (int i = 0; i < a.length; i++) {
-      if (charDistance(a[i], b[i]) > 1) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Convert the timeseries into SAX string representation.
-   * 
-   * @param ts the timeseries.
-   * @param paaSize the PAA size.
-   * @param cuts the alphabet cuts.
-   * @param nThreshold the normalization thresholds.
-   * 
-   * @return The SAX representation for timeseries.
-   */
-  public char[] ts2string(double[] ts, int paaSize, double[] cuts, double nThreshold) {
-
-    if (paaSize == ts.length) {
-      return tsProcessor.ts2String(tsProcessor.znorm(ts, nThreshold), cuts);
-    }
-    else {
-      // perform PAA conversion
-      double[] paa = tsProcessor.paa(tsProcessor.znorm(ts, nThreshold), paaSize);
-      return tsProcessor.ts2String(paa, cuts);
-    }
-  }
-
-  /**
    * Compute the distance between the two chars based on the ASCII symbol codes.
    * 
    * @param a The first char.
@@ -323,6 +307,123 @@ public final class SAXProcessor {
   }
 
   /**
+   * Check for trivial mindist case.
+   * 
+   * @param a first string.
+   * @param b second string.
+   * @return true if mindist between strings is zero.
+   */
+  public boolean checkMinDistIsZero(char[] a, char[] b) {
+    for (int i = 0; i < a.length; i++) {
+      if (charDistance(a[i], b[i]) > 1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Computes the distance between approximated values and the real TS.
+   * 
+   * @param ts the timeseries.
+   * @param winSize SAX window size.
+   * @param paaSize SAX PAA size.
+   * @param normThreshold the normalization threshold.
+   * @return the distance value.
+   * @throws Exception if error occurs.
+   */
+  public double approximationDistancePAA(double[] ts, int winSize, int paaSize,
+      double normThreshold) throws Exception {
+  
+    double resDistance = 0d;
+    int windowCounter = 0;
+  
+    double pointsPerWindow = (double) winSize / (double) paaSize;
+  
+    for (int i = 0; i < ts.length - winSize + 1; i++) {
+  
+      double[] subseries = Arrays.copyOfRange(ts, i, i + winSize);
+  
+      if (tsProcessor.stDev(subseries) > normThreshold) {
+        subseries = tsProcessor.znorm(subseries, normThreshold);
+      }
+  
+      double[] paa = tsProcessor.paa(subseries, paaSize);
+  
+      windowCounter++;
+  
+      // essentially the distance here is the distance between the segment's
+      // PAA value and the real TS value
+      //
+      double subsequenceDistance = 0.;
+      for (int j = 0; j < subseries.length; j++) {
+  
+        int paaIdx = (int) Math.floor(((double) j + 0.5) / (double) pointsPerWindow);
+        if (paaIdx < 0) {
+          paaIdx = 0;
+        }
+        if (paaIdx > paa.length) {
+          paaIdx = paa.length - 1;
+        }
+  
+        subsequenceDistance = subsequenceDistance + ed.distance(paa[paaIdx], subseries[j]);
+      }
+  
+      resDistance = resDistance + subsequenceDistance / subseries.length;
+    }
+    return resDistance / (double) windowCounter;
+  }
+
+  /**
+   * Computes the distance between approximated values and the real TS.
+   * 
+   * @param ts the timeseries.
+   * @param winSize SAX window size.
+   * @param paaSize SAX PAA size.
+   * @param alphabetSize SAX alphabet size.
+   * @param normThreshold the normalization threshold.
+   * @return the distance value.
+   * @throws Exception if error occurs.
+   */
+  public double approximationDistanceAlphabet(double[] ts, int winSize, int paaSize,
+      int alphabetSize, double normThreshold) throws Exception {
+  
+    double resDistance = 0d;
+    int windowCounter = 0;
+  
+    double[] centralLines = na.getCentralCuts(alphabetSize);
+  
+    for (int i = 0; i < ts.length - winSize + 1; i++) {
+  
+      double[] subseries = Arrays.copyOfRange(ts, i, i + winSize);
+      double subsequenceDistance = 0.;
+      
+      if (tsProcessor.stDev(subseries) > normThreshold) {
+        subseries = tsProcessor.znorm(subseries, normThreshold);
+      }
+  
+      double[] paa = tsProcessor.paa(subseries, paaSize);
+      int[] leterIndexes = tsProcessor.ts2Index(paa, na, alphabetSize);
+  
+      windowCounter++;
+  
+      // essentially the distance here is the distance between the segment's
+      // PAA value and the real TS value
+      //
+      for (int j = 0; j < paa.length; j++) {
+        // compute the alphabet central cut line
+        int letterIdx = leterIndexes[j];
+        double cLine = centralLines[letterIdx];
+        subsequenceDistance = subsequenceDistance + ed.distance(cLine, paa[j]);
+      }
+      
+      resDistance = resDistance + subsequenceDistance / paa.length;
+    }
+  
+    return resDistance / (double) windowCounter;
+  }
+
+  /**
    * Converts a single time-series into map of shingle frequencies.
    * 
    * @param series the time series.
@@ -367,107 +468,6 @@ public final class SAXProcessor {
     }
 
     return res;
-  }
-
-  /**
-   * Computes the distance between approximated values and the real TS.
-   * 
-   * @param ts the timeseries.
-   * @param winSize SAX window size.
-   * @param paaSize SAX PAA size.
-   * @param normThreshold the normalization threshold.
-   * @return the distance value.
-   * @throws Exception if error occurs.
-   */
-  public double approximationDistancePAA(double[] ts, int winSize, int paaSize,
-      double normThreshold) throws Exception {
-
-    double resDistance = 0d;
-    int windowCounter = 0;
-
-    double pointsPerWindow = (double) winSize / (double) paaSize;
-
-    for (int i = 0; i < ts.length - winSize + 1; i++) {
-
-      double[] subseries = Arrays.copyOfRange(ts, i, i + winSize);
-
-      if (tsProcessor.stDev(subseries) > normThreshold) {
-        subseries = tsProcessor.znorm(subseries, normThreshold);
-      }
-
-      double[] paa = tsProcessor.paa(subseries, paaSize);
-
-      windowCounter++;
-
-      // essentially the distance here is the distance between the segment's
-      // PAA value and the real TS value
-      //
-      double subsequenceDistance = 0.;
-      for (int j = 0; j < subseries.length; j++) {
-
-        int paaIdx = (int) Math.floor(((double) j + 0.5) / (double) pointsPerWindow);
-        if (paaIdx < 0) {
-          paaIdx = 0;
-        }
-        if (paaIdx > paa.length) {
-          paaIdx = paa.length - 1;
-        }
-
-        subsequenceDistance = subsequenceDistance + ed.distance(paa[paaIdx], subseries[j]);
-      }
-
-      resDistance = resDistance + subsequenceDistance / subseries.length;
-    }
-    return resDistance / (double) windowCounter;
-  }
-
-  /**
-   * Computes the distance between approximated values and the real TS.
-   * 
-   * @param ts the timeseries.
-   * @param winSize SAX window size.
-   * @param paaSize SAX PAA size.
-   * @param alphabetSize SAX alphabet size.
-   * @param normThreshold the normalization threshold.
-   * @return the distance value.
-   * @throws Exception if error occurs.
-   */
-  public double approximationDistanceAlphabet(double[] ts, int winSize, int paaSize,
-      int alphabetSize, double normThreshold) throws Exception {
-
-    double resDistance = 0d;
-    int windowCounter = 0;
-
-    double[] centralLines = na.getCentralCuts(alphabetSize);
-
-    for (int i = 0; i < ts.length - winSize + 1; i++) {
-
-      double[] subseries = Arrays.copyOfRange(ts, i, i + winSize);
-      double subsequenceDistance = 0.;
-      
-      if (tsProcessor.stDev(subseries) > normThreshold) {
-        subseries = tsProcessor.znorm(subseries, normThreshold);
-      }
-
-      double[] paa = tsProcessor.paa(subseries, paaSize);
-      int[] leterIndexes = tsProcessor.ts2Index(paa, na, alphabetSize);
-
-      windowCounter++;
-
-      // essentially the distance here is the distance between the segment's
-      // PAA value and the real TS value
-      //
-      for (int j = 0; j < paa.length; j++) {
-        // compute the alphabet central cut line
-        int letterIdx = leterIndexes[j];
-        double cLine = centralLines[letterIdx];
-        subsequenceDistance = subsequenceDistance + ed.distance(cLine, paa[j]);
-      }
-      
-      resDistance = resDistance + subsequenceDistance / paa.length;
-    }
-
-    return resDistance / (double) windowCounter;
   }
 
   /**
