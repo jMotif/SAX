@@ -305,44 +305,6 @@ public class TSProcessor {
    * @param ts The timeseries to approximate.
    * @param paaSize The desired length of approximated timeseries.
    * @return PAA-approximated timeseries.
-   */
-  @Deprecated
-  public double[] paa_oldest(double[] ts, int paaSize) {
-    // fix the length
-    int len = ts.length;
-    // check for the trivial case
-    if (len == paaSize) {
-      return Arrays.copyOf(ts, ts.length);
-    }
-    else {
-      if (len % paaSize == 0) {
-        return colMeans(reshape(asMatrix(ts), len / paaSize, paaSize));
-      }
-      else {
-        double[] paa = new double[paaSize];
-        for (int i = 0; i < len * paaSize; i++) {
-          int idx = i / len; // the spot
-          int pos = i / paaSize; // the col spot
-          paa[idx] = paa[idx] + ts[pos];
-        }
-        for (int i = 0; i < paaSize; i++) {
-          paa[i] = paa[i] / (double) len;
-        }
-        return paa;
-      }
-    }
-
-  }
-
-  /**
-   * Approximate the timeseries using PAA. If the timeseries has some NaN's they are handled as
-   * follows: 1) if all values of the piece are NaNs - the piece is approximated as NaN, 2) if there
-   * are some (more or equal one) values happened to be in the piece - algorithm will handle it as
-   * usual - getting the mean.
-   * 
-   * @param ts The timeseries to approximate.
-   * @param paaSize The desired length of approximated timeseries.
-   * @return PAA-approximated timeseries.
    * @throws SAXException if error occurs.
    * 
    */
@@ -363,34 +325,34 @@ public class TSProcessor {
       for (int i = 0; i < paaSize + 1; i++) {
         breaks[i] = i * pointsPerSegment;
       }
-
+  
       for (int i = 0; i < paaSize; i++) {
         double segStart = breaks[i];
         double segEnd = breaks[i + 1];
-
+  
         double fractionStart = Math.ceil(segStart) - segStart;
         double fractionEnd = segEnd - Math.floor(segEnd);
-
+  
         int fullStart = Double.valueOf(Math.floor(segStart)).intValue();
         int fullEnd = Double.valueOf(Math.ceil(segEnd)).intValue();
-
+  
         double[] segment = Arrays.copyOfRange(ts, fullStart, fullEnd);
-
+  
         if (fractionStart > 0) {
           segment[0] = segment[0] * fractionStart;
         }
-
+  
         if (fractionEnd > 0) {
           segment[segment.length - 1] = segment[segment.length - 1] * fractionEnd;
         }
-
+  
         double elementsSum = 0.0;
         for (double e : segment) {
           elementsSum = elementsSum + e;
         }
-
+  
         paa[i] = elementsSum / pointsPerSegment;
-
+  
       }
       return paa;
     }
@@ -406,6 +368,7 @@ public class TSProcessor {
    * @param paaSize The desired length of approximated timeseries.
    * @return PAA-approximated timeseries.
    */
+  @Deprecated
   public double[] paa_old(double[] ts, int paaSize) {
     // fix the length
     int len = ts.length;
@@ -439,6 +402,44 @@ public class TSProcessor {
         return paa;
       }
     }
+  }
+
+  /**
+   * Approximate the timeseries using PAA. If the timeseries has some NaN's they are handled as
+   * follows: 1) if all values of the piece are NaNs - the piece is approximated as NaN, 2) if there
+   * are some (more or equal one) values happened to be in the piece - algorithm will handle it as
+   * usual - getting the mean.
+   * 
+   * @param ts The timeseries to approximate.
+   * @param paaSize The desired length of approximated timeseries.
+   * @return PAA-approximated timeseries.
+   */
+  @Deprecated
+  public double[] paa_oldest(double[] ts, int paaSize) {
+    // fix the length
+    int len = ts.length;
+    // check for the trivial case
+    if (len == paaSize) {
+      return Arrays.copyOf(ts, ts.length);
+    }
+    else {
+      if (len % paaSize == 0) {
+        return colMeans(reshape(asMatrix(ts), len / paaSize, paaSize));
+      }
+      else {
+        double[] paa = new double[paaSize];
+        for (int i = 0; i < len * paaSize; i++) {
+          int idx = i / len; // the spot
+          int pos = i / paaSize; // the col spot
+          paa[idx] = paa[idx] + ts[pos];
+        }
+        for (int i = 0; i < paaSize; i++) {
+          paa[i] = paa[i] / (double) len;
+        }
+        return paa;
+      }
+    }
+
   }
 
   /**

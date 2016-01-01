@@ -32,16 +32,16 @@ public class TestPAAPerf {
   public void test() throws SAXException, IOException {
 
     tsp = new TSProcessor();
-    double[] ts1 = tsp.readTS(ts1File, 0);
+    double[] ts1 = tsp.readTS(ts1File, 150000);
 
     long time1 = 0;
     long time2 = 0;
     long time3 = 0;
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 10; i++) {
 
       int paaNum = StdRandom.uniform(10, ts1.length / 10);
-      // System.out.println("iteration: " + i + ", paa size: " + paaNum);
+      System.out.print("iteration: " + i + ", paa size: " + paaNum + "; ");
 
       Date start1 = new Date();
       double[] paa1 = tsp.paa_oldest(ts1, paaNum);
@@ -69,7 +69,8 @@ public class TestPAAPerf {
 
     }
 
-    System.out.println("paa perf. old " + time1 + ", new: " + time2 + ", newest: " + time3 + "\n");
+    System.out
+        .println("\n ** paa perf. old " + time1 + ", new: " + time2 + ", newest: " + time3 + "\n");
 
   }
 
