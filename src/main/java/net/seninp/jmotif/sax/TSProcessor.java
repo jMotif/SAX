@@ -215,7 +215,7 @@ public class TSProcessor {
     }
     return Double.NaN;
   }
-  
+
   /**
    * Computes the median value of timeseries.
    * 
@@ -376,6 +376,68 @@ public class TSProcessor {
         }
         return paa;
       }
+    }
+
+  }
+
+  /**
+   * Approximate the timeseries using PAA. If the timeseries has some NaN's they are handled as
+   * follows: 1) if all values of the piece are NaNs - the piece is approximated as NaN, 2) if there
+   * are some (more or equal one) values happened to be in the piece - algorithm will handle it as
+   * usual - getting the mean.
+   * 
+   * @param ts The timeseries to approximate.
+   * @param paaSize The desired length of approximated timeseries.
+   * @return PAA-approximated timeseries.
+   * @throws SAXException if error occurs.
+   */
+  public double[] paa_new(double[] ts, int paaSize) throws SAXException {
+    // fix the length
+    int len = ts.length;
+    if (len < paaSize) {
+      throw new SAXException("PAA size can't be greater than the timeseries size.");
+    }
+    // check for the trivial case
+    if (len == paaSize) {
+      return Arrays.copyOf(ts, ts.length);
+    }
+    else {
+      double[] paa = new double[paaSize];
+      double pointsPerSegment = (double) len / (double) paaSize;
+      double[] breaks = new double[paaSize + 1];
+      for (int i = 0; i < paaSize + 1; i++) {
+        breaks[i] = i * pointsPerSegment;
+      }
+
+      for (int i = 0; i < paaSize; i++) {
+        double segStart = breaks[i];
+        double segEnd = breaks[i + 1];
+
+        double fractionStart = Math.ceil(segStart) - segStart;
+        double fractionEnd = segEnd - Math.floor(segEnd);
+
+        int fullStart = Double.valueOf(Math.floor(segStart)).intValue();
+        int fullEnd = Double.valueOf(Math.ceil(segEnd)).intValue();
+
+        double[] segment = Arrays.copyOfRange(ts, fullStart, fullEnd);
+
+        if (fractionStart > 0) {
+          segment[0] = segment[0] * fractionStart;
+        }
+
+        if (fractionEnd > 0) {
+          segment[segment.length - 1] = segment[segment.length - 1] * fractionEnd;
+        }
+
+        double elementsSum = 0.0;
+        for (double e : segment) {
+          elementsSum = elementsSum + e;
+        }
+
+        paa[i] = elementsSum / pointsPerSegment;
+
+      }
+      return paa;
     }
 
   }

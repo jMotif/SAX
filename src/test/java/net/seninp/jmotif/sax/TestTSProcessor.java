@@ -186,8 +186,8 @@ public class TestTSProcessor {
     double[] ts2PAA10 = tsp.readTS(ts2PAAFile, PAAlength);
 
     // get the normal data through the code
-    double[] ts1PAATest = tsp.paa(ts1Norm, PAAlength);
-    double[] ts2PAATest = tsp.paa(ts2Norm, PAAlength);
+    double[] ts1PAATest = tsp.paa_new(ts1Norm, PAAlength);
+    double[] ts2PAATest = tsp.paa_new(ts2Norm, PAAlength);
 
     for (int i = 0; i < ts1PAA10.length; i++) {
       assertEquals("PAA", ts1PAA10[i], ts1PAATest[i], delta);
