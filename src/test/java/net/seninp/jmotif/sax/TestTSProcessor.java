@@ -200,9 +200,9 @@ public class TestTSProcessor {
     // test implementations
     //
     @SuppressWarnings("deprecation")
-    double[] ts1PAAOld = tsp.paa_old(ts1Norm, PAAlength);
+    double[] ts1PAAOld = tsp.paa_oldest(ts1Norm, PAAlength);
     @SuppressWarnings("deprecation")
-    double[] ts2PAAOld = tsp.paa_old(ts2Norm, PAAlength);
+    double[] ts2PAAOld = tsp.paa_oldest(ts2Norm, PAAlength);
     for (int i = 0; i < ts1PAA10.length; i++) {
       assertEquals("PAA", ts1PAA10[i], ts1PAAOld[i], delta);
     }

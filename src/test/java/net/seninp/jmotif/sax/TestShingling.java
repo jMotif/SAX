@@ -15,11 +15,10 @@ import org.junit.Test;
 public class TestShingling {
 
   /**
-   * Testing all lists.
-   * 
+   * Testing the permutation production.
    */
   @Test
-  public void testConnectedConversion() throws NumberFormatException, IOException, SAXException {
+  public void testPermutations() throws NumberFormatException, IOException, SAXException {
 
     String[] arr = { "a", "b", "c" };
 
