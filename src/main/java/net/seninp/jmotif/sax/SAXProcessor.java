@@ -46,9 +46,11 @@ public final class SAXProcessor {
    * @param nThreshold the normalization thresholds.
    * 
    * @return The SAX representation for timeseries.
+   * @throws SAXException if error occurs.
    */
-  public char[] ts2string(double[] ts, int paaSize, double[] cuts, double nThreshold) {
-  
+  public char[] ts2string(double[] ts, int paaSize, double[] cuts, double nThreshold)
+      throws SAXException {
+
     if (paaSize == ts.length) {
       return tsProcessor.ts2String(tsProcessor.znorm(ts, nThreshold), cuts);
     }
@@ -68,28 +70,30 @@ public final class SAXProcessor {
    * @param nThreshold the normalization threshold value.
    * 
    * @return SAX representation of the time series.
+   * @throws SAXException if error occurs.
    */
-  public SAXRecords ts2saxByChunking(double[] ts, int paaSize, double[] cuts, double nThreshold) {
-  
+  public SAXRecords ts2saxByChunking(double[] ts, int paaSize, double[] cuts, double nThreshold)
+      throws SAXException {
+
     SAXRecords saxFrequencyData = new SAXRecords();
-  
+
     // Z normalize it
     double[] normalizedTS = tsProcessor.znorm(ts, nThreshold);
-  
+
     // perform PAA conversion if needed
     double[] paa = tsProcessor.paa(normalizedTS, paaSize);
-  
+
     // Convert the PAA to a string.
     char[] currentString = tsProcessor.ts2String(paa, cuts);
-  
+
     // create the datastructure
     for (int i = 0; i < currentString.length; i++) {
       char c = currentString[i];
       saxFrequencyData.add(String.valueOf(c).toCharArray(), i);
     }
-  
+
     return saxFrequencyData;
-  
+
   }
 
   /**
@@ -104,9 +108,10 @@ public final class SAXProcessor {
    * @param strategy the NR strategy.
    * 
    * @return SAX representation of the time series.
+   * @throws SAXException if error occurs.
    */
   public SAXRecords ts2saxViaWindow(double[] ts, int windowSize, int paaSize, double[] cuts,
-      NumerosityReductionStrategy strategy, double nThreshold) {
+      NumerosityReductionStrategy strategy, double nThreshold) throws SAXException {
 
     // the resulting data structure init
     //
@@ -172,9 +177,11 @@ public final class SAXProcessor {
    * not make it into the grammar.
    * 
    * @return SAX representation of the time series.
+   * @throws SAXException if error occurs.
    */
   public SAXRecords ts2saxViaWindowSkipping(double[] ts, int windowSize, int paaSize, double[] cuts,
-      NumerosityReductionStrategy strategy, double nThreshold, ArrayList<Integer> skips) {
+      NumerosityReductionStrategy strategy, double nThreshold, ArrayList<Integer> skips)
+          throws SAXException {
 
     // the resulting data structure init
     //
@@ -334,30 +341,30 @@ public final class SAXProcessor {
    */
   public double approximationDistancePAA(double[] ts, int winSize, int paaSize,
       double normThreshold) throws Exception {
-  
+
     double resDistance = 0d;
     int windowCounter = 0;
-  
+
     double pointsPerWindow = (double) winSize / (double) paaSize;
-  
+
     for (int i = 0; i < ts.length - winSize + 1; i++) {
-  
+
       double[] subseries = Arrays.copyOfRange(ts, i, i + winSize);
-  
+
       if (tsProcessor.stDev(subseries) > normThreshold) {
         subseries = tsProcessor.znorm(subseries, normThreshold);
       }
-  
+
       double[] paa = tsProcessor.paa(subseries, paaSize);
-  
+
       windowCounter++;
-  
+
       // essentially the distance here is the distance between the segment's
       // PAA value and the real TS value
       //
       double subsequenceDistance = 0.;
       for (int j = 0; j < subseries.length; j++) {
-  
+
         int paaIdx = (int) Math.floor(((double) j + 0.5) / (double) pointsPerWindow);
         if (paaIdx < 0) {
           paaIdx = 0;
@@ -365,10 +372,10 @@ public final class SAXProcessor {
         if (paaIdx > paa.length) {
           paaIdx = paa.length - 1;
         }
-  
+
         subsequenceDistance = subsequenceDistance + ed.distance(paa[paaIdx], subseries[j]);
       }
-  
+
       resDistance = resDistance + subsequenceDistance / subseries.length;
     }
     return resDistance / (double) windowCounter;
@@ -387,26 +394,26 @@ public final class SAXProcessor {
    */
   public double approximationDistanceAlphabet(double[] ts, int winSize, int paaSize,
       int alphabetSize, double normThreshold) throws Exception {
-  
+
     double resDistance = 0d;
     int windowCounter = 0;
-  
+
     double[] centralLines = na.getCentralCuts(alphabetSize);
-  
+
     for (int i = 0; i < ts.length - winSize + 1; i++) {
-  
+
       double[] subseries = Arrays.copyOfRange(ts, i, i + winSize);
       double subsequenceDistance = 0.;
-      
+
       if (tsProcessor.stDev(subseries) > normThreshold) {
         subseries = tsProcessor.znorm(subseries, normThreshold);
       }
-  
+
       double[] paa = tsProcessor.paa(subseries, paaSize);
       int[] leterIndexes = tsProcessor.ts2Index(paa, na, alphabetSize);
-  
+
       windowCounter++;
-  
+
       // essentially the distance here is the distance between the segment's
       // PAA value and the real TS value
       //
@@ -416,10 +423,10 @@ public final class SAXProcessor {
         double cLine = centralLines[letterIdx];
         subsequenceDistance = subsequenceDistance + ed.distance(cLine, paa[j]);
       }
-      
+
       resDistance = resDistance + subsequenceDistance / paa.length;
     }
-  
+
     return resDistance / (double) windowCounter;
   }
 

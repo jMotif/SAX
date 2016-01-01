@@ -44,15 +44,15 @@ public class TestPAAPerf {
       // System.out.println("iteration: " + i + ", paa size: " + paaNum);
 
       Date start1 = new Date();
-      double[] paa1 = tsp.paa_old(ts1, paaNum);
+      double[] paa1 = tsp.paa_oldest(ts1, paaNum);
       Date end1 = new Date();
 
       Date start2 = new Date();
-      double[] paa2 = tsp.paa(ts1, paaNum);
+      double[] paa2 = tsp.paa_old(ts1, paaNum);
       Date end2 = new Date();
 
       Date start3 = new Date();
-      double[] paa3 = tsp.paa_new(ts1, paaNum);
+      double[] paa3 = tsp.paa(ts1, paaNum);
       Date end3 = new Date();
 
       for (int j = 0; j < paa2.length; j++) {
