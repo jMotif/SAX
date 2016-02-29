@@ -1,19 +1,15 @@
 package net.seninp.jmotif.sax;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import org.joda.time.Duration;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.SAXRecord;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
+import org.joda.time.Duration;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Implements SAX algorithms.
@@ -591,9 +587,8 @@ public final class SAXProcessor {
     PeriodFormatter formatter = new PeriodFormatterBuilder().appendDays().appendSuffix("d")
         .appendHours().appendSuffix("h").appendMinutes().appendSuffix("m").appendSeconds()
         .appendSuffix("s").appendMillis().appendSuffix("ms").toFormatter();
-    String formatted = formatter.print(duration.toPeriod());
 
-    return formatted;
+    return formatter.print(duration.toPeriod());
 
   }
 }

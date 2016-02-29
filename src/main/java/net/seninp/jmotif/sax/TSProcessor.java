@@ -1,5 +1,7 @@
 package net.seninp.jmotif.sax;
 
+import net.seninp.jmotif.sax.alphabet.Alphabet;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,10 +14,6 @@ import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import net.seninp.jmotif.sax.alphabet.Alphabet;
 
 /**
  * Implements algorithms for low-level data manipulation.
@@ -30,16 +28,6 @@ public class TSProcessor {
   /** The latin alphabet, lower case letters a-z. */
   public static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
       'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-
-  // logging stuff
-  //
-  private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.DEBUG;
-
-  static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(TSProcessor.class);
-    consoleLogger.setLevel(LOGGING_LEVEL);
-  }
 
   /**
    * Constructor.
