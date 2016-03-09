@@ -68,7 +68,7 @@ public class HOTSAXImplementation {
     SAXRecords sax = sp.ts2saxViaWindow(series, windowSize, alphabetSize,
         normalA.getCuts(alphabetSize), strategy, nThreshold);
     Date saxEnd = new Date();
-    LOGGER.info("discretized in {}, words: {}, indexes: {}",
+    LOGGER.debug("discretized in {}, words: {}, indexes: {}",
         SAXProcessor.timeToString(start.getTime(), saxEnd.getTime()), sax.getRecords().size(),
         sax.getIndexes().size());
 
@@ -86,7 +86,7 @@ public class HOTSAXImplementation {
 
     Date end = new Date();
 
-    LOGGER.info("{} discords found in {}", discords.getSize(),
+    LOGGER.debug("{} discords found in {}", discords.getSize(),
         SAXProcessor.timeToString(start.getTime(), end.getTime()));
 
     return discords;
@@ -371,7 +371,7 @@ public class HOTSAXImplementation {
     SAXRecords sax = sp.ts2saxViaWindow(series, windowSize, alphabetSize,
         normalA.getCuts(alphabetSize), strategy, nThreshold);
     Date saxEnd = new Date();
-    LOGGER.info("discretized in {}, words: {}, indexes: {}",
+    LOGGER.debug("discretized in {}, words: {}, indexes: {}",
         SAXProcessor.timeToString(start.getTime(), saxEnd.getTime()), sax.getRecords().size(),
         sax.getIndexes().size());
 
