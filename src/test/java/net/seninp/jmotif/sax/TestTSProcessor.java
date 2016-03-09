@@ -309,4 +309,18 @@ public class TestTSProcessor {
 
   }
 
+  @Test
+  public void colMeans() {
+    double[][] arr = new double[2][10];
+    for (int i = 0; i < 10; i++) {
+      arr[0][i] = i;
+      arr[1][i] = i;
+    }
+    double[] means = tsp.colMeans(arr);
+    for (int i = 0; i < 10; i++) {
+      assertEquals("testing col means", arr[0][i], means[i], 0.0000001);
+    }
+
+  }
+
 }

@@ -1,6 +1,7 @@
 package net.seninp.jmotif.sax.discord;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import java.util.List;
@@ -65,6 +66,7 @@ public class TestDiscordRecords {
     // was fixed 30-05-2012
     ds.add(discord3);
     ds.add(discord4);
+    assertNotNull("test to string", ds.toString());
     List<DiscordRecord> topHits = ds.getTopHits(2);
     assertEquals("Test constructor", 2, topHits.size());
     assertSame("Test constructor", discord2, topHits.get(0));
