@@ -6,8 +6,8 @@ import java.util.Collections;
 /**
  * The sorted array list implementation following the SO question #4031572.
  * 
- * @see <a
- * href="http://stackoverflow.com/questions/4031572/sorted-array-list-in-java.">http://stackoverflow.com/questions/4031572/sorted-array-list-in-java.</a>
+ * @see <a href="http://stackoverflow.com/questions/4031572/sorted-array-list-in-java.">http://
+ * stackoverflow.com/questions/4031572/sorted-array-list-in-java.</a>
  * 
  * 
  * @author psenin

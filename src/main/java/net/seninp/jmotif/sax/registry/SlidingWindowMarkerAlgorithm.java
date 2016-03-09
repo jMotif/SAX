@@ -1,6 +1,5 @@
 package net.seninp.jmotif.sax.registry;
 
-
 /**
  * Implements a magic array which keeps track of windows that were processed.
  * 

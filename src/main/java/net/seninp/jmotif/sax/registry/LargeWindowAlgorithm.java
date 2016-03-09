@@ -13,25 +13,26 @@ import org.slf4j.LoggerFactory;
  */
 public class LargeWindowAlgorithm implements SlidingWindowMarkerAlgorithm {
 
-    // logging stuff
-    private static final Logger LOGGER = LoggerFactory.getLogger(LargeWindowAlgorithm.class);
+  // logging stuff
+  private static final Logger LOGGER = LoggerFactory.getLogger(LargeWindowAlgorithm.class);
 
-    @Override
-    public void markVisited(VisitRegistry registry, int startPosition, int intervalLength) {
+  @Override
+  public void markVisited(VisitRegistry registry, int startPosition, int intervalLength) {
 
-        LOGGER.debug("marking as visited interval [{},{}]", +(startPosition - intervalLength), startPosition + intervalLength);
+    LOGGER.debug("marking as visited interval [{},{}]", +(startPosition - intervalLength),
+        startPosition + intervalLength);
 
-        // mark the interval, this shall fit into the registry
-        registry.markVisited(startPosition, startPosition + intervalLength);
+    // mark the interval, this shall fit into the registry
+    registry.markVisited(startPosition, startPosition + intervalLength);
 
-        // grow left
-        for (int i = 0; i <= intervalLength; i++) {
-            if (startPosition - i < 0) {
-                break;
-            }
-            registry.markVisited(startPosition - i);
-        }
-
+    // grow left
+    for (int i = 0; i <= intervalLength; i++) {
+      if (startPosition - i < 0) {
+        break;
+      }
+      registry.markVisited(startPosition - i);
     }
+
+  }
 
 }

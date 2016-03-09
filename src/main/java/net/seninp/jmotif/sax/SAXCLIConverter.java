@@ -1,11 +1,5 @@
 package net.seninp.jmotif.sax;
 
-import com.beust.jcommander.JCommander;
-import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
-import net.seninp.jmotif.sax.datastructure.SAXRecords;
-import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
-import net.seninp.util.StackTrace;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -13,6 +7,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import com.beust.jcommander.JCommander;
+import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.datastructure.SAXRecords;
+import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
+import net.seninp.util.StackTrace;
 
 /**
  * This implements a simple CLI tool for ad-hoc SAX discretization.

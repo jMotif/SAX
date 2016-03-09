@@ -1,7 +1,5 @@
 package net.seninp.jmotif.sax;
 
-import net.seninp.jmotif.sax.alphabet.Alphabet;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,6 +12,7 @@ import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import net.seninp.jmotif.sax.alphabet.Alphabet;
 
 /**
  * Implements algorithms for low-level data manipulation.
@@ -313,34 +312,34 @@ public class TSProcessor {
       for (int i = 0; i < paaSize + 1; i++) {
         breaks[i] = i * pointsPerSegment;
       }
-  
+
       for (int i = 0; i < paaSize; i++) {
         double segStart = breaks[i];
         double segEnd = breaks[i + 1];
-  
+
         double fractionStart = Math.ceil(segStart) - segStart;
         double fractionEnd = segEnd - Math.floor(segEnd);
-  
+
         int fullStart = Double.valueOf(Math.floor(segStart)).intValue();
         int fullEnd = Double.valueOf(Math.ceil(segEnd)).intValue();
-  
+
         double[] segment = Arrays.copyOfRange(ts, fullStart, fullEnd);
-  
+
         if (fractionStart > 0) {
           segment[0] = segment[0] * fractionStart;
         }
-  
+
         if (fractionEnd > 0) {
           segment[segment.length - 1] = segment[segment.length - 1] * fractionEnd;
         }
-  
+
         double elementsSum = 0.0;
         for (double e : segment) {
           elementsSum = elementsSum + e;
         }
-  
+
         paa[i] = elementsSum / pointsPerSegment;
-  
+
       }
       return paa;
     }
