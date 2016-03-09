@@ -30,8 +30,8 @@ public class TestMotifDiscovery {
   public void setUp() throws Exception {
     double[] series = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
     SAXProcessor sp = new SAXProcessor();
-    saxData = sp.ts2saxViaWindow(series, WIN_SIZE, PAA_SIZE, na.getCuts(ALPHABET_SIZE),
-        NR_STRATEGY, NORM_THRESHOLD);
+    saxData = sp.ts2saxViaWindow(series, WIN_SIZE, PAA_SIZE, na.getCuts(ALPHABET_SIZE), NR_STRATEGY,
+        NORM_THRESHOLD);
   }
 
   @Test

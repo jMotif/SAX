@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.Date;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.seninp.util.StdRandom;
 
 /**
@@ -18,6 +20,10 @@ import net.seninp.util.StdRandom;
 public class TestPAAPerf {
 
   private static final String ts1File = "src/resources/test-data/ann_gun_CentroidA1.csv";
+
+  // logging stuff
+  //
+  private static final Logger LOGGER = LoggerFactory.getLogger(TestPAAPerf.class);
 
   TSProcessor tsp;
 
@@ -41,7 +47,7 @@ public class TestPAAPerf {
     for (int i = 0; i < 10; i++) {
 
       int paaNum = StdRandom.uniform(10, ts1.length / 10);
-      System.out.print("iteration: " + i + ", paa size: " + paaNum + "; ");
+      LOGGER.debug("iteration: " + i + ", paa size: " + paaNum + "; ");
 
       Date start1 = new Date();
       double[] paa1 = tsp.paa_oldest(ts1, paaNum);
@@ -69,8 +75,7 @@ public class TestPAAPerf {
 
     }
 
-    System.out
-        .println("\n ** paa perf. old " + time1 + ", new: " + time2 + ", newest: " + time3 + "\n");
+    LOGGER.debug("\n ** paa perf. old " + time1 + ", new: " + time2 + ", newest: " + time3 + "\n");
 
   }
 

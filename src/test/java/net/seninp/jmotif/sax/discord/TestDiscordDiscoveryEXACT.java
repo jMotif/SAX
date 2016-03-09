@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
-import net.seninp.jmotif.sax.parallel.SAXWorker;
 import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
 import net.seninp.util.StackTrace;
 

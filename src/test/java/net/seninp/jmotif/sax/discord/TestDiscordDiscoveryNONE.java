@@ -5,6 +5,8 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
@@ -23,6 +25,10 @@ public class TestDiscordDiscoveryNONE {
   private static final int DISCORDS_TO_TEST = 5;
 
   private static final NumerosityReductionStrategy STRATEGY = NumerosityReductionStrategy.NONE;
+
+  // logging stuff
+  //
+  private static final Logger LOGGER = LoggerFactory.getLogger(TestDiscordDiscoveryNONE.class);
 
   private double[] series;
 
@@ -45,19 +51,19 @@ public class TestDiscordDiscoveryNONE {
       discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series,
           WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
       for (DiscordRecord d : discordsBruteForce) {
-        System.out.println("brute force discord " + d.toString());
+        LOGGER.debug("brute force discord " + d.toString());
       }
 
       discordsHash = HOTSAXImplementation.series2Discords(series, DISCORDS_TO_TEST, WIN_SIZE,
           PAA_SIZE, ALPHABET_SIZE, STRATEGY, NORM_THRESHOLD);
       for (DiscordRecord d : discordsHash) {
-        System.out.println("hotsax hash discord " + d.toString());
+        LOGGER.debug("hotsax hash discord " + d.toString());
       }
 
       discordsOle = HOTSAXImplementation.series2DiscordsDeprecated(series, DISCORDS_TO_TEST,
           WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(), STRATEGY, NORM_THRESHOLD);
       for (DiscordRecord d : discordsOle) {
-        System.out.println("old hash discord " + d.toString());
+        LOGGER.debug("old hash discord " + d.toString());
       }
 
     }

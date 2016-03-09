@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
@@ -41,6 +43,10 @@ public class TestSAXProcessor {
 
   private static final double delta = 0.001;
 
+  // logging stuff
+  //
+  private static final Logger LOGGER = LoggerFactory.getLogger(TestSAXProcessor.class);
+
   /**
    * Testing the concatenated time series SAX conversion.
    * 
@@ -61,22 +67,22 @@ public class TestSAXProcessor {
 
     SAXRecords regularSAX = sp.ts2saxViaWindow(ts, 6, 3, normalA.getCuts(3),
         NumerosityReductionStrategy.NONE, 0.01);
-    System.out.println("NONE: there are " + regularSAX.getAllIndices().size() + " words: \n"
+    LOGGER.debug("NONE: there are " + regularSAX.getAllIndices().size() + " words: \n"
         + regularSAX.getSAXString(" ") + "\n" + regularSAX.getAllIndices());
     SAXRecords saxData = sp.ts2saxViaWindowSkipping(ts, 6, 3, normalA.getCuts(3),
         NumerosityReductionStrategy.NONE, 0.01, skips);
-    System.out.println("NONE with skips: there are " + saxData.getAllIndices().size() + " words: \n"
+    LOGGER.debug("NONE with skips: there are " + saxData.getAllIndices().size() + " words: \n"
         + saxData.getSAXString(" ") + "\n" + saxData.getAllIndices());
 
     regularSAX = sp.ts2saxViaWindow(ts, 6, 3, normalA.getCuts(3), NumerosityReductionStrategy.EXACT,
         0.01);
     assertNotNull("asserting the processing result", regularSAX);
-    System.out.println("EXACT: there are " + regularSAX.getAllIndices().size() + " words: \n"
+    LOGGER.debug("EXACT: there are " + regularSAX.getAllIndices().size() + " words: \n"
         + regularSAX.getSAXString(" ") + "\n" + regularSAX.getAllIndices());
     saxData = sp.ts2saxViaWindowSkipping(ts, 6, 3, normalA.getCuts(3),
         NumerosityReductionStrategy.EXACT, 0.01, skips);
-    System.out.println("EXACT with skips: there are " + saxData.getAllIndices().size()
-        + " words: \n" + saxData.getSAXString(" ") + "\n" + saxData.getAllIndices());
+    LOGGER.debug("EXACT with skips: there are " + saxData.getAllIndices().size() + " words: \n"
+        + saxData.getSAXString(" ") + "\n" + saxData.getAllIndices());
   }
 
   /**
@@ -95,7 +101,7 @@ public class TestSAXProcessor {
 
     final double[] ser = { -1.0, -2.0, -1.0, 0.0, 2.0, 1.0, 1.0, 0.0 };
 
-    System.out.println(" ** " + Arrays.toString(tp.paa(ser, 3)));
+    LOGGER.debug(" ** " + Arrays.toString(tp.paa(ser, 3)));
 
     // series #1 goes here
     String ts1sax = sp.ts2saxByChunking(ts1, 10, normalA.getCuts(11), delta).getSAXString("");
