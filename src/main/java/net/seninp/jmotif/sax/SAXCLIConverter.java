@@ -1,5 +1,11 @@
 package net.seninp.jmotif.sax;
 
+import com.beust.jcommander.JCommander;
+import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.datastructure.SAXRecords;
+import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
+import net.seninp.util.StackTrace;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -7,14 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import org.slf4j.LoggerFactory;
-import com.beust.jcommander.JCommander;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
-import net.seninp.jmotif.sax.datastructure.SAXRecords;
-import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
-import net.seninp.util.StackTrace;
 
 /**
  * This implements a simple CLI tool for ad-hoc SAX discretization.
@@ -26,16 +24,6 @@ public final class SAXCLIConverter {
 
   private static final String CR = "\n";
   private static final String COMMA = ", ";
-
-  // logging stuff
-  //
-  private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.INFO;
-
-  static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(SAXCLIConverter.class);
-    consoleLogger.setLevel(LOGGING_LEVEL);
-  }
 
   /**
    * Constructor.
