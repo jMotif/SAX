@@ -211,6 +211,9 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
 
 #### Versions:
+`1.0.7`
+  * logback dependencies removed 
+
 `1.0.5 - 1.0.6`
   * introduced the discretization approximation error
 
