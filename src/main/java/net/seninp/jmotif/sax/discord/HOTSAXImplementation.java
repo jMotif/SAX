@@ -120,8 +120,8 @@ public class HOTSAXImplementation {
 
       // if the discord is null we getting out of the search
       if (bestDiscord.getNNDistance() == 0.0D || bestDiscord.getPosition() == -1) {
-        LOGGER.trace("breaking the outer search loop, discords found: {} last seen discord: {}"
-            + discords.getSize(), bestDiscord);
+        LOGGER.trace("breaking the outer search loop, discords found: {} last seen discord: {}",
+            discords.getSize(), bestDiscord);
         break;
       }
 
@@ -138,13 +138,13 @@ public class HOTSAXImplementation {
       // and maintain data structures
       //
       int markStart = bestDiscord.getPosition() - windowSize;
-      if (markStart < 0) {
-        markStart = 0;
-      }
+      // if (markStart < 0) {
+      // markStart = 0;
+      // }
       int markEnd = bestDiscord.getPosition() + windowSize;
-      if (markEnd > series.length) {
-        markEnd = series.length;
-      }
+      // if (markEnd > series.length) {
+      // markEnd = series.length;
+      // }
       LOGGER.debug("marking as globally visited [{}, {}]", markStart, markEnd);
       for (int i = markStart; i < markEnd; i++) {
         visitRegistry.add(i);
@@ -166,12 +166,12 @@ public class HOTSAXImplementation {
    * @param windowSize The sliding window size.
    * @param sax The SAX data structure for the reference.
    * @param allWords The magic heuristics array.
-   * @param registry The global visit array.
+   * @param discordRegistry The global visit array.
    * @return The best discord instance.
    * @throws Exception If error occurs.
    */
   private static DiscordRecord findBestDiscordWithMagic(double[] series, int windowSize,
-      SAXRecords sax, ArrayList<MagicArrayEntry> allWords, HashSet<Integer> registry)
+      SAXRecords sax, ArrayList<MagicArrayEntry> allWords, HashSet<Integer> discordRegistry)
       throws Exception {
 
     // prepare the visits array, note that there can't be more points to visit that in a SAX index
@@ -200,25 +200,27 @@ public class HOTSAXImplementation {
 
         iterationCounter++;
 
-        // make sure it is not previously found discord passed through the parameters array
-        if (registry.contains(currentPos)) {
+        // make sure it is not a previously found discord passed through the parameters array
+        if (discordRegistry.contains(currentPos)) {
           continue;
         }
+
         LOGGER.trace("conducting search for {} at {}, iteration {}", currentWord, currentPos,
             iterationCounter);
 
         int markStart = currentPos - windowSize;
-        if (markStart < 0) {
-          markStart = 0;
-        }
+        // if (markStart < 0) {
+        // markStart = 0;
+        // }
         int markEnd = currentPos + windowSize;
-        if (markEnd > series.length) {
-          markEnd = series.length;
-        }
+        // if (markEnd > series.length) {
+        // markEnd = series.length;
+        // }
 
         // all the candidates we are not going to try
         HashSet<Integer> alreadyVisited = new HashSet<Integer>(
             occurrences.size() + (markEnd - markStart));
+
         for (int i = markStart; i < markEnd; i++) {
           alreadyVisited.add(i);
         }
@@ -255,7 +257,7 @@ public class HOTSAXImplementation {
           }
           if (dist < bestSoFarDistance) {
             LOGGER.trace(
-                " ** abandoning the occurrences loop, distance {} is less than best so far {}",
+                " ** abandoning the occurrences loop, distance {} is less than the best so far {}",
                 dist, bestSoFarDistance);
             doRandomSearch = false;
             break;
