@@ -201,6 +201,11 @@ public class HOTSAXImplementation {
         iterationCounter++;
 
         // make sure it is not a previously found discord passed through the parameters array
+        //
+        // note, that the discordRegistry contains the whole span of previously found discord,
+        // not just it's position....
+        //
+        //
         if (discordRegistry.contains(currentPos)) {
           continue;
         }
