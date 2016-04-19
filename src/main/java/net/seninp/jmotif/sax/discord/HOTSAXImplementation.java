@@ -249,9 +249,11 @@ public class HOTSAXImplementation {
           }
 
           // get the subsequence and the distance
-          double[] occurrenceSubsequence = tp.subseriesByCopy(series, nextOccurrence,
+          // double[] occurrenceSubsequence = tp.subseriesByCopy(series, nextOccurrence,
+          // nextOccurrence + windowSize);
+          // double dist = ed.distance(currentCandidateSeq, occurrenceSubsequence);
+          double dist = distance(currentCandidateSeq, series, nextOccurrence,
               nextOccurrence + windowSize);
-          double dist = ed.distance(currentCandidateSeq, occurrenceSubsequence);
           distanceCalls++;
 
           // keep track of best so far distance
@@ -303,9 +305,10 @@ public class HOTSAXImplementation {
             int randomPos = visitArray[cIndex];
             cIndex--;
 
-            double[] randomSubsequence = tp.subseriesByCopy(series, randomPos,
-                randomPos + windowSize);
-            double dist = ed.distance(currentCandidateSeq, randomSubsequence);
+            // double[] randomSubsequence = tp.subseriesByCopy(series, randomPos,
+            // randomPos + windowSize);
+            // double dist = ed.distance(currentCandidateSeq, randomSubsequence);
+            double dist = distance(currentCandidateSeq, series, randomPos, randomPos + windowSize);
             distanceCalls++;
 
             // keep track
@@ -653,6 +656,26 @@ public class HOTSAXImplementation {
       }
     }
     return res;
+  }
+
+  /**
+   * Calculates the Euclidean distance between two points. Don't use this unless you need that.
+   * 
+   * @param subseries The first point.
+   * @param series The second point.
+   * @param from the initial index of the range to be copied, inclusive
+   * @param to the final index of the range to be copied, exclusive. (This index may lie outside the
+   * array.)
+   * @return The Euclidean distance.
+   */
+  private static double distance(double[] subseries, double[] series, int from, int to)
+      throws Exception {
+    Double sum = 0D;
+    for (int i = from; i < to; i++) {
+      double tmp = subseries[i - from] - series[i];
+      sum = sum + tmp * tmp;
+    }
+    return Math.sqrt(sum);
   }
 
 }
