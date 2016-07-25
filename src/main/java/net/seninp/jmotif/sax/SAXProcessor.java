@@ -468,9 +468,10 @@ public final class SAXProcessor {
     // fill in the counts
     for (SAXRecord sr : saxData) {
       String word = String.valueOf(sr.getPayload());
-      for (int i = 0; i < word.length() - shingleSize; i++) {
+      int frequency = sr.getIndexes().size();
+      for (int i = 0; i <= word.length() - shingleSize; i++) {
         String shingle = word.substring(i, i + shingleSize);
-        res.put(shingle, res.get(shingle) + 1);
+        res.put(shingle, res.get(shingle) + frequency);
       }
     }
 
