@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.joda.time.Duration;
@@ -12,6 +11,7 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.bitmap.Shingles;
 import net.seninp.jmotif.sax.datastructure.SAXRecord;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
@@ -479,7 +479,7 @@ public final class SAXProcessor {
   }
 
   /**
-   * Convert a time series into a shingled representation.
+   * Converts a time-series data frame into shingled data frame.
    * 
    * @param data the input data.
    * @param windowSize SAX window size.
@@ -487,56 +487,37 @@ public final class SAXProcessor {
    * @param alphabetSize SAX alphabet size.
    * @param strategy SAX NR strategy.
    * @param normalizationThreshold SAX normalization threshold.
+   * @param shingleSize the shingle size.
    * @return shingled representation.
    * @throws SAXException if error occurs.
    */
-  public Map<String, List<double[]>> manySeriesToShingles(Map<String, ArrayList<double[]>> data,
+  public Shingles manySeriesToShingles(Map<String, ArrayList<double[]>> data,
       int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
-      double normalizationThreshold) throws SAXException {
+      double normalizationThreshold, int shingleSize) throws SAXException {
 
-    HashMap<String, List<double[]>> res = new HashMap<String, List<double[]>>();
+    Shingles res = new Shingles(alphabetSize, shingleSize);
 
-    // build all shingles
-    //
-    String[] alphabet = new String[alphabetSize];
-    for (int i = 0; i < alphabetSize; i++) {
-      alphabet[i] = String.valueOf(TSProcessor.ALPHABET[i]);
-    }
-    String[] allStrings = getAllPermutations(alphabet, paaSize);
-
-    // and make an index table
-    //
-    int len = allStrings.length;
-    HashMap<String, Integer> indexTable = new HashMap<String, Integer>();
-    for (int i = 0; i < allStrings.length; i++) {
-      indexTable.put(allStrings[i], i);
-    }
-
-    // iterate ofer all training series
+       // iterate over all training series
     //
     for (Entry<String, ArrayList<double[]>> e : data.entrySet()) {
+
       // System.out.println(e.getKey());
       for (double[] series : e.getValue()) {
 
-        // discretize the timeseries
-        SAXRecords saxData = ts2saxViaWindow(series, windowSize, paaSize, na.getCuts(alphabetSize),
-            strategy, normalizationThreshold);
+        // convert the time series into shingles
+        Map<String, Integer> shingles = ts2Shingles(series, windowSize, paaSize, alphabetSize,
+            strategy, normalizationThreshold, shingleSize);
 
-        // allocate the weights array corresponding to the timeseries
-        double[] weights = new double[len];
+        // allocate the weights array corresponding to the time series
+        int[] counts = new int[res.getIndex().size()];
 
         // fill in the counts
-        for (SAXRecord sr : saxData) {
-          String word = String.valueOf(sr.getPayload());
-          Integer idx = indexTable.get(word);
-          weights[idx] = sr.getIndexes().size();
+        for (String str : shingles.keySet()) {
+          Integer idx = res.getIndex().get(str);
+          counts[idx] = shingles.get(str);
         }
 
-        // normalize and save that series shingle
-        if (!res.containsKey(e.getKey())) {
-          res.put(e.getKey(), new ArrayList<double[]>());
-        }
-        res.get(e.getKey()).add(tsProcessor.normOne(weights));
+        res.addShingledSeries(e.getKey(), counts);
 
       }
     }
