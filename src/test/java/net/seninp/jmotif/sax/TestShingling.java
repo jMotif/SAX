@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.junit.Test;
@@ -86,7 +85,6 @@ public class TestShingling {
   @Test
   public void testShingling2() throws NumberFormatException, IOException, SAXException {
 
-    final TSProcessor tp = new TSProcessor();
     final SAXProcessor sp = new SAXProcessor();
     final Alphabet a = new NormalAlphabet();
 
@@ -95,7 +93,7 @@ public class TestShingling {
 
     SAXRecords sax1 = sp.ts2saxViaWindow(ts1, 3, 3, a.getCuts(3), NumerosityReductionStrategy.NONE,
         0.001);
-    SAXRecords sax2 = sp.ts2saxViaWindow(ts1, 3, 3, a.getCuts(3), NumerosityReductionStrategy.NONE,
+    SAXRecords sax2 = sp.ts2saxViaWindow(ts2, 3, 3, a.getCuts(3), NumerosityReductionStrategy.NONE,
         0.001);
 
     Map<String, ArrayList<double[]>> data = new HashMap<String, ArrayList<double[]>>();
@@ -103,29 +101,26 @@ public class TestShingling {
     arr1.add(ts1);
     data.put("series1", arr1);
     ArrayList<double[]> arr2 = new ArrayList<double[]>();
-    arr1.add(ts2);
+    arr2.add(ts2);
     data.put("series2", arr2);
     Shingles shingles = sp.manySeriesToShingles(data, 3, 3, 3, NumerosityReductionStrategy.NONE,
         0.001, 3);
 
-    int[] series1shingles = shingles.get("series1").get(0);
-
     // test the first series
+    int[] series1shingles = shingles.get("series1").get(0);
     for (SAXRecord e : sax1) {
       int idx = shingles.indexForShingle(String.valueOf(e.getPayload()));
       assertEquals("testing mass shingling", Integer.valueOf(series1shingles[idx]),
           Integer.valueOf(e.getIndexes().size()));
     }
-  }
 
-  private int getMaxVal(SAXRecords sax) {
-    int res = -1;
-    for (SAXRecord e : sax.getRecords()) {
-      if (e.getIndexes().size() > res) {
-        res = e.getIndexes().size();
-      }
+    // test the second series
+    int[] series2shingles = shingles.get("series2").get(0);
+    for (SAXRecord e : sax2) {
+      int idx = shingles.indexForShingle(String.valueOf(e.getPayload()));
+      assertEquals("testing mass shingling", Integer.valueOf(series2shingles[idx]),
+          Integer.valueOf(e.getIndexes().size()));
     }
-    return res;
   }
 
 }
