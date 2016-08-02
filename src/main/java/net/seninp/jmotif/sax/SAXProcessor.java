@@ -113,6 +113,11 @@ public final class SAXProcessor {
   public SAXRecords ts2saxViaWindow(double[] ts, int windowSize, int paaSize, double[] cuts,
       NumerosityReductionStrategy strategy, double nThreshold) throws SAXException {
 
+    if (windowSize > ts.length) {
+      throw new SAXException(
+          "Unable to saxify via window, window size is greater than the timeseries length...");
+    }
+
     // the resulting data structure init
     //
     SAXRecords saxFrequencyData = new SAXRecords();
@@ -491,13 +496,13 @@ public final class SAXProcessor {
    * @return shingled representation.
    * @throws SAXException if error occurs.
    */
-  public Shingles manySeriesToShingles(Map<String, ArrayList<double[]>> data,
-      int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
+  public Shingles manySeriesToShingles(Map<String, ArrayList<double[]>> data, int windowSize,
+      int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
       double normalizationThreshold, int shingleSize) throws SAXException {
 
     Shingles res = new Shingles(alphabetSize, shingleSize);
 
-       // iterate over all training series
+    // iterate over all training series
     //
     for (Entry<String, ArrayList<double[]>> e : data.entrySet()) {
 

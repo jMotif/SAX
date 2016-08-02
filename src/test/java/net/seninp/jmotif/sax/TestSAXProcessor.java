@@ -3,6 +3,7 @@ package net.seninp.jmotif.sax;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.IOException;
@@ -171,6 +172,16 @@ public class TestSAXProcessor {
     assertEquals("Testing ts2sax", ts2SAX.getByWord(ts2str_7).getIndexes().iterator().next(),
         new Integer(7));
 
+    SAXRecords ts2SAXerror = null;
+
+    try {
+      ts2SAXerror = sp.ts2saxViaWindow(ts2, ts2.length + 1, 5, normalA.getCuts(10),
+          NumerosityReductionStrategy.NONE, delta);
+      fail("Exception must be thrown!");
+    }
+    catch (SAXException e) {
+      assertNull(ts2SAXerror);
+    }
   }
 
   /**
