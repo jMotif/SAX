@@ -20,6 +20,9 @@ In Proc. ICDM (2002)
 [*HOT SAX: Efficiently finding the most unusual time series subsequence*](http://www.cs.ucr.edu/~eamonn/HOT%20SAX%20%20long-ver.pdf),
 In Proc. ICDM (2005)
 
+[4] Kumar, N., Lolla, V.N., Keogh, E.J., Lonardi, S. and Chotirat (Ann) Ratanamahatana,
+[Time-series Bitmaps: a Practical Visualization Tool for Working with Large Time Series Databases](http://www.cs.ucr.edu/~eamonn/time_series_bitmaps.pdf)
+
 ##### _Note that the most of library's functionality is also available in [R](https://github.com/jMotif/jmotif-R)_
 
 #### Citing this work:
@@ -211,6 +214,10 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
 
 #### Versions:
+`1.0.8`
+  * working on shingling
+  * releasing GrammarViz 3.0
+
 `1.0.7`
   * logback dependencies removed 
 
