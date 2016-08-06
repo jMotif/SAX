@@ -114,6 +114,7 @@ public final class StdRandom {
   /**
    * Returns an integer uniformly between 0 (inclusive) and N (exclusive).
    * 
+   * @param N the upper bound.
    * @return the next uniformly sampled value.
    * @throws IllegalArgumentException if {@code N <= 0 }
    */
@@ -164,7 +165,9 @@ public final class StdRandom {
   /**
    * Returns a boolean, which is true with probability p, and false otherwise.
    * 
+   * @param p the probability.
    * @throws IllegalArgumentException unless {@code p >= 0.0 } and {@code p <= 1.0 }
+   * @return the random value.
    */
   public static boolean bernoulli(double p) {
     if (!(p >= 0.0 && p <= 1.0))
@@ -174,6 +177,8 @@ public final class StdRandom {
 
   /**
    * Returns a boolean, which is true with probability .5, and false otherwise.
+   * 
+   * @return the random value.
    */
   public static boolean bernoulli() {
     return bernoulli(0.5);
@@ -181,6 +186,8 @@ public final class StdRandom {
 
   /**
    * Returns a real number with a standard Gaussian distribution.
+   * 
+   * @return the random value.
    */
   public static double gaussian() {
     // use the polar form of the Box-Muller transform
@@ -199,6 +206,10 @@ public final class StdRandom {
 
   /**
    * Returns a real number from a gaussian distribution with given mean and stddev
+   * 
+   * @param mean the mean value to generate the distribution.
+   * @param stddev the standard deviation value.
+   * @return the random value.
    */
   public static double gaussian(double mean, double stddev) {
     return mean + stddev * gaussian();
@@ -207,7 +218,9 @@ public final class StdRandom {
   /**
    * Returns an integer with a geometric distribution with mean 1/p.
    * 
+   * @param p the value to configure the distribution.
    * @throws IllegalArgumentException unless {@code p >= 0.0 } and {@code p <= 1.0 }
+   * @return the random value.
    */
   public static int geometric(double p) {
     if (!(p >= 0.0 && p <= 1.0))
@@ -219,7 +232,9 @@ public final class StdRandom {
   /**
    * Return an integer with a Poisson distribution with mean lambda.
    * 
+   * @param lambda the value to configure the distribution.
    * @throws IllegalArgumentException unless {@code lambda > 0.0 } and not infinite
+   * @return the random value.
    */
   public static int poisson(double lambda) {
     if (!(lambda > 0.0))
@@ -242,7 +257,9 @@ public final class StdRandom {
   /**
    * Returns a real number with a Pareto distribution with parameter alpha.
    * 
+   * @param alpha the value to configure the distribution.
    * @throws IllegalArgumentException unless {@code alpha > 0.0 }
+   * @return the random value.
    */
   public static double pareto(double alpha) {
     if (!(alpha > 0.0))
@@ -252,6 +269,8 @@ public final class StdRandom {
 
   /**
    * Returns a real number with a Cauchy distribution.
+   * 
+   * @return the random value.
    */
   public static double cauchy() {
     return Math.tan(Math.PI * (uniform() - 0.5));
@@ -261,6 +280,9 @@ public final class StdRandom {
    * Returns a number from a discrete distribution: i with probability a[i]. throws
    * IllegalArgumentException if sum of array entries is not (very nearly) equal to {@code 1.0 }
    * throws IllegalArgumentException unless {@code a[i] >= 0.0 } for each index {@code i }
+   * 
+   * @param a the value to configure the distribution.
+   * @return the random value.
    */
   public static int discrete(double[] a) {
     double EPSILON = 1E-14;
@@ -290,7 +312,9 @@ public final class StdRandom {
   /**
    * Returns a real number from an exponential distribution with rate lambda.
    * 
+   * @param lambda the value to configure the distribution.
    * @throws IllegalArgumentException unless {@code lambda > 0.0 }
+   * @return the random value.
    */
   public static double exp(double lambda) {
     if (!(lambda > 0.0))
@@ -300,6 +324,8 @@ public final class StdRandom {
 
   /**
    * Rearrange the elements of an array in random order.
+   * 
+   * @param a the array to shuffle.
    */
   public static void shuffle(Object[] a) {
     int N = a.length;
@@ -313,6 +339,8 @@ public final class StdRandom {
 
   /**
    * Rearrange the elements of a double array in random order.
+   * 
+   * @param a the array to shuffle.
    */
   public static void shuffle(double[] a) {
     int N = a.length;
@@ -326,6 +354,8 @@ public final class StdRandom {
 
   /**
    * Rearrange the elements of an int array in random order.
+   * 
+   * @param a the array to shuffle.
    */
   public static void shuffle(int[] a) {
     int N = a.length;
@@ -339,6 +369,10 @@ public final class StdRandom {
 
   /**
    * Rearrange the elements of the subarray a[lo..hi] in random order.
+   * 
+   * @param a the array to shuffle.
+   * @param hi the upper bound.
+   * @param lo the lower bound.
    */
   public static void shuffle(Object[] a, int lo, int hi) {
     if (lo < 0 || lo > hi || hi >= a.length) {
@@ -354,6 +388,10 @@ public final class StdRandom {
 
   /**
    * Rearrange the elements of the subarray a[lo..hi] in random order.
+   * 
+   * @param a the array to shuffle.
+   * @param hi the upper bound.
+   * @param lo the lower bound.
    */
   public static void shuffle(double[] a, int lo, int hi) {
     if (lo < 0 || lo > hi || hi >= a.length) {
@@ -369,6 +407,10 @@ public final class StdRandom {
 
   /**
    * Rearrange the elements of the subarray a[lo..hi] in random order.
+   * 
+   * @param a the array to shuffle.
+   * @param hi the upper bound.
+   * @param lo the lower bound.
    */
   public static void shuffle(int[] a, int lo, int hi) {
     if (lo < 0 || lo > hi || hi >= a.length) {

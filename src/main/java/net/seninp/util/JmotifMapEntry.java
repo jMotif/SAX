@@ -7,8 +7,8 @@ import java.util.Map;
  * 
  * @author psenin
  *
- * @param <K>
- * @param <V>
+ * @param <K> the key type.
+ * @param <V> the value type.
  */
 public class JmotifMapEntry<K, V> implements Map.Entry<K, V> {
   private final K key;
