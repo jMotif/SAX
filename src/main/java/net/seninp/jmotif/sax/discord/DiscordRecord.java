@@ -146,7 +146,7 @@ public class DiscordRecord implements Comparable<DiscordRecord> {
    * 
    * @return the length.
    */
-  public Integer getLength() {
+  public int getLength() {
     return this.length;
   }
 
