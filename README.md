@@ -7,6 +7,7 @@ This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-license
   * Symbolic Aggregate approXimation (i.e., SAX) toolkit stack [1]
   * a simple function for time series motif discovery [2]
   * HOT-SAX - a time series discord discovery algorithm [3]
+  * time series bitmap [4]
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., 
 [*Finding Motifs in Time Series*](http://cs.gmu.edu/~jessica/Lin_motif.pdf), 
@@ -19,6 +20,9 @@ In Proc. ICDM (2002)
 [3] Keogh, E., Lin, J., Fu, A.,
 [*HOT SAX: Efficiently finding the most unusual time series subsequence*](http://www.cs.ucr.edu/~eamonn/HOT%20SAX%20%20long-ver.pdf),
 In Proc. ICDM (2005)
+
+[4] Kumar, N., Lolla, V.N., Keogh, E.J., Lonardi, S. and Chotirat (Ann) Ratanamahatana,
+[Time-series Bitmaps: a Practical Visualization Tool for Working with Large Time Series Databases](http://www.cs.ucr.edu/~eamonn/time_series_bitmaps.pdf), In SDM 2005 Apr 21 (pp. 531-535).
 
 ##### _Note that the most of library's functionality is also available in [R](https://github.com/jMotif/jmotif-R)_
 
@@ -211,6 +215,10 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
 
 #### Versions:
+`1.0.8`
+  * working on shingling
+  * releasing GrammarViz 3.0
+
 `1.0.7`
   * logback dependencies removed 
 
