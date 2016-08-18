@@ -348,6 +348,7 @@ public class HOTSAXImplementation {
 
     LOGGER.trace("Distance calls: {}", distanceCalls);
     DiscordRecord res = new DiscordRecord(bestSoFarPosition, bestSoFarDistance, bestSoFarWord);
+    res.setLength(windowSize);
     res.setInfo("distance calls: " + distanceCalls);
 
     return res;
