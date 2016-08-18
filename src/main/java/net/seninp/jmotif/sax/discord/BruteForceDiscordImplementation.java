@@ -158,6 +158,7 @@ public class BruteForceDiscordImplementation {
         SAXProcessor.timeToString(start.getTime(), firstDiscord.getTime()), distanceCallsCounter);
 
     DiscordRecord res = new DiscordRecord(bestSoFarPosition, bestSoFarDistance);
+    res.setLength(windowSize);
     res.setInfo("distance calls: " + distanceCallsCounter);
     return res;
   }
