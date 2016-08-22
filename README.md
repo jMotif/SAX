@@ -215,6 +215,10 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
 
 #### Versions:
+`1.0.9`
+  * fixed the error with the discord size field in HOTSAX and BRUTEFORCE implementations
+  * changed HOTSAX and BRUTEFORCE behavior by adding z-Normalization to the distance computation routine
+   
 `1.0.8`
   * working on shingling
   * releasing GrammarViz 3.0
