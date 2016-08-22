@@ -20,7 +20,10 @@ public class BruteForceDiscordImplementation {
       .getLogger(BruteForceDiscordImplementation.class);
 
   private static TSProcessor tsProcessor = new TSProcessor();
+
   private static EuclideanDistance ed = new EuclideanDistance();
+
+  private static final double Z_NORMALIZATION_THRESHOLD = 0.001;
 
   /**
    * Brute force discord search implementation. BRUTE FORCE algorithm.
@@ -117,7 +120,9 @@ public class BruteForceDiscordImplementation {
         continue;
       }
 
-      double[] candidateSeq = tsProcessor.subseriesByCopy(series, outerIdx, outerIdx + windowSize);
+      double[] candidateSeq = tsProcessor.znorm(
+          tsProcessor.subseriesByCopy(series, outerIdx, outerIdx + windowSize),
+          Z_NORMALIZATION_THRESHOLD);
       double nearestNeighborDistance = Double.MAX_VALUE;
       VisitRegistry innerRegistry = new VisitRegistry(series.length - windowSize);
 
@@ -128,8 +133,9 @@ public class BruteForceDiscordImplementation {
         if (Math.abs(outerIdx - innerIdx) > windowSize) { // > means they shall not overlap even
                                                           // over a single point
 
-          double[] currentSubsequence = tsProcessor.subseriesByCopy(series, innerIdx,
-              innerIdx + windowSize);
+          double[] currentSubsequence = tsProcessor.znorm(
+              tsProcessor.subseriesByCopy(series, innerIdx, innerIdx + windowSize),
+              Z_NORMALIZATION_THRESHOLD);
 
           double dist = ed.earlyAbandonedDistance(candidateSeq, currentSubsequence,
               nearestNeighborDistance);

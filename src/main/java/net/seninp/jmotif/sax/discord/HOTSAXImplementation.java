@@ -38,6 +38,8 @@ public class HOTSAXImplementation {
   //
   private static final Logger LOGGER = LoggerFactory.getLogger(HOTSAXImplementation.class);
 
+  private static final double Z_NORMALIZATION_THRESHOLD = 0.001;
+
   /**
    * Hash-table backed implementation (in contrast to trie). Time series is converted into a
    * SAXRecords data structure first, Hash-table backed magic array created second. HOTSAX applied
@@ -231,8 +233,9 @@ public class HOTSAXImplementation {
         }
 
         // fix the current subsequence trace
-        double[] currentCandidateSeq = tp.subseriesByCopy(series, currentPos,
-            currentPos + windowSize);
+        double[] currentCandidateSeq = tp.znorm(
+            tp.subseriesByCopy(series, currentPos, currentPos + windowSize),
+            Z_NORMALIZATION_THRESHOLD);
 
         // let the search begin ..
         double nearestNeighborDist = Double.MAX_VALUE;
@@ -536,8 +539,9 @@ public class HOTSAXImplementation {
           currentPos, iterationCounter, frequencies.size());
 
       // fix the current subsequence trace
-      double[] currentCandidateSeq = tp.subseriesByCopy(series, currentPos,
-          currentPos + windowSize);
+      double[] currentCandidateSeq = tp.znorm(
+          tp.subseriesByCopy(series, currentPos, currentPos + windowSize),
+          Z_NORMALIZATION_THRESHOLD);
 
       // let the search begin ..
       double nearestNeighborDist = Double.MAX_VALUE;
@@ -557,8 +561,9 @@ public class HOTSAXImplementation {
         }
 
         // get the subsequence and the distance
-        double[] occurrenceSubsequence = tp.subseriesByCopy(series, nextOccurrence,
-            nextOccurrence + windowSize);
+        double[] occurrenceSubsequence = tp.znorm(
+            tp.subseriesByCopy(series, nextOccurrence, nextOccurrence + windowSize),
+            Z_NORMALIZATION_THRESHOLD);
         double dist = ed.distance(currentCandidateSeq, occurrenceSubsequence);
         distanceCalls++;
 
@@ -592,8 +597,9 @@ public class HOTSAXImplementation {
 
           randomRegistry.markVisited(randomPos);
 
-          double[] randomSubsequence = tp.subseriesByCopy(series, randomPos,
-              randomPos + windowSize);
+          double[] randomSubsequence = tp.znorm(
+              tp.subseriesByCopy(series, randomPos, randomPos + windowSize),
+              Z_NORMALIZATION_THRESHOLD);
           double dist = ed.distance(currentCandidateSeq, randomSubsequence);
           distanceCalls++;
 
@@ -663,18 +669,20 @@ public class HOTSAXImplementation {
   /**
    * Calculates the Euclidean distance between two points. Don't use this unless you need that.
    * 
-   * @param subseries The first point.
+   * @param subseries The first subsequence -- ASSUMED TO BE Z-normalized.
    * @param series The second point.
    * @param from the initial index of the range to be copied, inclusive
    * @param to the final index of the range to be copied, exclusive. (This index may lie outside the
    * array.)
-   * @return The Euclidean distance.
+   * @return The Euclidean distance between z-Normalized versions of subsequences.
    */
   private static double distance(double[] subseries, double[] series, int from, int to)
       throws Exception {
+    double[] subsequence = tp.znorm(tp.subseriesByCopy(series, from, to),
+        Z_NORMALIZATION_THRESHOLD);
     Double sum = 0D;
-    for (int i = from; i < to; i++) {
-      double tmp = subseries[i - from] - series[i];
+    for (int i = 0; i < subseries.length; i++) {
+      double tmp = subseries[i] - subsequence[i];
       sum = sum + tmp * tmp;
     }
     return Math.sqrt(sum);
