@@ -38,8 +38,6 @@ public class HOTSAXImplementation {
   //
   private static final Logger LOGGER = LoggerFactory.getLogger(HOTSAXImplementation.class);
 
-  private static final double Z_NORMALIZATION_THRESHOLD = 0.001;
-
   /**
    * Hash-table backed implementation (in contrast to trie). Time series is converted into a
    * SAXRecords data structure first, Hash-table backed magic array created second. HOTSAX applied
@@ -84,7 +82,7 @@ public class HOTSAXImplementation {
         SAXProcessor.timeToString(saxEnd.getTime(), hashEnd.getTime()));
 
     DiscordRecords discords = getDiscordsWithMagic(series, sax, windowSize, magicArray,
-        discordsNumToReport);
+        discordsNumToReport, nThreshold);
 
     Date end = new Date();
 
@@ -95,8 +93,8 @@ public class HOTSAXImplementation {
   }
 
   private static DiscordRecords getDiscordsWithMagic(double[] series, SAXRecords sax,
-      int windowSize, ArrayList<MagicArrayEntry> magicArray, int discordCollectionSize)
-      throws Exception {
+      int windowSize, ArrayList<MagicArrayEntry> magicArray, int discordCollectionSize,
+      double nThreshold) throws Exception {
 
     // sort the candidates
     Collections.sort(magicArray);
@@ -117,7 +115,7 @@ public class HOTSAXImplementation {
 
       Date start = new Date();
       DiscordRecord bestDiscord = findBestDiscordWithMagic(series, windowSize, sax, magicArray,
-          visitRegistry);
+          visitRegistry, nThreshold);
       Date end = new Date();
 
       // if the discord is null we getting out of the search
@@ -169,12 +167,13 @@ public class HOTSAXImplementation {
    * @param sax The SAX data structure for the reference.
    * @param allWords The magic heuristics array.
    * @param discordRegistry The global visit array.
+   * @param nThreshold The z-normalization threshold.
    * @return The best discord instance.
    * @throws Exception If error occurs.
    */
   private static DiscordRecord findBestDiscordWithMagic(double[] series, int windowSize,
-      SAXRecords sax, ArrayList<MagicArrayEntry> allWords, HashSet<Integer> discordRegistry)
-      throws Exception {
+      SAXRecords sax, ArrayList<MagicArrayEntry> allWords, HashSet<Integer> discordRegistry,
+      double nThreshold) throws Exception {
 
     // prepare the visits array, note that there can't be more points to visit that in a SAX index
     int[] visitArray = new int[series.length];
@@ -233,9 +232,8 @@ public class HOTSAXImplementation {
         }
 
         // fix the current subsequence trace
-        double[] currentCandidateSeq = tp.znorm(
-            tp.subseriesByCopy(series, currentPos, currentPos + windowSize),
-            Z_NORMALIZATION_THRESHOLD);
+        double[] currentCandidateSeq = tp
+            .znorm(tp.subseriesByCopy(series, currentPos, currentPos + windowSize), nThreshold);
 
         // let the search begin ..
         double nearestNeighborDist = Double.MAX_VALUE;
@@ -256,7 +254,7 @@ public class HOTSAXImplementation {
           // nextOccurrence + windowSize);
           // double dist = ed.distance(currentCandidateSeq, occurrenceSubsequence);
           double dist = distance(currentCandidateSeq, series, nextOccurrence,
-              nextOccurrence + windowSize);
+              nextOccurrence + windowSize, nThreshold);
           distanceCalls++;
 
           // keep track of best so far distance
@@ -311,7 +309,8 @@ public class HOTSAXImplementation {
             // double[] randomSubsequence = tp.subseriesByCopy(series, randomPos,
             // randomPos + windowSize);
             // double dist = ed.distance(currentCandidateSeq, randomSubsequence);
-            double dist = distance(currentCandidateSeq, series, randomPos, randomPos + windowSize);
+            double dist = distance(currentCandidateSeq, series, randomPos, randomPos + windowSize,
+                nThreshold);
             distanceCalls++;
 
             // keep track
@@ -408,7 +407,7 @@ public class HOTSAXImplementation {
         SAXProcessor.timeToString(saxEnd.getTime(), hashEnd.getTime()));
 
     DiscordRecords discords = getDiscordsWithHash(series, windowSize, hash, discordsNumToReport,
-        markerAlgorithm);
+        markerAlgorithm, nThreshold);
 
     Date end = new Date();
 
@@ -421,7 +420,7 @@ public class HOTSAXImplementation {
   @Deprecated
   private static DiscordRecords getDiscordsWithHash(double[] series, int windowSize,
       HashMap<String, ArrayList<Integer>> hash, int discordCollectionSize,
-      SlidingWindowMarkerAlgorithm markerAlgorithm) throws Exception {
+      SlidingWindowMarkerAlgorithm markerAlgorithm, double nThreshold) throws Exception {
 
     // resulting discords collection
     DiscordRecords discords = new DiscordRecords();
@@ -442,7 +441,7 @@ public class HOTSAXImplementation {
 
       Date start = new Date();
       DiscordRecord bestDiscord = findBestDiscordWithHash(series, windowSize, hash,
-          globalTrackVisitRegistry);
+          globalTrackVisitRegistry, nThreshold);
       Date end = new Date();
 
       // if the discord is null we getting out of the search
@@ -482,12 +481,14 @@ public class HOTSAXImplementation {
    * @param windowSize The sliding window size.
    * @param hash The hash-based magic array.
    * @param globalRegistry The magic array.
+   * @param nThreshold the z-Normalization threshold.
    * @return The best discord instance.
    * @throws Exception If error occurs.
    */
   @Deprecated
   private static DiscordRecord findBestDiscordWithHash(double[] series, int windowSize,
-      HashMap<String, ArrayList<Integer>> hash, VisitRegistry globalRegistry) throws Exception {
+      HashMap<String, ArrayList<Integer>> hash, VisitRegistry globalRegistry, double nThreshold)
+      throws Exception {
 
     // we extract all seen words from the trie and sort them by the frequency decrease
     ArrayList<FrequencyTableEntry> frequencies = hashToFreqEntries(hash);
@@ -539,9 +540,8 @@ public class HOTSAXImplementation {
           currentPos, iterationCounter, frequencies.size());
 
       // fix the current subsequence trace
-      double[] currentCandidateSeq = tp.znorm(
-          tp.subseriesByCopy(series, currentPos, currentPos + windowSize),
-          Z_NORMALIZATION_THRESHOLD);
+      double[] currentCandidateSeq = tp
+          .znorm(tp.subseriesByCopy(series, currentPos, currentPos + windowSize), nThreshold);
 
       // let the search begin ..
       double nearestNeighborDist = Double.MAX_VALUE;
@@ -562,8 +562,7 @@ public class HOTSAXImplementation {
 
         // get the subsequence and the distance
         double[] occurrenceSubsequence = tp.znorm(
-            tp.subseriesByCopy(series, nextOccurrence, nextOccurrence + windowSize),
-            Z_NORMALIZATION_THRESHOLD);
+            tp.subseriesByCopy(series, nextOccurrence, nextOccurrence + windowSize), nThreshold);
         double dist = ed.distance(currentCandidateSeq, occurrenceSubsequence);
         distanceCalls++;
 
@@ -597,9 +596,8 @@ public class HOTSAXImplementation {
 
           randomRegistry.markVisited(randomPos);
 
-          double[] randomSubsequence = tp.znorm(
-              tp.subseriesByCopy(series, randomPos, randomPos + windowSize),
-              Z_NORMALIZATION_THRESHOLD);
+          double[] randomSubsequence = tp
+              .znorm(tp.subseriesByCopy(series, randomPos, randomPos + windowSize), nThreshold);
           double dist = ed.distance(currentCandidateSeq, randomSubsequence);
           distanceCalls++;
 
@@ -674,12 +672,12 @@ public class HOTSAXImplementation {
    * @param from the initial index of the range to be copied, inclusive
    * @param to the final index of the range to be copied, exclusive. (This index may lie outside the
    * array.)
+   * @param nThreshold z-Normalization threshold.
    * @return The Euclidean distance between z-Normalized versions of subsequences.
    */
-  private static double distance(double[] subseries, double[] series, int from, int to)
-      throws Exception {
-    double[] subsequence = tp.znorm(tp.subseriesByCopy(series, from, to),
-        Z_NORMALIZATION_THRESHOLD);
+  private static double distance(double[] subseries, double[] series, int from, int to,
+      double nThreshold) throws Exception {
+    double[] subsequence = tp.znorm(tp.subseriesByCopy(series, from, to), nThreshold);
     Double sum = 0D;
     for (int i = 0; i < subseries.length; i++) {
       double tmp = subseries[i] - subsequence[i];

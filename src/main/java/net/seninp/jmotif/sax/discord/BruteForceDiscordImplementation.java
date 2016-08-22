@@ -23,8 +23,6 @@ public class BruteForceDiscordImplementation {
 
   private static EuclideanDistance ed = new EuclideanDistance();
 
-  private static final double Z_NORMALIZATION_THRESHOLD = 0.001;
-
   /**
    * Brute force discord search implementation. BRUTE FORCE algorithm.
    *
@@ -32,11 +30,13 @@ public class BruteForceDiscordImplementation {
    * @param windowSize the sliding window size.
    * @param discordCollectionSize the number of discords we look for.
    * @param marker the marker window algorithm implementation.
+   * @param nThreshold the z-Normalization threshold value.
    * @return discords.
    * @throws Exception if error occurs.
    */
   public static DiscordRecords series2BruteForceDiscords(double[] series, Integer windowSize,
-      int discordCollectionSize, SlidingWindowMarkerAlgorithm marker) throws Exception {
+      int discordCollectionSize, SlidingWindowMarkerAlgorithm marker, double nThreshold)
+      throws Exception {
 
     DiscordRecords discords = new DiscordRecords();
 
@@ -56,7 +56,7 @@ public class BruteForceDiscordImplementation {
       Date start = new Date();
 
       DiscordRecord bestDiscord = findBestDiscordBruteForce(series, windowSize,
-          globalTrackVisitRegistry);
+          globalTrackVisitRegistry, nThreshold);
       bestDiscord.setPayload("#" + discordCounter);
       Date end = new Date();
 
@@ -95,11 +95,12 @@ public class BruteForceDiscordImplementation {
    * @param series the data.
    * @param windowSize the SAX sliding window size.
    * @param globalRegistry the visit registry to use.
+   * @param nThreshold the z-Normalization threshold value.
    * @return the best discord with respect to registry.
    * @throws Exception if error occurs.
    */
   public static DiscordRecord findBestDiscordBruteForce(double[] series, Integer windowSize,
-      VisitRegistry globalRegistry) throws Exception {
+      VisitRegistry globalRegistry, double nThreshold) throws Exception {
 
     Date start = new Date();
 
@@ -120,9 +121,8 @@ public class BruteForceDiscordImplementation {
         continue;
       }
 
-      double[] candidateSeq = tsProcessor.znorm(
-          tsProcessor.subseriesByCopy(series, outerIdx, outerIdx + windowSize),
-          Z_NORMALIZATION_THRESHOLD);
+      double[] candidateSeq = tsProcessor
+          .znorm(tsProcessor.subseriesByCopy(series, outerIdx, outerIdx + windowSize), nThreshold);
       double nearestNeighborDistance = Double.MAX_VALUE;
       VisitRegistry innerRegistry = new VisitRegistry(series.length - windowSize);
 
@@ -134,8 +134,7 @@ public class BruteForceDiscordImplementation {
                                                           // over a single point
 
           double[] currentSubsequence = tsProcessor.znorm(
-              tsProcessor.subseriesByCopy(series, innerIdx, innerIdx + windowSize),
-              Z_NORMALIZATION_THRESHOLD);
+              tsProcessor.subseriesByCopy(series, innerIdx, innerIdx + windowSize), nThreshold);
 
           double dist = ed.earlyAbandonedDistance(candidateSeq, currentSubsequence,
               nearestNeighborDistance);

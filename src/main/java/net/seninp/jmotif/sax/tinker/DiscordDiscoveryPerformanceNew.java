@@ -17,7 +17,7 @@ public class DiscordDiscoveryPerformanceNew {
   private static final int PAA_SIZE = 4;
   private static final int ALPHABET_SIZE = 4;
 
-  private static final double NORM_THRESHOLD = 0.01;
+  private static final double NORM_THRESHOLD = 0.5;
 
   private static final int DISCORDS_TO_TEST = 3;
 
@@ -45,8 +45,8 @@ public class DiscordDiscoveryPerformanceNew {
       c.readLine();
     }
 
-    DiscordRecords discordsBruteForce = BruteForceDiscordImplementation
-        .series2BruteForceDiscords(series, WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
+    DiscordRecords discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(
+        series, WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm(), NORM_THRESHOLD);
     for (DiscordRecord d : discordsBruteForce) {
       System.out.println("brute force discord " + d.toString());
     }

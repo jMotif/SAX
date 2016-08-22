@@ -20,7 +20,7 @@ public class TestDiscordDiscoveryNONE {
   private static final int PAA_SIZE = 3;
   private static final int ALPHABET_SIZE = 3;
 
-  private static final double NORM_THRESHOLD = 0.01;
+  private static final double NORM_THRESHOLD = 0.5;
 
   private static final int DISCORDS_TO_TEST = 5;
 
@@ -49,7 +49,7 @@ public class TestDiscordDiscoveryNONE {
     try {
 
       discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series,
-          WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
+          WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm(), NORM_THRESHOLD);
       for (DiscordRecord d : discordsBruteForce) {
         LOGGER.debug("brute force discord " + d.toString());
       }
