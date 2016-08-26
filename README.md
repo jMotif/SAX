@@ -6,7 +6,7 @@ Time series symbolic discretization with SAX
 This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) and implements in Java:
   * Symbolic Aggregate approXimation (i.e., SAX) toolkit stack [1]
   * a simple function for time series motif discovery [2]
-  * HOT-SAX - a time series anomaly (discord) discord discovery algorithm [3]
+  * HOT-SAX - a time series anomaly (discord) discovery algorithm [3]
   * time series bitmap-related routines [4]
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., 
