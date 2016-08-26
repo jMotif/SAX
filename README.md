@@ -176,7 +176,7 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
 	System.out.println("top motif " + String.valueOf(topMotif.getPayload()) + " seen " + 
     	   		topMotif.getIndexes().size() + " times.");
 
-#### 3.5 Time series discord discovery using brute-force search
+#### 3.5 Time series anomaly detection using brute-force search
 
 The [BruteForceDiscordImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/BruteForceDiscordImplementation.java) class implements a brute-force search for discords, which is intended to be used as a reference in tests (HOTSAX and NONE yield exactly the same discords).
 
@@ -187,7 +187,7 @@ The [BruteForceDiscordImplementation](https://github.com/jMotif/SAX/blob/master/
            System.out.println("brute force discord " + d.toString());
         }
 
-#### 3.6 Time series discord detection using HOTSAX
+#### 3.6 Time series anomaly (discord) discovery using HOTSAX
 
 The [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/HOTSAXImplementation.java) class implements a HOTSAX algorithm for time series discord discovery:
 
