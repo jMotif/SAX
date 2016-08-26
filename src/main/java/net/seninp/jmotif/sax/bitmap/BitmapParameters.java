@@ -32,10 +32,10 @@ public class BitmapParameters {
   // output
   //
   @Parameter(names = { "--data_out", "-o" }, description = "The output file name")
-  public static String OUT_FILE;
+  public static String OUT_FILE = "shingling_out.txt";
 
   @Parameter(names = { "--bitmap_out", "-b" }, description = "The bitmap output file name")
-  public static String BITMAP_FILE;
+  public static String BITMAP_FILE = "my-chart.png";
 
   // discretization parameters
   //

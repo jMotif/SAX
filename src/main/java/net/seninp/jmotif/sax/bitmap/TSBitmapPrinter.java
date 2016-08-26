@@ -127,7 +127,7 @@ public class TSBitmapPrinter {
         chart.setAxisThickness(0);
         chart.setTitle(BitmapParameters.IN_FILE);
         chart.setCellSize(new Dimension(64, 64));
-        chart.saveToFile(new File("my-chart.png"));
+        chart.saveToFile(new File(BitmapParameters.BITMAP_FILE));
       }
       else if (64 == shingledData.size()) {
         double[][] heatmapData = new double[8][8];
