@@ -30,8 +30,10 @@ public class UCRUtils {
    * @param fileName the input filename.
    * @return time series read.
    * @throws IOException if error occurs.
+   * @throws NumberFormatException if error occurs.
    */
-  public static Map<String, List<double[]>> readUCRData(String fileName) throws IOException {
+  public static Map<String, List<double[]>> readUCRData(String fileName)
+      throws IOException, NumberFormatException {
 
     Map<String, List<double[]>> res = new HashMap<String, List<double[]>>();
 

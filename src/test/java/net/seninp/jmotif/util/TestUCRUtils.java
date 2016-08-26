@@ -12,13 +12,15 @@ import net.seninp.util.UCRUtils;
 
 public class TestUCRUtils {
 
-  private static final String CBF_FNAME = "src//resources//dataset/CBF/CBF_TRAIN";
+  private static final String CBF_GOOD_FNAME = "src//resources//dataset/test_dataset_good.txt";
+
+  private static final String CBF_BAD_FNAME = "src//resources//dataset/test_dataset_bad.txt";
 
   @Test
   public void testReadUCRData() {
     try {
 
-      Map<String, List<double[]>> data = UCRUtils.readUCRData(CBF_FNAME);
+      Map<String, List<double[]>> data = UCRUtils.readUCRData(CBF_GOOD_FNAME);
       assertEquals(data.keySet().size(), 3);
 
       String stats = UCRUtils.datasetStats(data, "CBF_TRAIN ");
@@ -35,8 +37,20 @@ public class TestUCRUtils {
       assertEquals(data2.keySet().size(), 3);
 
     }
-    catch (IOException e) {
+    catch (NumberFormatException | IOException e) {
       fail("Exception should not be thrown");
+    }
+  }
+
+  @Test
+  public void testReadUCRData2() {
+    try {
+      @SuppressWarnings("unused")
+      Map<String, List<double[]>> data = UCRUtils.readUCRData(CBF_BAD_FNAME);
+      fail("should throw an exception");
+    }
+    catch (NumberFormatException | IOException e) {
+      assert true;
     }
   }
 
