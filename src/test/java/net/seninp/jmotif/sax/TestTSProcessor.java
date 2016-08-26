@@ -310,7 +310,7 @@ public class TestTSProcessor {
   }
 
   @Test
-  public void colMeans() {
+  public void testColMeans() {
     double[][] arr = new double[2][10];
     for (int i = 0; i < 10; i++) {
       arr[0][i] = i;
@@ -319,6 +319,26 @@ public class TestTSProcessor {
     double[] means = tsp.colMeans(arr);
     for (int i = 0; i < 10; i++) {
       assertEquals("testing col means", arr[0][i], means[i], 0.0000001);
+    }
+  }
+
+  @Test
+  public void testFileLoadExceptions() {
+    try {
+      @SuppressWarnings("unused")
+      double[] dat = TSProcessor.readFileColumn("non-existent-file", 0, 0);
+      fail("exception should be thrown!");
+    }
+    catch (Exception e) {
+      assert true;
+    }
+    try {
+      @SuppressWarnings("unused")
+      double[] dat = TSProcessor.readFileColumn("src//resources//asys40.txt", 3, 0);
+      fail("exception should be thrown!");
+    }
+    catch (Exception e) {
+      assert true;
     }
 
   }
