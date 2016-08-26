@@ -188,4 +188,4 @@ p6
 #
 grid.arrange(p1, p2, p3, p4, p5, p6,
              layout_matrix = rbind(c(5, 6), c(3, 4), c(1, 2)),
-             widths=c(3.3/7, 3.7/7))
+             widths=c(3.2/7, 3.8/7))
