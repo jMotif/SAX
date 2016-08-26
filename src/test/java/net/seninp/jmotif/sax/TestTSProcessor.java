@@ -334,11 +334,18 @@ public class TestTSProcessor {
     }
     try {
       @SuppressWarnings("unused")
-      double[] dat = TSProcessor.readFileColumn("src//resources//asys40.txt", 3, 0);
+      double[] dat = TSProcessor.readFileColumn("src//resources//dataset//asys40.txt", 3, 0);
       fail("exception should be thrown!");
     }
     catch (Exception e) {
       assert true;
+    }
+    try {
+      double[] dat = TSProcessor.readFileColumn("src//resources//dataset//asys40.txt", 0, 0);
+      assertEquals(7500, dat.length);
+    }
+    catch (Exception e) {
+      fail("exception should not be thrown!");
     }
 
   }
