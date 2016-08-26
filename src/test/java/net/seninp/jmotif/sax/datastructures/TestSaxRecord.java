@@ -90,4 +90,9 @@ public class TestSaxRecord {
     assertTrue("testing comparison", sfe1.compareTo(sfe2) < 0);
   }
 
+  @Test
+  public void testToString() {
+    SAXRecord se = new SAXRecord(str11.toCharArray(), iNum2);
+    assertTrue(se.toString().contains("abggfecbb"));
+  }
 }

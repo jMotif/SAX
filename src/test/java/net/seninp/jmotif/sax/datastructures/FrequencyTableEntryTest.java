@@ -74,6 +74,19 @@ public class FrequencyTableEntryTest {
     assertTrue(fe1.isTrivial(5));
     assertFalse(fe1.isTrivial(2));
 
+    fe1.setFrequency(fe2.getFrequency());
+    assertEquals(fe1.getFrequency(), fe2.getFrequency());
+
+  }
+  
+  @Test
+  public void testToStringAndColne() {
+
+    final FrequencyTableEntry fe1 = new FrequencyTableEntry(10, "abcd".toCharArray(), 11);
+    final FrequencyTableEntry fe_copy = fe1.copy();
+    
+    assertTrue(fe1.toString().equalsIgnoreCase(fe_copy.toString()));
+
   }
 
 }
