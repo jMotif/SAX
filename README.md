@@ -1,4 +1,4 @@
-Time series discretization with SAX
+Time series symbolic discretization with SAX
 ====
 [![Build Status](https://travis-ci.org/jMotif/SAX.svg?branch=master)](https://travis-ci.org/jMotif/SAX) [![codecov.io](http://codecov.io/github/jMotif/SAX/coverage.svg?branch=master)](http://codecov.io/github/jMotif/SAX?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax)
 [![License](http://img.shields.io/:license-gpl2-green.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
@@ -6,8 +6,8 @@ Time series discretization with SAX
 This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) and implements in Java:
   * Symbolic Aggregate approXimation (i.e., SAX) toolkit stack [1]
   * a simple function for time series motif discovery [2]
-  * HOT-SAX - a time series discord discovery algorithm [3]
-  * time series bitmap [4]
+  * HOT-SAX - a time series anomaly (discord) discovery algorithm [3]
+  * time series bitmap-related routines [4]
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., 
 [*Finding Motifs in Time Series*](http://cs.gmu.edu/~jessica/Lin_motif.pdf), 
@@ -41,7 +41,7 @@ SAX is used to transform a sequence of rational numbers (i.e., a time series) in
 
 ![SAX in a nutshell](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/sax.png)
 
-As the discretization is the probably the most used transformation in data mining, SAX has been widely used throughout the field. Find more information about SAX at its authors pages: [SAX overview by Jessica Lin](http://cs.gmu.edu/~jessica/sax.htm), [Eamonn Keogh's SAX page](http://www.cs.ucr.edu/~eamonn/SAX.htm), or at [sax-vsm wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html).
+As discretization is probably the most used transformation in data mining, SAX has been widely used throughout the field. Find more information about SAX at its authors pages: [SAX overview by Jessica Lin](http://cs.gmu.edu/~jessica/sax.htm), [Eamonn Keogh's SAX page](http://www.cs.ucr.edu/~eamonn/SAX.htm), or at [sax-vsm wiki page](http://jmotif.github.io/sax-vsm_site/morea/algorithm/SAX.html).
 
 1.0 Building
 ------------
