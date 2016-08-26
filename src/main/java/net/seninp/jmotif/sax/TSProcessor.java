@@ -281,7 +281,8 @@ public class TSProcessor {
     double mean = mean(series);
     double sd = stDev(series);
     if (sd < normalizationThreshold) {
-      return series.clone();
+      //return array of zeros
+      return res;
     }
     for (int i = 0; i < res.length; i++) {
       res[i] = (series[i] - mean) / sd;
