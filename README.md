@@ -1,4 +1,4 @@
-Time series discretization with SAX
+Time series symbolic discretization with SAX
 ====
 [![Build Status](https://travis-ci.org/jMotif/SAX.svg?branch=master)](https://travis-ci.org/jMotif/SAX) [![codecov.io](http://codecov.io/github/jMotif/SAX/coverage.svg?branch=master)](http://codecov.io/github/jMotif/SAX?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax)
 [![License](http://img.shields.io/:license-gpl2-green.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
