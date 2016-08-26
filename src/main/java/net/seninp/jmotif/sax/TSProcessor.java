@@ -12,8 +12,6 @@ import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 
 /**
@@ -29,10 +27,6 @@ public class TSProcessor {
   /** The latin alphabet, lower case letters a-z. */
   public static final char[] ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
       'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-
-  // static block - we instantiate the logger
-  //
-  private static final Logger LOGGER = LoggerFactory.getLogger(TSProcessor.class);
 
   /**
    * Constructor.
@@ -97,7 +91,7 @@ public class TSProcessor {
         num = Double.valueOf(str);
       }
       catch (NumberFormatException e) {
-        LOGGER.info("Skipping the row " + lineCounter + " with value \"" + str + "\"");
+        // consoleLogger.info("Skipping the row " + lineCounter + " with value \"" + str + "\"");
         continue;
       }
       preRes.add(num);
@@ -281,7 +275,7 @@ public class TSProcessor {
     double mean = mean(series);
     double sd = stDev(series);
     if (sd < normalizationThreshold) {
-      return series.clone();
+      return res;
     }
     for (int i = 0; i < res.length; i++) {
       res[i] = (series[i] - mean) / sd;
