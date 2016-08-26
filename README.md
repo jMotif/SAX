@@ -202,8 +202,19 @@ Note, that the "proper" strategy to use with HOTSAX is `NumerosityReductionStrat
 
 The library source code has examples (tests) for using these [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryNONE.java) and [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryEXACT.java).
 	
+4.0 Time series bitmap
+------------
+The library also implements simple routines to convert a time series to bitmap following [4]. Here is an example of six datasets from the paper:
+![Six "normal" datasets](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/bitmap/normal_datasets.png)
+which were converted into the digram frequencies and colored with Jet palette
 
-4.0 Threaded performance
+![Six "normal" datasets as bitmaps](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/bitmap/normal_datasets_bitmap.png)
+
+and clustered based on the digram occurrence frequencies
+
+![Six "normal" datasets clustered via bitmap](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/bitmap/normal_datasets_clustering.png)
+
+5.0 Threaded performance
 ------------	
 The plot shows the speedup achieved when using the parallelized SAX version on the dataset [`300_signal1.txt`](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/test-data/300_signal1.txt) of length 536,976 points. Parameters used in the experiment: sliding window size 200, PAA size 11, alphabet size 7, and three different NR strategies.
 
