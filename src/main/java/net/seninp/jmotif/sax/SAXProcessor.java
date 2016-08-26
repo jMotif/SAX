@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.joda.time.Duration;
@@ -12,6 +11,7 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.bitmap.Shingles;
 import net.seninp.jmotif.sax.datastructure.SAXRecord;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
@@ -89,8 +89,7 @@ public final class SAXProcessor {
     // create the datastructure
     for (int i = 0; i < currentString.length; i++) {
       char c = currentString[i];
-      saxFrequencyData.add(String.valueOf(c).toCharArray(), (int)Math.floor(i*ts.length/currentString.length));
-      // saxFrequencyData.add(String.valueOf(c).toCharArray(), i);
+      saxFrequencyData.add(String.valueOf(c).toCharArray(), i);
     }
 
     return saxFrequencyData;
@@ -114,6 +113,11 @@ public final class SAXProcessor {
   public SAXRecords ts2saxViaWindow(double[] ts, int windowSize, int paaSize, double[] cuts,
       NumerosityReductionStrategy strategy, double nThreshold) throws SAXException {
 
+    if (windowSize > ts.length) {
+      throw new SAXException(
+          "Unable to saxify via window, window size is greater than the timeseries length...");
+    }
+
     // the resulting data structure init
     //
     SAXRecords saxFrequencyData = new SAXRecords();
@@ -128,73 +132,6 @@ public final class SAXProcessor {
 
       // Z normalize it
       subSection = tsProcessor.znorm(subSection, nThreshold);
-
-      // perform PAA conversion if needed
-      double[] paa = tsProcessor.paa(subSection, paaSize);
-
-      // Convert the PAA to a string.
-      char[] currentString = tsProcessor.ts2String(paa, cuts);
-
-      if (null != previousString) {
-
-        if (NumerosityReductionStrategy.EXACT.equals(strategy)
-            && Arrays.equals(previousString, currentString)) {
-          // NumerosityReduction
-          continue;
-        }
-        else if (NumerosityReductionStrategy.MINDIST.equals(strategy)
-            && checkMinDistIsZero(previousString, currentString)) {
-          continue;
-        }
-
-      }
-
-      previousString = currentString;
-
-      saxFrequencyData.add(currentString, i);
-    }
-
-    // ArrayList<Integer> keys = saxFrequencyData.getAllIndices();
-    // for (int i : keys) {
-    // System.out.println(i + "," + String.valueOf(saxFrequencyData.getByIndex(i).getPayload()));
-    // }
-
-    return saxFrequencyData;
-
-  }
-
-  /**
-   * Converts the input time series into a SAX data structure via sliding window and Z
-   * normalization. The difference between this function and ts2saxViaWindow is that in
-   * this function, Z normalization occurs on entire range, rather than the sliding window.
-   * 
-   * @param ts the input data.
-   * @param windowSize the sliding window size.
-   * @param paaSize the PAA size.
-   * @param cuts the Alphabet cuts.
-   * @param nThreshold the normalization threshold value.
-   * @param strategy the NR strategy.
-   * 
-   * @return SAX representation of the time series.
-   * @throws SAXException if error occurs.
-   */
-  public SAXRecords ts2saxViaWindowGlobalNormalization(double[] ts, int windowSize, int paaSize, double[] cuts,
-      NumerosityReductionStrategy strategy, double nThreshold) throws SAXException {
-
-    // the resulting data structure init
-    //
-    SAXRecords saxFrequencyData = new SAXRecords();
-
-    // scan across the time series extract sub sequences, and convert them to strings
-    char[] previousString = null;
-
-    // normalize the entire range
-    double[] normalizedData = tsProcessor.znorm(ts, nThreshold);
-
-    for (int i = 0; i <= ts.length - windowSize; i++) {
-
-      // get the current subsection
-      double[] subSection = Arrays.copyOfRange(normalizedData, i, i + windowSize);
 
       // perform PAA conversion if needed
       double[] paa = tsProcessor.paa(subSection, paaSize);
@@ -536,9 +473,10 @@ public final class SAXProcessor {
     // fill in the counts
     for (SAXRecord sr : saxData) {
       String word = String.valueOf(sr.getPayload());
-      for (int i = 0; i < word.length() - shingleSize; i++) {
+      int frequency = sr.getIndexes().size();
+      for (int i = 0; i <= word.length() - shingleSize; i++) {
         String shingle = word.substring(i, i + shingleSize);
-        res.put(shingle, res.get(shingle) + 1);
+        res.put(shingle, res.get(shingle) + frequency);
       }
     }
 
@@ -546,7 +484,7 @@ public final class SAXProcessor {
   }
 
   /**
-   * Convert a time series into a shingled representation.
+   * Converts a time-series data frame into shingled data frame.
    * 
    * @param data the input data.
    * @param windowSize SAX window size.
@@ -554,56 +492,37 @@ public final class SAXProcessor {
    * @param alphabetSize SAX alphabet size.
    * @param strategy SAX NR strategy.
    * @param normalizationThreshold SAX normalization threshold.
+   * @param shingleSize the shingle size.
    * @return shingled representation.
    * @throws SAXException if error occurs.
    */
-  public Map<String, List<double[]>> manySeriesToShingles(Map<String, ArrayList<double[]>> data,
-      int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
-      double normalizationThreshold) throws SAXException {
+  public Shingles manySeriesToShingles(Map<String, ArrayList<double[]>> data, int windowSize,
+      int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
+      double normalizationThreshold, int shingleSize) throws SAXException {
 
-    HashMap<String, List<double[]>> res = new HashMap<String, List<double[]>>();
+    Shingles res = new Shingles(alphabetSize, shingleSize);
 
-    // build all shingles
-    //
-    String[] alphabet = new String[alphabetSize];
-    for (int i = 0; i < alphabetSize; i++) {
-      alphabet[i] = String.valueOf(TSProcessor.ALPHABET[i]);
-    }
-    String[] allStrings = getAllPermutations(alphabet, paaSize);
-
-    // and make an index table
-    //
-    int len = allStrings.length;
-    HashMap<String, Integer> indexTable = new HashMap<String, Integer>();
-    for (int i = 0; i < allStrings.length; i++) {
-      indexTable.put(allStrings[i], i);
-    }
-
-    // iterate ofer all training series
+    // iterate over all training series
     //
     for (Entry<String, ArrayList<double[]>> e : data.entrySet()) {
+
       // System.out.println(e.getKey());
       for (double[] series : e.getValue()) {
 
-        // discretize the timeseries
-        SAXRecords saxData = ts2saxViaWindow(series, windowSize, paaSize, na.getCuts(alphabetSize),
-            strategy, normalizationThreshold);
+        // convert the time series into shingles
+        Map<String, Integer> shingles = ts2Shingles(series, windowSize, paaSize, alphabetSize,
+            strategy, normalizationThreshold, shingleSize);
 
-        // allocate the weights array corresponding to the timeseries
-        double[] weights = new double[len];
+        // allocate the weights array corresponding to the time series
+        int[] counts = new int[res.getIndex().size()];
 
         // fill in the counts
-        for (SAXRecord sr : saxData) {
-          String word = String.valueOf(sr.getPayload());
-          Integer idx = indexTable.get(word);
-          weights[idx] = sr.getIndexes().size();
+        for (String str : shingles.keySet()) {
+          Integer idx = res.getIndex().get(str);
+          counts[idx] = shingles.get(str);
         }
 
-        // normalize and save that series shingle
-        if (!res.containsKey(e.getKey())) {
-          res.put(e.getKey(), new ArrayList<double[]>());
-        }
-        res.get(e.getKey()).add(tsProcessor.normOne(weights));
+        res.addShingledSeries(e.getKey(), counts);
 
       }
     }
