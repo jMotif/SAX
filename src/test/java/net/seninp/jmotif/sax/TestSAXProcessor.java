@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.datastructure.SAXRecord;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 /**
@@ -105,18 +106,26 @@ public class TestSAXProcessor {
     LOGGER.debug(" ** " + Arrays.toString(tp.paa(ser, 3)));
 
     // series #1 goes here
-    String ts1sax = sp.ts2saxByChunking(ts1, 10, normalA.getCuts(11), delta).getSAXString("");
+    SAXRecords ts1sax = sp.ts2saxByChunking(ts1, 10, normalA.getCuts(11), delta);
 
-    assertEquals("testing SAX", strLength, ts1sax.length());
-    assertTrue("testing SAX", ts1StrRep10.equalsIgnoreCase(ts1sax));
+    assertEquals("testing SAX", strLength, ts1sax.getSAXString("").length());
+    assertTrue("testing SAX", ts1StrRep10.equalsIgnoreCase(ts1sax.getSAXString("")));
+    // test positions
+    // bcjkiheebb
+    //
+    Integer[] bPositions = ts1sax.getByWord("b").getIndexes().toArray(new Integer[3]);
+    Arrays.sort(bPositions);
+    assertEquals(0, bPositions[0].intValue());
+    assertEquals(12, bPositions[1].intValue());
+    assertEquals(13, bPositions[2].intValue());
 
-    ts1sax = sp.ts2saxByChunking(ts1, 14, normalA.getCuts(10), delta).getSAXString("");
-    assertEquals("testing SAX", 14, ts1sax.length());
-    assertTrue("testing SAX", ts1StrRep14.equalsIgnoreCase(ts1sax));
+    String ts1sax2 = sp.ts2saxByChunking(ts1, 14, normalA.getCuts(10), delta).getSAXString("");
+    assertEquals("testing SAX", 14, ts1sax2.length());
+    assertTrue("testing SAX", ts1StrRep14.equalsIgnoreCase(ts1sax2));
 
-    ts1sax = sp.ts2saxByChunking(ts1, 9, normalA.getCuts(7), delta).getSAXString("");
-    assertEquals("testing SAX", 9, ts1sax.length());
-    assertTrue("testing SAX", ts1StrRep7.equalsIgnoreCase(ts1sax));
+    String ts1sax3 = sp.ts2saxByChunking(ts1, 9, normalA.getCuts(7), delta).getSAXString("");
+    assertEquals("testing SAX", 9, ts1sax3.length());
+    assertTrue("testing SAX", ts1StrRep7.equalsIgnoreCase(ts1sax3));
 
     // series #2 goes here
     String ts2sax = sp.ts2saxByChunking(ts2, 10, normalA.getCuts(11), delta).getSAXString("");

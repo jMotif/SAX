@@ -89,7 +89,8 @@ public final class SAXProcessor {
     // create the datastructure
     for (int i = 0; i < currentString.length; i++) {
       char c = currentString[i];
-      saxFrequencyData.add(String.valueOf(c).toCharArray(), i);
+      int pos = (int) Math.floor(i * ts.length / currentString.length);
+      saxFrequencyData.add(String.valueOf(c).toCharArray(), pos);
     }
 
     return saxFrequencyData;
