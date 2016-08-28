@@ -170,6 +170,68 @@ public final class SAXProcessor {
 
   /**
    * Converts the input time series into a SAX data structure via sliding window and Z
+   * normalization. The difference between this function and ts2saxViaWindow is that in this
+   * function, Z normalization occurs on entire range, rather than the sliding window.
+   * 
+   * @param ts the input data.
+   * @param windowSize the sliding window size.
+   * @param paaSize the PAA size.
+   * @param cuts the Alphabet cuts.
+   * @param nThreshold the normalization threshold value.
+   * @param strategy the NR strategy.
+   * 
+   * @return SAX representation of the time series.
+   * @throws SAXException if error occurs.
+   */
+  public SAXRecords ts2saxViaWindowGlobalZNorm(double[] ts, int windowSize, int paaSize,
+      double[] cuts, NumerosityReductionStrategy strategy, double nThreshold) throws SAXException {
+
+    // the resulting data structure init
+    //
+    SAXRecords saxFrequencyData = new SAXRecords();
+
+    // scan across the time series extract sub sequences, and convert them to strings
+    char[] previousString = null;
+
+    // normalize the entire range
+    double[] normalizedData = tsProcessor.znorm(ts, nThreshold);
+
+    for (int i = 0; i <= ts.length - windowSize; i++) {
+
+      // get the current subsection
+      double[] subSection = Arrays.copyOfRange(normalizedData, i, i + windowSize);
+
+      // perform PAA conversion if needed
+      double[] paa = tsProcessor.paa(subSection, paaSize);
+
+      // Convert the PAA to a string.
+      char[] currentString = tsProcessor.ts2String(paa, cuts);
+
+      if (null != previousString) {
+
+        if (NumerosityReductionStrategy.EXACT.equals(strategy)
+            && Arrays.equals(previousString, currentString)) {
+          // NumerosityReduction
+          continue;
+        }
+        else if (NumerosityReductionStrategy.MINDIST.equals(strategy)
+            && checkMinDistIsZero(previousString, currentString)) {
+          continue;
+        }
+
+      }
+
+      previousString = currentString;
+
+      saxFrequencyData.add(currentString, i);
+    }
+
+    return saxFrequencyData;
+
+  }
+
+  /**
+   * Converts the input time series into a SAX data structure via sliding window and Z
    * normalization.
    * 
    * @param ts the input data.
