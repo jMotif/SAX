@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.datastructure.SAXRecord;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 /**
@@ -139,6 +140,32 @@ public class TestSAXProcessor {
     ts2sax = sp.ts2saxByChunking(ts2, 9, normalA.getCuts(7), delta).getSAXString("");
     assertEquals("testing SAX", 9, ts2sax.length());
     assertTrue("testing SAX", ts2StrRep7.equalsIgnoreCase(ts2sax));
+  }
+
+  /**
+   * Test the SAX conversion.
+   * 
+   * @throws Exception if error occurs.
+   */
+  @Test
+  public void testTs2SAXByGlobalChunks() throws Exception {
+
+    final SAXProcessor sp = new SAXProcessor();
+    final double[] ts1 = TSProcessor.readFileColumn(ts1File, 0, length);
+
+    SAXRecords saxdata = sp.ts2saxViaWindowGlobalZNorm(ts1, 5, 5, normalA.getCuts(3),
+        NumerosityReductionStrategy.NONE, 0.01);
+
+    SAXRecord entry = saxdata.getByIndex(7);
+
+    // library(jmotif)
+    // library(data.table)
+    // dat<-fread("../resources/test-data/timeseries01.csv")
+    // zdat <- jmotif::znorm(dat$V1, 0.01)
+    // win = zdat[8:12]
+    // motif::series_to_chars(win, 3)
+    // [1] "c" "c" "b" "b" "b"
+    assertTrue("ccbbb".equalsIgnoreCase(String.valueOf(entry.getPayload())));
   }
 
   /**
