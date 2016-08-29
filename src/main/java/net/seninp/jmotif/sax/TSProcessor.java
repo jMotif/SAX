@@ -270,9 +270,9 @@ public class TSProcessor {
   }
 
   /**
-   * Speed-optimized Z-Normalize routine, doesn't care about normalization threshold.
+   * Z-Normalize routine.
    * 
-   * @param series The timeseries.
+   * @param series the input timeseries.
    * @param normalizationThreshold the zNormalization threshold value.
    * @return Z-normalized time-series.
    */
@@ -281,7 +281,9 @@ public class TSProcessor {
     double mean = mean(series);
     double sd = stDev(series);
     if (sd < normalizationThreshold) {
-      return series.clone();
+      // return series.clone();
+      // return array of zeros
+      return res;
     }
     for (int i = 0; i < res.length; i++) {
       res[i] = (series[i] - mean) / sd;

@@ -20,7 +20,7 @@ public class TestDiscordDiscoveryNONE {
   private static final int PAA_SIZE = 3;
   private static final int ALPHABET_SIZE = 3;
 
-  private static final double NORM_THRESHOLD = 0.5;
+  private static final double NORM_THRESHOLD = 0.01;
 
   private static final int DISCORDS_TO_TEST = 5;
 
