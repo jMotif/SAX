@@ -129,7 +129,7 @@ public class TestTSProcessor {
    * @throws Exception if error occurs.
    */
   @Test
-  public void testNormalize() throws Exception {
+  public void testZNormalize() throws Exception {
 
     // read the normalized data
     double[] ts1Norm = tsp.readTS(ts1NormFile, length);
@@ -168,6 +168,14 @@ public class TestTSProcessor {
       }
     }
     assertTrue(seenOne);
+
+    // test the zeros yield
+    //
+    // get the normal data through the code
+    double[] zeros = tsp.znorm(ts1, tsp.stDev(ts1) + 0.1);
+    for (int i = 0; i < zeros.length; i++) {
+      assertEquals(0, zeros[i], 0.00001);
+    }
   }
 
   /**
