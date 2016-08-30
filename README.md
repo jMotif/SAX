@@ -206,11 +206,12 @@ The library source code has examples (tests) for using these [here](https://gith
 ------------
 The library also implements simple routines to convert a time series to bitmap following [4]. Here is an example of six datasets from the paper:
 ![Six "normal" datasets](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/bitmap/normal_datasets.png)
-which were converted into the digram frequencies and colored with Jet palette
+
+which were converted into the digram frequencies tables and colored with Jet palette:
 
 ![Six "normal" datasets as bitmaps](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/bitmap/normal_datasets_bitmap.png)
 
-and clustered based on the digram occurrence frequencies
+and then clustered (`hc`, `ave`) based on the digram occurrence frequencies (`euclidean`):
 
 ![Six "normal" datasets clustered via bitmap](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/bitmap/normal_datasets_clustering.png)
 
