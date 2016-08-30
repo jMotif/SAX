@@ -230,6 +230,7 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 `1.0.10`
   * shingling/bitmap CLI fixes
   * SAX via chunking fixes -- proper symbol indexes computed (thanks s-mckay!)
+  * zNormalization behavior for a case when SD is less than threshold is changed, yields zeros
    
 `1.0.9`
   * fixed the error with the discord size computation
