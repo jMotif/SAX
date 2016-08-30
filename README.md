@@ -227,31 +227,30 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 
 #### Versions:
 `1.0.10`
-  * bitmap fixes, now CLI parameters work as intended
-  * chunking fixes, propoer symbol indexes computed (thanks s-mckay!)
+  * shingling/bitmap CLI fixes
+  * SAX via chunking fixes -- proper symbol indexes computed (thanks s-mckay!)
    
 `1.0.9`
-  * fixed the error with the discord size field in HOTSAX and BRUTEFORCE implementations
+  * fixed the error with the discord size computation
   * changed HOTSAX and BRUTEFORCE behavior by adding z-Normalization to the distance computation routine
    
 `1.0.8`
-  * working on shingling
-  * releasing GrammarViz 3.0
+  * added shingling
 
 `1.0.7`
   * logback dependencies removed 
 
 `1.0.5 - 1.0.6`
-  * introduced the discretization approximation error
+  * added discretization approximation error computation for grammarviz3 work
 
 `1.0.4`
-  * fixed the SAX transform via sliding window, last window now added to the resulting pool
+  * fixed SAX transform via sliding window, last window is now added
 
 `1.0.3`
-  * improved PAA performance for even length/paa case, now it is about 3 times faster
+  * improved PAA performance
 
-`0.0.1 - 1.0.2`
-  * additional testing and code test coverage control
+`1.0.1 - 1.0.2`
+  * more tests, bug fixes, CI
 
 `0.0.1 - 1.0.0`
   * cleaning up the old JMotif code and decoupling the SAX code from the rest
