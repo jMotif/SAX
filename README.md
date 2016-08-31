@@ -229,6 +229,7 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 #### Versions:
 `1.1.0` 
   * zNormalization behavior for a case when SD is less than threshold is changed -- yields zeros
+  * [GrammarViz3.0](https://github.com/GrammarViz2/grammarviz2_src) release
 
 `1.0.10`
   * shingling/bitmap CLI fixes
