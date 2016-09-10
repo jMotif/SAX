@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,6 +86,8 @@ public class TestTSProcessor {
   public void testMedian() {
     assertEquals("testing the mean", 3.85, tsp.median(ts1), delta);
     assertEquals("testing the mean", 3.83, tsp.median(ts2), delta);
+
+    assertEquals("testing the mean", 4.85, tsp.median(Arrays.copyOfRange(ts1, 0, 13)), delta);
   }
 
   /**
@@ -205,17 +208,14 @@ public class TestTSProcessor {
       assertEquals("PAA", ts2PAA10[i], ts2PAATest[i], delta);
     }
 
-    // test implementations
-    //
-    @SuppressWarnings("deprecation")
-    double[] ts1PAAOld = tsp.paa_oldest(ts1Norm, PAAlength);
-    @SuppressWarnings("deprecation")
-    double[] ts2PAAOld = tsp.paa_oldest(ts2Norm, PAAlength);
-    for (int i = 0; i < ts1PAA10.length; i++) {
-      assertEquals("PAA", ts1PAA10[i], ts1PAAOld[i], delta);
+    // test the exception
+    try {
+      @SuppressWarnings("unused")
+      double[] failedPAA = tsp.paa(ts1Norm, ts1Norm.length + 1);
+      fail("exception should be thrown!");
     }
-    for (int i = 0; i < ts2PAA10.length; i++) {
-      assertEquals("PAA", ts2PAA10[i], ts2PAAOld[i], delta);
+    catch (Exception e) {
+      assert true;
     }
   }
 
@@ -318,20 +318,17 @@ public class TestTSProcessor {
   }
 
   @Test
-  public void testColMeans() {
-    double[][] arr = new double[2][10];
-    for (int i = 0; i < 10; i++) {
-      arr[0][i] = i;
-      arr[1][i] = i;
-    }
-    double[] means = tsp.colMeans(arr);
-    for (int i = 0; i < 10; i++) {
-      assertEquals("testing col means", arr[0][i], means[i], 0.0000001);
-    }
-  }
-
-  @Test
   public void testFileLoadExceptions() {
+
+    try {
+      @SuppressWarnings("unused")
+      double[] dat = tsp.readTS("non-existent-file", 0);
+      fail("exception should be thrown!");
+    }
+    catch (Exception e) {
+      assert true;
+    }
+
     try {
       @SuppressWarnings("unused")
       double[] dat = TSProcessor.readFileColumn("non-existent-file", 0, 0);
@@ -340,6 +337,7 @@ public class TestTSProcessor {
     catch (Exception e) {
       assert true;
     }
+
     try {
       @SuppressWarnings("unused")
       double[] dat = TSProcessor.readFileColumn("src//resources//dataset//asys40.txt", 3, 0);
@@ -348,6 +346,7 @@ public class TestTSProcessor {
     catch (Exception e) {
       assert true;
     }
+
     try {
       double[] dat = TSProcessor.readFileColumn("src//resources//dataset//asys40.txt", 0, 0);
       assertEquals(7500, dat.length);
