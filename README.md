@@ -227,6 +227,9 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
 
 #### Versions:
+`1.1.1` 
+  * HOTSAX implementation parameters bug fix
+
 `1.1.0` 
   * zNormalization behavior for a case when SD is less than threshold is changed -- yields zeros
   * [GrammarViz3.0](https://github.com/GrammarViz2/grammarviz2_src) release
