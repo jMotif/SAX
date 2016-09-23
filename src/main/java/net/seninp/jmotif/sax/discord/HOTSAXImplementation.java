@@ -65,7 +65,7 @@ public class HOTSAXImplementation {
 
     // get the SAX transform done
     NormalAlphabet normalA = new NormalAlphabet();
-    SAXRecords sax = sp.ts2saxViaWindow(series, windowSize, alphabetSize,
+    SAXRecords sax = sp.ts2saxViaWindow(series, windowSize, paaSize,
         normalA.getCuts(alphabetSize), strategy, nThreshold);
     Date saxEnd = new Date();
     LOGGER.debug("discretized in {}, words: {}, indexes: {}",
