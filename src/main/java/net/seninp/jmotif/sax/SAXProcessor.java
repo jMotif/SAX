@@ -5,13 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
-import net.seninp.jmotif.sax.bitmap.Shingles;
 import net.seninp.jmotif.sax.datastructure.SAXRecord;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
@@ -544,54 +542,6 @@ public final class SAXProcessor {
     }
 
     return res;
-  }
-
-  /**
-   * Converts a time-series data frame into shingled data frame.
-   * 
-   * @param data the input data.
-   * @param windowSize SAX window size.
-   * @param paaSize SAX paa size.
-   * @param alphabetSize SAX alphabet size.
-   * @param strategy SAX NR strategy.
-   * @param normalizationThreshold SAX normalization threshold.
-   * @param shingleSize the shingle size.
-   * @return shingled representation.
-   * @throws SAXException if error occurs.
-   */
-  public Shingles manySeriesToShingles(Map<String, ArrayList<double[]>> data, int windowSize,
-      int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
-      double normalizationThreshold, int shingleSize) throws SAXException {
-
-    Shingles res = new Shingles(alphabetSize, shingleSize);
-
-    // iterate over all training series
-    //
-    for (Entry<String, ArrayList<double[]>> e : data.entrySet()) {
-
-      // System.out.println(e.getKey());
-      for (double[] series : e.getValue()) {
-
-        // convert the time series into shingles
-        Map<String, Integer> shingles = ts2Shingles(series, windowSize, paaSize, alphabetSize,
-            strategy, normalizationThreshold, shingleSize);
-
-        // allocate the weights array corresponding to the time series
-        int[] counts = new int[res.getIndex().size()];
-
-        // fill in the counts
-        for (String str : shingles.keySet()) {
-          Integer idx = res.getIndex().get(str);
-          counts[idx] = shingles.get(str);
-        }
-
-        res.addShingledSeries(e.getKey(), counts);
-
-      }
-    }
-
-    return res;
-
   }
 
   /**

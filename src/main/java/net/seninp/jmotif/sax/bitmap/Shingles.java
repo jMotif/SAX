@@ -1,15 +1,20 @@
 package net.seninp.jmotif.sax.bitmap;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 
+/**
+ * A container for shingled data. Accepts a time series label and its SAX decomposition.
+ * 
+ * @author psenin
+ *
+ */
 public class Shingles {
 
-  private Map<String, List<int[]>> shingles;
+  private Map<String, int[]> shingles;
+
   private HashMap<String, Integer> indexTable;
 
   /**
@@ -20,7 +25,7 @@ public class Shingles {
    */
   public Shingles(int alphabetSize, int shingleSize) {
 
-    shingles = new HashMap<String, List<int[]>>();
+    shingles = new HashMap<String, int[]>();
 
     indexTable = new HashMap<String, Integer>();
 
@@ -40,23 +45,64 @@ public class Shingles {
 
   }
 
-  public HashMap<String, Integer> getIndex() {
+  /**
+   * Returns the index of shingles.
+   * 
+   * @return the mapping of the vector elements indices to a certain shingle string.
+   */
+  public HashMap<String, Integer> getShinglesIndex() {
     return this.indexTable;
   }
 
+  /**
+   * Adds a shingled time series to the table -- the user responsible for the proper ordering.
+   * 
+   * @param key the shingle array label.
+   * @param counts the counts array.
+   */
   public void addShingledSeries(String key, int[] counts) {
-    if (null == shingles.get(key)) {
-      shingles.put(key, new ArrayList<int[]>());
-    }
-    shingles.get(key).add(counts);
+    shingles.put(key, counts);
   }
 
-  public List<int[]> get(String key) {
+  /**
+   * Adds a shingled series assuring the proper index.
+   * 
+   * @param key
+   * @param shingledSeries
+   */
+  public void addShingledSeries(String key, Map<String, Integer> shingledSeries) {
+    // allocate the weights array corresponding to the time series
+    int[] counts = new int[this.indexTable.size()];
+    // fill in the counts
+    for (String str : shingledSeries.keySet()) {
+      Integer idx = this.indexTable.get(str);
+      if (null == idx) {
+        throw new IndexOutOfBoundsException("the requested shingle " + str + " doesn't exist!");
+      }
+      counts[idx] = shingledSeries.get(str);
+    }
+    shingles.put(key, counts);
+  }
+
+  /**
+   * get a shingles frequency array for the key.
+   * 
+   * @param key
+   * @return
+   */
+  public int[] get(String key) {
     return shingles.get(key);
   }
 
-  public int indexForShingle(String shingle) {
-    return this.indexTable.get(shingle);
+  /**
+   * Get shingles.
+   * 
+   * @return
+   * 
+   * @return
+   */
+  public Map<String, int[]> getShingles() {
+    return this.shingles;
   }
 
 }

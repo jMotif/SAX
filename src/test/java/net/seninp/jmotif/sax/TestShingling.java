@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import org.junit.Test;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
-import net.seninp.jmotif.sax.bitmap.Shingles;
 import net.seninp.jmotif.sax.datastructure.SAXRecord;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
@@ -79,48 +78,48 @@ public class TestShingling {
     }
   }
 
-  /**
-   * Testing the shingling of many series.
-   */
-  @Test
-  public void testShingling2() throws NumberFormatException, IOException, SAXException {
-
-    final SAXProcessor sp = new SAXProcessor();
-    final Alphabet a = new NormalAlphabet();
-
-    final double[] ts1 = TSProcessor.readFileColumn(ts1File, 0, length);
-    final double[] ts2 = TSProcessor.readFileColumn(ts2File, 0, length);
-
-    SAXRecords sax1 = sp.ts2saxViaWindow(ts1, 3, 3, a.getCuts(3), NumerosityReductionStrategy.NONE,
-        0.001);
-    SAXRecords sax2 = sp.ts2saxViaWindow(ts2, 3, 3, a.getCuts(3), NumerosityReductionStrategy.NONE,
-        0.001);
-
-    Map<String, ArrayList<double[]>> data = new HashMap<String, ArrayList<double[]>>();
-    ArrayList<double[]> arr1 = new ArrayList<double[]>();
-    arr1.add(ts1);
-    data.put("series1", arr1);
-    ArrayList<double[]> arr2 = new ArrayList<double[]>();
-    arr2.add(ts2);
-    data.put("series2", arr2);
-    Shingles shingles = sp.manySeriesToShingles(data, 3, 3, 3, NumerosityReductionStrategy.NONE,
-        0.001, 3);
-
-    // test the first series
-    int[] series1shingles = shingles.get("series1").get(0);
-    for (SAXRecord e : sax1) {
-      int idx = shingles.indexForShingle(String.valueOf(e.getPayload()));
-      assertEquals("testing mass shingling", Integer.valueOf(series1shingles[idx]),
-          Integer.valueOf(e.getIndexes().size()));
-    }
-
-    // test the second series
-    int[] series2shingles = shingles.get("series2").get(0);
-    for (SAXRecord e : sax2) {
-      int idx = shingles.indexForShingle(String.valueOf(e.getPayload()));
-      assertEquals("testing mass shingling", Integer.valueOf(series2shingles[idx]),
-          Integer.valueOf(e.getIndexes().size()));
-    }
-  }
+  // /**
+  // * Testing the shingling of many series.
+  // */
+  // @Test
+  // public void testShingling2() throws NumberFormatException, IOException, SAXException {
+  //
+  // final SAXProcessor sp = new SAXProcessor();
+  // final Alphabet a = new NormalAlphabet();
+  //
+  // final double[] ts1 = TSProcessor.readFileColumn(ts1File, 0, length);
+  // final double[] ts2 = TSProcessor.readFileColumn(ts2File, 0, length);
+  //
+  // SAXRecords sax1 = sp.ts2saxViaWindow(ts1, 3, 3, a.getCuts(3), NumerosityReductionStrategy.NONE,
+  // 0.001);
+  // SAXRecords sax2 = sp.ts2saxViaWindow(ts2, 3, 3, a.getCuts(3), NumerosityReductionStrategy.NONE,
+  // 0.001);
+  //
+  // Map<String, ArrayList<double[]>> data = new HashMap<String, ArrayList<double[]>>();
+  // ArrayList<double[]> arr1 = new ArrayList<double[]>();
+  // arr1.add(ts1);
+  // data.put("series1", arr1);
+  // ArrayList<double[]> arr2 = new ArrayList<double[]>();
+  // arr2.add(ts2);
+  // data.put("series2", arr2);
+  // Shingles shingles = sp.manySeriesToShingles(data, 3, 3, 3, NumerosityReductionStrategy.NONE,
+  // 0.001, 3);
+  //
+  // // test the first series
+  // int[] series1shingles = shingles.get("series1").get(0);
+  // for (SAXRecord e : sax1) {
+  // int idx = shingles.indexForShingle(String.valueOf(e.getPayload()));
+  // assertEquals("testing mass shingling", Integer.valueOf(series1shingles[idx]),
+  // Integer.valueOf(e.getIndexes().size()));
+  // }
+  //
+  // // test the second series
+  // int[] series2shingles = shingles.get("series2").get(0);
+  // for (SAXRecord e : sax2) {
+  // int idx = shingles.indexForShingle(String.valueOf(e.getPayload()));
+  // assertEquals("testing mass shingling", Integer.valueOf(series2shingles[idx]),
+  // Integer.valueOf(e.getIndexes().size()));
+  // }
+  // }
 
 }
