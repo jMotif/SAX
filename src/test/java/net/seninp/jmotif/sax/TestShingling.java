@@ -3,9 +3,7 @@ package net.seninp.jmotif.sax;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.junit.Test;
@@ -23,7 +21,7 @@ import net.seninp.jmotif.sax.datastructure.SAXRecords;
 public class TestShingling {
 
   private static final String ts1File = "src/resources/test-data/timeseries01.csv";
-  private static final String ts2File = "src/resources/test-data/timeseries02.csv";
+  //private static final String ts2File = "src/resources/test-data/timeseries02.csv";
 
   private static final int length = 15;
 

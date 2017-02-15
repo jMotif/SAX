@@ -75,4 +75,31 @@ public class TestDiscordRecord {
 
   }
 
+  /**
+   * Test the comparative routines.
+   */
+  @Test
+  public void testComparisons() {
+    DiscordRecord dr = new DiscordRecord(idx1, dist1);
+
+    assertTrue(dr.equals(dr));
+    assertFalse(dr.equals(null));
+    assertFalse(dr.equals(new Integer(3)));
+
+    DiscordRecord dr2 = new DiscordRecord(idx1 + 2, dist1);
+    assertFalse(dr.equals(dr2));
+  }
+
+  /**
+   * Test the ruleId setter.
+   */
+  @Test
+  public void testIdSetter() {
+    DiscordRecord dr = new DiscordRecord(idx1, dist1);
+
+    int ruleId = 17;
+    dr.setRuleId(ruleId);
+    assertEquals(ruleId, dr.getRuleId());
+  }
+
 }
