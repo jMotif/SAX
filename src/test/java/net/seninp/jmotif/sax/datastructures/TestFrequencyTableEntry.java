@@ -13,7 +13,7 @@ import net.seninp.jmotif.sax.datastructure.FrequencyTableEntry;
  * @author psenin
  *
  */
-public class FrequencyTableEntryTest {
+public class TestFrequencyTableEntry {
 
   @Test
   public void testFrequencyTableEntryIntInt() {
@@ -83,9 +83,13 @@ public class FrequencyTableEntryTest {
   public void testToStringAndColne() {
 
     final FrequencyTableEntry fe1 = new FrequencyTableEntry(10, "abcd".toCharArray(), 11);
-    final FrequencyTableEntry fe_copy = fe1.copy();
     
+    FrequencyTableEntry fe_copy = fe1.copy();    
     assertTrue(fe1.toString().equalsIgnoreCase(fe_copy.toString()));
+    
+    int newPos = 22;
+    fe_copy.setPosition(newPos);  
+    assertEquals(newPos, fe_copy.getPosition());
 
   }
 
