@@ -75,6 +75,9 @@ public class ParallelSAXImplementation {
     // implementation
     //
     if (NumerosityReductionStrategy.MINDIST.equals(nrStrategy)) {
+      LOGGER.warn(
+          "Unable to run with {} numerosity reduction stategy in parallel -- rolling back to NONE implementation and post-pruning.",
+          nrStrategy);
       nrStrategy = NumerosityReductionStrategy.NONE;
     }
 
@@ -94,7 +97,7 @@ public class ParallelSAXImplementation {
       LOGGER.warn("Unable to run with {} threads. Rolling back to single-threaded implementation.",
           threadsNum);
       return sp.ts2saxViaWindow(timeseries, slidingWindowSize, paaSize, na.getCuts(alphabetSize),
-          nrStrategy, normalizationThreshold);
+          numRedStrategy, normalizationThreshold);
     }
 
     int reminder = timeseries.length % threadsNum;

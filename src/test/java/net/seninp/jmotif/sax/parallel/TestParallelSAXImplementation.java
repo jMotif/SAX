@@ -52,17 +52,20 @@ public class TestParallelSAXImplementation {
           NumerosityReductionStrategy.NONE, NORM_THRESHOLD);
       String parallelStr = parallelRes.getSAXString(" ");
 
-      String[] arr1 = sequentialString.split(" ");
-      String[] arr2 = parallelStr.split(" ");
-
-      for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
-        if (!arr1[i].equalsIgnoreCase(arr2[i])) {
-          System.out.println("Error in index " + i + ", string " + arr1[i] + " versus " + arr2[i]);
-          break;
+      if (sequentialString.equalsIgnoreCase(parallelStr)) {
+        assertTrue("assert correctness", sequentialString.equalsIgnoreCase(parallelStr));
+      }
+      else {
+        String[] arr1 = sequentialString.split(" ");
+        String[] arr2 = parallelStr.split(" ");
+        for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
+          if (!arr1[i].equalsIgnoreCase(arr2[i])) {
+            System.out.println("Error in index " + i + ", string " + arr1[i] + " versus " + arr2[i]
+                + ", threads: " + threadsNum);
+            assertTrue("assert correctness", arr1[i].equalsIgnoreCase(arr2[i]));
+          }
         }
       }
-
-      assertTrue("assert correctness", sequentialString.equalsIgnoreCase(parallelStr));
     }
   }
 
@@ -92,17 +95,20 @@ public class TestParallelSAXImplementation {
           NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
       String parallelStr = parallelRes.getSAXString(" ");
 
-      String[] arr1 = sequentialString.split(" ");
-      String[] arr2 = parallelStr.split(" ");
-
-      for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
-        if (!arr1[i].equalsIgnoreCase(arr2[i])) {
-          System.out.println("Error in index " + i + ", string " + arr1[i] + " versus " + arr2[i]);
-          break;
+      if (sequentialString.equalsIgnoreCase(parallelStr)) {
+        assertTrue("assert correctness", sequentialString.equalsIgnoreCase(parallelStr));
+      }
+      else {
+        String[] arr1 = sequentialString.split(" ");
+        String[] arr2 = parallelStr.split(" ");
+        for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
+          if (!arr1[i].equalsIgnoreCase(arr2[i])) {
+            System.out.println("Error in index " + i + ", string " + arr1[i] + " versus " + arr2[i]
+                + ", threads: " + threadsNum);
+            assertTrue("assert correctness", arr1[i].equalsIgnoreCase(arr2[i]));
+          }
         }
       }
-
-      assertTrue("assert correctness", sequentialString.equalsIgnoreCase(parallelStr));
     }
   }
 
@@ -132,18 +138,65 @@ public class TestParallelSAXImplementation {
           NumerosityReductionStrategy.MINDIST, NORM_THRESHOLD);
       String parallelStr = parallelRes.getSAXString(" ");
 
-      String[] arr1 = sequentialString.split(" ");
-      String[] arr2 = parallelStr.split(" ");
+      if (sequentialString.equalsIgnoreCase(parallelStr)) {
+        assertTrue("assert correctness", sequentialString.equalsIgnoreCase(parallelStr));
+      }
+      else {
+        String[] arr1 = sequentialString.split(" ");
+        String[] arr2 = parallelStr.split(" ");
+        for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
+          if (!arr1[i].equalsIgnoreCase(arr2[i])) {
+            System.out.println("Error in index " + i + ", string " + arr1[i] + " versus " + arr2[i]
+                + ", threads: " + threadsNum);
+            assertTrue("assert correctness", arr1[i].equalsIgnoreCase(arr2[i]));
+          }
+        }
+      }
 
+    }
+  }
+
+  /**
+   * Test parallel SAX conversion.
+   * 
+   * @throws Exception if error occurs.
+   */
+  @Test
+  public void testParallelSAXrollbac() throws Exception {
+
+    SAXProcessor sp = new SAXProcessor();
+    NormalAlphabet na = new NormalAlphabet();
+
+    int threadsNum = 10;
+    int slidingWindowSize = 300; // so itll be eneven...
+
+    double[] ts = TSProcessor.readFileColumn(TEST_DATA, 0, 0);
+
+    // test MINDIST
+    //
+    SAXRecords sequentialResMINDIST = sp.ts2saxViaWindow(ts, slidingWindowSize, PAA_SIZE,
+        na.getCuts(ALPHABET_SIZE), NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
+    String sequentialStringMINDIST = sequentialResMINDIST.getSAXString(" ");
+
+    ParallelSAXImplementation ps1 = new ParallelSAXImplementation();
+    SAXRecords parallelRes = ps1.process(ts, threadsNum, slidingWindowSize, PAA_SIZE, ALPHABET_SIZE,
+        NumerosityReductionStrategy.EXACT, NORM_THRESHOLD);
+    String parallelStr = parallelRes.getSAXString(" ");
+
+    if (sequentialStringMINDIST.equalsIgnoreCase(parallelStr)) {
+      assertTrue("assert correctness", sequentialStringMINDIST.equalsIgnoreCase(parallelStr));
+    }
+    else {
+      String[] arr1 = sequentialStringMINDIST.split(" ");
+      String[] arr2 = parallelStr.split(" ");
       for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
         if (!arr1[i].equalsIgnoreCase(arr2[i])) {
           System.out.println("Error in index " + i + ", string " + arr1[i] + " versus " + arr2[i]
               + ", threads: " + threadsNum);
-          break;
+          assertTrue("assert correctness", arr1[i].equalsIgnoreCase(arr2[i]));
         }
       }
-
-      assertTrue("assert correctness", sequentialString.equalsIgnoreCase(parallelStr));
     }
+
   }
 }
