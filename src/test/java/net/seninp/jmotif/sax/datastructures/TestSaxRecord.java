@@ -88,6 +88,24 @@ public class TestSaxRecord {
     assertNotSame("testing hashCode", sfe1.hashCode(), sfe2.hashCode());
 
     assertTrue("testing comparison", sfe1.compareTo(sfe2) < 0);
+    assertTrue("testing comparison", sfe2.compareTo(sfe1) > 0);
+
+    assertFalse("testing equals", sfe1.equals(sfe2));
+  }
+
+  /**
+   * Test comparison.
+   * 
+   */
+  @Test
+  public void testHash() {
+    SAXRecord sfe1 = new SAXRecord("".toCharArray(), 0);
+    SAXRecord sfe2 = new SAXRecord("".toCharArray(), 0);
+
+    sfe1.removeIndex(0);
+    sfe2.removeIndex(0);
+
+    assertEquals(sfe1.hashCode(), sfe2.hashCode());
   }
 
   @Test
