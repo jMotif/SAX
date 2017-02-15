@@ -56,7 +56,7 @@ public class DiscordRecords implements Iterable<DiscordRecord> {
     if (this.discords.size() > 0) {
       return discords.get(0).getNNDistance();
     }
-    return -1;
+    return -1D;
   }
 
   @Override

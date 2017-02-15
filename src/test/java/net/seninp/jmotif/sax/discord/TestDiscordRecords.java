@@ -102,4 +102,21 @@ public class TestDiscordRecords {
     assertEquals("Test constructor", ds3Dist, ds.getMinDistance(), precision);
   }
 
+  /**
+   * Test the toString method.
+   */
+  @Test
+  public void testToString() {
+
+    DiscordRecords ds = new DiscordRecords();
+    assertEquals(-1D, ds.getMinDistance(), precision);
+
+    ds.add(discord1);
+    ds.add(discord2);
+
+    System.out.println(ds.toString());
+
+    assertTrue(ds.toString().contains(String.valueOf(ds1Pos)));
+  }
+
 }
