@@ -78,17 +78,17 @@ public class TestFrequencyTableEntry {
     assertEquals(fe1.getFrequency(), fe2.getFrequency());
 
   }
-  
+
   @Test
   public void testToStringAndColne() {
 
     final FrequencyTableEntry fe1 = new FrequencyTableEntry(10, "abcd".toCharArray(), 11);
-    
-    FrequencyTableEntry fe_copy = fe1.copy();    
+
+    FrequencyTableEntry fe_copy = fe1.copy();
     assertTrue(fe1.toString().equalsIgnoreCase(fe_copy.toString()));
-    
+
     int newPos = 22;
-    fe_copy.setPosition(newPos);  
+    fe_copy.setPosition(newPos);
     assertEquals(newPos, fe_copy.getPosition());
 
   }
