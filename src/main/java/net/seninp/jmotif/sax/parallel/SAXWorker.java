@@ -6,7 +6,6 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
-import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 
@@ -105,7 +104,7 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
 
     NormalAlphabet na = new NormalAlphabet();
     TSProcessor tsp = new TSProcessor();
-    SAXProcessor sp = new SAXProcessor();
+    // SAXProcessor sp = new SAXProcessor();
 
     HashMap<Integer, char[]> res = new HashMap<Integer, char[]>();
     res.put(-1, String.valueOf(this.id).toCharArray());
@@ -134,10 +133,11 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
           // NumerosityReduction
           continue;
         }
-        else if (NumerosityReductionStrategy.MINDIST.equals(this.numerosityReductionStrategy)
-            && sp.checkMinDistIsZero(previousString, currentString)) {
-          continue;
-        }
+        // there is no MINDIST at the moment
+        // else if (NumerosityReductionStrategy.MINDIST.equals(this.numerosityReductionStrategy)
+        // && sp.checkMinDistIsZero(previousString, currentString)) {
+        // continue;
+        // }
 
       }
 
