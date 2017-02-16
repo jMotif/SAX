@@ -6,15 +6,18 @@ import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 
 /**
- * A container for shingled data. Accepts a time series label and its SAX decomposition.
+ * A container for shingled data FOR MANY TIMESERIES. Accepts a time series label and its SAX
+ * decomposition.
  * 
  * @author psenin
  *
  */
 public class Shingles {
 
+  /** This maps a timeseries label to the ordered vector of frequencies. */
   private Map<String, int[]> shingles;
 
+  /** This maps a shingle to its index in the vector. */
   private HashMap<String, Integer> indexTable;
 
   /**
@@ -25,20 +28,18 @@ public class Shingles {
    */
   public Shingles(int alphabetSize, int shingleSize) {
 
+    // init data structures
     shingles = new HashMap<String, int[]>();
-
     indexTable = new HashMap<String, Integer>();
 
     // build all shingles index
-    //
     String[] alphabet = new String[alphabetSize];
     for (int i = 0; i < alphabetSize; i++) {
       alphabet[i] = String.valueOf(TSProcessor.ALPHABET[i]);
     }
-    String[] allStrings = SAXProcessor.getAllPermutations(alphabet, shingleSize);
 
     // and make an index table
-    //
+    String[] allStrings = SAXProcessor.getAllPermutations(alphabet, shingleSize);
     for (int i = 0; i < allStrings.length; i++) {
       indexTable.put(allStrings[i], i);
     }
@@ -46,16 +47,17 @@ public class Shingles {
   }
 
   /**
-   * Returns the index of shingles.
+   * Returns the index table of shingles.
    * 
-   * @return the mapping of the vector elements indices to a certain shingle string.
+   * @return the mapping of a shingle substring to the vector index.
    */
   public HashMap<String, Integer> getShinglesIndex() {
     return this.indexTable;
   }
 
   /**
-   * Adds a shingled time series to the table -- the user responsible for the proper ordering.
+   * Adds a shingled time series to the table -- the user responsible for the proper ordering of the
+   * frequencies.
    * 
    * @param key the shingle array label.
    * @param counts the counts array.
@@ -67,8 +69,8 @@ public class Shingles {
   /**
    * Adds a shingled series assuring the proper index.
    * 
-   * @param key
-   * @param shingledSeries
+   * @param key the timeseries key (i.e., label).
+   * @param shingledSeries a shingled timeseries in a map of <shingle, index> entries.
    */
   public void addShingledSeries(String key, Map<String, Integer> shingledSeries) {
     // allocate the weights array corresponding to the time series
@@ -85,10 +87,10 @@ public class Shingles {
   }
 
   /**
-   * get a shingles frequency array for the key.
+   * Get a shingles frequency array for the key (i.e., timeseries label).
    * 
-   * @param key
-   * @return
+   * @param key the timeseries key.
+   * @return shingle frequency array.
    */
   public int[] get(String key) {
     return shingles.get(key);
@@ -97,9 +99,7 @@ public class Shingles {
   /**
    * Get shingles.
    * 
-   * @return
-   * 
-   * @return
+   * @return returns the table of shingles <ts label, shingle frequency array>.
    */
   public Map<String, int[]> getShingles() {
     return this.shingles;
