@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import net.seninp.jmotif.sax.datastructure.FrequencyTableEntry;
 
@@ -93,4 +94,35 @@ public class TestFrequencyTableEntry {
 
   }
 
+  @Test
+  public void testFrequencyTableEntryComplexity() {
+
+    final FrequencyTableEntry fe1 = new FrequencyTableEntry(10, "a".toCharArray(), 11);
+
+    assertTrue(fe1.isTrivial(null));
+    assertTrue(fe1.isTrivial(5));
+
+    fe1.setStr("aaaaaa".toCharArray());
+    assertTrue(fe1.isTrivial(5));
+
+  }
+
+  @Test
+  public void testFrequencyTableEntryCmp() {
+
+    final FrequencyTableEntry fe1 = new FrequencyTableEntry(10, "a".toCharArray(), 11);
+
+    try {
+      fe1.compareTo(null);
+      fail("Exception was not thrown!");
+    }
+    catch (NullPointerException e) {
+      assert true;
+    }
+
+    assertTrue(fe1.equals(fe1));
+    assertFalse(fe1.equals(null));
+    assertFalse(fe1.equals(new Integer(5)));
+
+  }
 }
