@@ -70,7 +70,7 @@ public class Shingles {
    * Adds a shingled series assuring the proper index.
    * 
    * @param key the timeseries key (i.e., label).
-   * @param shingledSeries a shingled timeseries in a map of <shingle, index> entries.
+   * @param shingledSeries a shingled timeseries in a map of &lt;shingle, index&gt; entries.
    */
   public void addShingledSeries(String key, Map<String, Integer> shingledSeries) {
     // allocate the weights array corresponding to the time series
@@ -99,7 +99,7 @@ public class Shingles {
   /**
    * Get shingles.
    * 
-   * @return returns the table of shingles <ts label, shingle frequency array>.
+   * @return returns the table of shingles &lt;ts label, shingle frequency array&gt;.
    */
   public Map<String, int[]> getShingles() {
     return this.shingles;
