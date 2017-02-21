@@ -228,7 +228,7 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 
 #### Versions:
 `1.1.2` 
-  * maintenance release -- most of the changes in the shingling routines, fitting its API for other projects
+  * maintenance release -- most of changes in the shingling routines, fitting its API for other projects
   
 `1.1.1` 
   * HOTSAX implementation parameters bug fix
