@@ -15,7 +15,7 @@ import net.seninp.jmotif.sax.datastructure.SAXRecord;
  * @author Pavel Senin.
  * 
  */
-public class TestSaxRecord {
+public class TestSAXRecord {
 
   private static final Integer iNum1 = 7;
   private static final Integer iNum2 = 3;

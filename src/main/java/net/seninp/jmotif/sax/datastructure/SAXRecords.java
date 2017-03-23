@@ -18,6 +18,8 @@ import java.util.Set;
 // public class SAXRecords {
 public class SAXRecords implements Iterable<SAXRecord> {
 
+  private static final Object CR = "\n";
+
   /** The id is used to identify the chunk. */
   private final long id;
 
@@ -294,6 +296,18 @@ public class SAXRecords implements Iterable<SAXRecord> {
    */
   public Collection<SAXRecord> getRecords() {
     return this.records.values();
+  }
+
+  @Override
+  public String toString() {
+    ArrayList<String> words = new ArrayList<String>(records.keySet().size());
+    words.addAll(records.keySet());
+    Collections.sort(words);
+    StringBuffer sb = new StringBuffer(records.keySet().size() * 256);
+    for (String w : words) {
+      sb.append(records.get(w)).append(CR);
+    }
+    return sb.toString();
   }
 
 }

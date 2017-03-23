@@ -105,4 +105,20 @@ public class TestSAXRecords {
     rec = res.getByWord(str);
     assertEquals("Asserting record indexes length", rec.getIndexes().size(), indexes.size());
   }
+
+  @Test
+  public void testToString() {
+
+    SAXRecords sr = new SAXRecords();
+    assertTrue(sr.getAllIndices().isEmpty());
+
+    sr.add("aaa".toCharArray(), 10);
+    sr.add("aaa".toCharArray(), 11);
+
+    sr.add("bbb".toCharArray(), 13);
+
+    assertTrue(sr.toString().contains("aaa -> [10, 11]"));
+
+  }
+
 }
