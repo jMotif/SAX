@@ -135,10 +135,6 @@ There two classes implementing end-to-end workflow for SAX. These are [TSProcess
 	}
 
 #### 3.3 Multi-threaded discretization *via sliding window*:
-
-	// instantiate classes
-	NormalAlphabet na = new NormalAlphabet();
-	SAXProcessor sp = new SAXProcessor();
   
 	// read the input file
 	double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
