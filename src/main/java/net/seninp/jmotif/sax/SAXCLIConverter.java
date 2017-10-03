@@ -82,12 +82,9 @@ public final class SAXCLIConverter {
         NormalAlphabet na = new NormalAlphabet();
         SAXProcessor sp = new SAXProcessor();
 
-        Integer threadsNum = 1;
+        Integer threadsNum = SAXCLIParameters.THREADS_NUM;
+        
         SAXRecords res = null;
-
-        if (args.length > 6) {
-          threadsNum = Integer.valueOf(args[6]);
-        }
 
         if (threadsNum > 1) {
           ParallelSAXImplementation ps = new ParallelSAXImplementation();
