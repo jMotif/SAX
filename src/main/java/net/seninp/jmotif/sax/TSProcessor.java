@@ -278,13 +278,13 @@ public class TSProcessor {
    */
   public double[] znorm(double[] series, double normalizationThreshold) {
     double[] res = new double[series.length];
-    double mean = mean(series);
     double sd = stDev(series);
     if (sd < normalizationThreshold) {
       // return series.clone();
       // return array of zeros
       return res;
     }
+    double mean = mean(series);
     for (int i = 0; i < res.length; i++) {
       res[i] = (series[i] - mean) / sd;
     }
