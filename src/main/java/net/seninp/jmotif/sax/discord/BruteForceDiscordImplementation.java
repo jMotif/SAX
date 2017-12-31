@@ -43,7 +43,7 @@ public class BruteForceDiscordImplementation {
     // init new registry to the full length, but mark the end of it
     //
     VisitRegistry globalTrackVisitRegistry = new VisitRegistry(series.length);
-    globalTrackVisitRegistry.markVisited(series.length - windowSize, series.length);
+    globalTrackVisitRegistry.markVisited(series.length - windowSize - 1, series.length);
 
     int discordCounter = 0;
 
@@ -99,7 +99,7 @@ public class BruteForceDiscordImplementation {
    * @return the best discord with respect to registry.
    * @throws Exception if error occurs.
    */
-  public static DiscordRecord findBestDiscordBruteForce(double[] series, Integer windowSize,
+  private static DiscordRecord findBestDiscordBruteForce(double[] series, Integer windowSize,
       VisitRegistry globalRegistry, double nThreshold) throws Exception {
 
     Date start = new Date();
@@ -116,10 +116,11 @@ public class BruteForceDiscordImplementation {
 
       outerRegistry.markVisited(outerIdx);
 
+      // imo this is a useless piece
       // check the global visits registry
-      if (globalRegistry.isVisited(outerIdx)) {
-        continue;
-      }
+      // if (globalRegistry.isVisited(outerIdx)) {
+      //   continue;
+      // }
 
       double[] candidateSeq = tsProcessor
           .znorm(tsProcessor.subseriesByCopy(series, outerIdx, outerIdx + windowSize), nThreshold);

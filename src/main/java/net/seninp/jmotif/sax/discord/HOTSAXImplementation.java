@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.seninp.jmotif.distance.EuclideanDistance;
@@ -65,8 +67,8 @@ public class HOTSAXImplementation {
 
     // get the SAX transform done
     NormalAlphabet normalA = new NormalAlphabet();
-    SAXRecords sax = sp.ts2saxViaWindow(series, windowSize, paaSize,
-        normalA.getCuts(alphabetSize), strategy, nThreshold);
+    SAXRecords sax = sp.ts2saxViaWindow(series, windowSize, paaSize, normalA.getCuts(alphabetSize),
+        strategy, nThreshold);
     Date saxEnd = new Date();
     LOGGER.debug("discretized in {}, words: {}, indexes: {}",
         SAXProcessor.timeToString(start.getTime(), saxEnd.getTime()), sax.getRecords().size(),
@@ -225,11 +227,7 @@ public class HOTSAXImplementation {
 
         // all the candidates we are not going to try
         HashSet<Integer> alreadyVisited = new HashSet<Integer>(
-            occurrences.size() + (markEnd - markStart));
-
-        for (int i = markStart; i < markEnd; i++) {
-          alreadyVisited.add(i);
-        }
+            IntStream.rangeClosed(markStart, markEnd).boxed().collect(Collectors.toList()));
 
         // fix the current subsequence trace
         double[] currentCandidateSeq = tp

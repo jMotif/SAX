@@ -395,11 +395,19 @@ public class TSProcessor {
    * @return character corresponding to numeric value.
    */
   public char num2char(double value, double[] cuts) {
-    int count = 0;
-    while ((count < cuts.length) && (cuts[count] <= value)) {
-      count++;
+    int idx = 0;
+    if (value >= 0) {
+      idx = cuts.length;
+      while ((idx > 0) && (cuts[idx - 1] > value)) {
+        idx--;
+      }
     }
-    return ALPHABET[count];
+    else {
+      while ((idx < cuts.length) && (cuts[idx] <= value)) {
+        idx++;
+      }
+    }
+    return ALPHABET[idx];
   }
 
   /**
