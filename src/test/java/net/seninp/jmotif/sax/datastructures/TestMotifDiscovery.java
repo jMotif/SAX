@@ -46,7 +46,7 @@ public class TestMotifDiscovery {
       }
     }
 
-    ArrayList<SAXRecord> motifs = saxData.getMotifs(10);
+    ArrayList<SAXRecord> motifs = saxData.getSimpleMotifs(10);
     assertTrue("assert top motif", bestRec.equals(String.valueOf(motifs.get(0).getPayload())));
   }
 }

@@ -140,13 +140,13 @@ public class HOTSAXImplementation {
       // and maintain data structures
       //
       int markStart = bestDiscord.getPosition() - windowSize;
-      // if (markStart < 0) {
-      // markStart = 0;
-      // }
+      if (markStart < 0) {
+        markStart = 0;
+      }
       int markEnd = bestDiscord.getPosition() + windowSize;
-      // if (markEnd > series.length) {
-      // markEnd = series.length;
-      // }
+      if (markEnd > series.length) {
+        markEnd = series.length;
+      }
       LOGGER.debug("marking as globally visited [{}, {}]", markStart, markEnd);
       for (int i = markStart; i < markEnd; i++) {
         visitRegistry.add(i);

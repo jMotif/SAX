@@ -268,7 +268,7 @@ public class SAXRecords implements Iterable<SAXRecord> {
    * @param num how many motifs to report.
    * @return the array of motif SAXRecords.
    */
-  public ArrayList<SAXRecord> getMotifs(int num) {
+  public ArrayList<SAXRecord> getSimpleMotifs(int num) {
     ArrayList<SAXRecord> res = new ArrayList<SAXRecord>(num);
     DoublyLinkedSortedList<Entry<String, SAXRecord>> list = new DoublyLinkedSortedList<Entry<String, SAXRecord>>(
         num, new Comparator<Entry<String, SAXRecord>>() {
