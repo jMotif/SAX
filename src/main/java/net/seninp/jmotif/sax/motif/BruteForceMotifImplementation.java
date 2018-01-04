@@ -29,7 +29,7 @@ public class BruteForceMotifImplementation {
       double range) throws Exception {
 
     int bestMotifCount = -1;
-    double bestMotifLiocation = -1;
+    int bestMotifLiocation = -1;
     ArrayList<Integer> bestMotifOccurrences = null;
 
     for (int i = 0; i < (series.length - motifSize); i++) {
@@ -53,7 +53,7 @@ public class BruteForceMotifImplementation {
       }
     }
 
-    return new MotifRecord(bestMotifLiocation, bestMotifCount, bestMotifOccurrences);
+    return new MotifRecord(bestMotifLiocation, bestMotifOccurrences);
 
   }
 

@@ -1,6 +1,7 @@
 package net.seninp.jmotif.sax.motif;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 /**
  * Keeps motifs organized.
@@ -10,21 +11,63 @@ import java.util.ArrayList;
  */
 public class MotifRecord {
 
-  private double location;
-  private int count;
-  private ArrayList<Integer> occurrences;
+  private int location;
+  private TreeSet<Integer> occurrences;
 
   /**
    * Constructor.
    * 
    * @param motifLiocation the motif location.
-   * @param motifCount frequency of occurrence.
    * @param motifOccurrences occurrence locations.
    */
-  public MotifRecord(double motifLiocation, int motifCount, ArrayList<Integer> motifOccurrences) {
+  public MotifRecord(int motifLiocation, ArrayList<Integer> motifOccurrences) {
     this.location = motifLiocation;
-    this.count = motifCount;
-    this.occurrences = motifOccurrences;
+    this.occurrences = new TreeSet<Integer>();
+    this.occurrences.addAll(motifOccurrences);
+  }
+
+  /**
+   * The location getter.
+   * 
+   * @return the motif location.
+   */
+  public double getLocation() {
+    return location;
+  }
+
+  /**
+   * The location setter.
+   * 
+   * @param location the motif location.
+   */
+  public void setLocation(int location) {
+    this.location = location;
+  }
+
+  /**
+   * The occurrences array (copy) getter.
+   * 
+   * @return motif occurrences.
+   */
+  public ArrayList<Integer> getOccurrences() {
+    ArrayList<Integer> res = new ArrayList<Integer>(this.occurrences.size());
+    int i = 0;
+    for (Integer e : this.occurrences) {
+      res.set(i, e);
+      i++;
+    }
+    return res;
+  }
+
+  /**
+   * The location setter.
+   * 
+   * @param newLocation the motif location.
+   */
+  public void add(int newLocation) {
+    if (!this.occurrences.contains(newLocation)) {
+      this.occurrences.add(newLocation);
+    }
   }
 
 }
