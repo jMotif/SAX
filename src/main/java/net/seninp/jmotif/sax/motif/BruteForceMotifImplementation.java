@@ -48,6 +48,8 @@ public class BruteForceMotifImplementation {
         bestMotifCount = count;
         bestMotifLiocation = i;
         bestMotifOccurrences = occurrences;
+        LOGGER.debug("current best motif at {} with freq {}", bestMotifLiocation,
+            occurrences.size());
       }
     }
 
