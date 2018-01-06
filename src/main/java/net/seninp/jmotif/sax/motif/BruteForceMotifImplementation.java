@@ -38,7 +38,7 @@ public class BruteForceMotifImplementation {
       ArrayList<Integer> occurrences = new ArrayList<Integer>();
 
       for (int j = 0; j < (series.length - motifSize); j++) {
-        if (isNonTrivialMatch(series, i, j, motifSize, range)) {
+        if (isNonTrivialMatch(series, i, j, motifSize, 2 * range)) {
           count++;
           occurrences.add(j);
         }
@@ -88,7 +88,7 @@ public class BruteForceMotifImplementation {
 
   }
 
-  public static double distance2(double p1, double p2) {
+  private static double distance2(double p1, double p2) {
     return (p1 - p2) * (p1 - p2);
   }
 }
