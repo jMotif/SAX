@@ -27,6 +27,15 @@ public class MotifRecord {
   }
 
   /**
+   * The location setter.
+   * 
+   * @param location the motif location.
+   */
+  public void setLocation(int location) {
+    this.location = location;
+  }
+
+  /**
    * The location getter.
    * 
    * @return the motif location.
@@ -36,12 +45,12 @@ public class MotifRecord {
   }
 
   /**
-   * The location setter.
+   * Gets the occurrence frequency.
    * 
-   * @param location the motif location.
+   * @return the motif occurrence frequency (itself isnt included).
    */
-  public void setLocation(int location) {
-    this.location = location;
+  public int getFrequency() {
+    return this.occurrences.size();
   }
 
   /**
@@ -72,7 +81,8 @@ public class MotifRecord {
 
   @Override
   public String toString() {
-    return "MotifRecord [location=" + location + ", occurrences=" + occurrences + "]";
+    return "MotifRecord [location=" + this.location + ", freq=" + this.occurrences.size()
+        + ", occurrences=" + occurrences + "]";
   }
 
 }

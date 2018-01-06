@@ -1,5 +1,6 @@
 package net.seninp.jmotif.sax.motif;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import java.util.Arrays;
 import org.junit.Before;
@@ -35,7 +36,7 @@ public class TestBruteForceMotifDiscovery {
     try {
       motif = BruteForceMotifImplementation.series2BruteForceMotifs(series, MOTIF_SIZE,
           MOTIF_RANGE);
-      System.out.println(motif.toString());
+      assertEquals("Asserting motif frequency", 146, motif.getFrequency());
     }
     catch (Exception e) {
       fail("It shouldnt fail, but failed with " + StackTrace.toString(e));
