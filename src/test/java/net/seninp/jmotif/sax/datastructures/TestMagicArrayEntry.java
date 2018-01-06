@@ -26,6 +26,7 @@ public class TestMagicArrayEntry {
     assertFalse("testing hash function", entry1.hashCode() == entry2.hashCode());
   }
 
+  @SuppressWarnings("unlikely-arg-type")
   @Test
   public void testCompareTo() {
     MagicArrayEntry entry1 = new MagicArrayEntry(PAYLOAD1, FREQUENCY1);

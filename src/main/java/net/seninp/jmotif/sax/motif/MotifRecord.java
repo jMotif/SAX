@@ -70,4 +70,9 @@ public class MotifRecord {
     }
   }
 
+  @Override
+  public String toString() {
+    return "MotifRecord [location=" + location + ", occurrences=" + occurrences + "]";
+  }
+
 }

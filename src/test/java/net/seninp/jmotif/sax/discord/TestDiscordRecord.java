@@ -78,6 +78,7 @@ public class TestDiscordRecord {
   /**
    * Test the comparative routines.
    */
+  @SuppressWarnings("unlikely-arg-type")
   @Test
   public void testComparisons() {
     DiscordRecord dr = new DiscordRecord(idx1, dist1);

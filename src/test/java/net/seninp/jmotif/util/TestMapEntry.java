@@ -63,6 +63,7 @@ public class TestMapEntry {
     assertEquals(e2.getValue(), VALUE1);
   }
 
+  @SuppressWarnings("unlikely-arg-type")
   @Test
   public void testEqualsObject() {
 

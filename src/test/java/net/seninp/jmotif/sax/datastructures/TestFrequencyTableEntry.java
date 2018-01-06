@@ -107,6 +107,7 @@ public class TestFrequencyTableEntry {
 
   }
 
+  @SuppressWarnings("unlikely-arg-type")
   @Test
   public void testFrequencyTableEntryCmp() {
 
