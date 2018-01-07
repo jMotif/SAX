@@ -256,7 +256,7 @@ public class TestTSProcessor {
     // read the PAA data
     double[] ts1PAA10 = tsp.readTS(ts1PAAFile, PAAlength);
 
-    int[] idx1 = tsp.ts2Index(ts1PAA10, normalA, 10);
+    int[] idx1 = tsp.ts2Index(ts1PAA10, normalA.getCuts(10));
 
     assertEquals("Testing ts2index", Integer.valueOf(idx1[1]), Integer.valueOf(2));
     assertEquals("Testing ts2index", Integer.valueOf(idx1[3]), Integer.valueOf(9));
