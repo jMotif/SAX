@@ -39,7 +39,7 @@ public class TestMotifDiscovery {
 
       motifsEMMA = EMMAImplementation.series2EMMAMotifs(series, MOTIF_SIZE, MOTIF_RANGE, 5, 5,
           0.001);
-      // System.out.println(motifsEMMA);
+       System.out.println(motifsEMMA);
 
       assertEquals("Asserting motif frequency", motifsBF.getFrequency(), motifsEMMA.getFrequency());
 

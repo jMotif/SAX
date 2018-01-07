@@ -12,7 +12,7 @@ import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.SAXRecord;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
-public class TestMotifDiscovery {
+public class TestPseudoMotifDiscovery {
 
   private static final String TEST_DATA_FNAME = "src/resources/test-data/ecg0606_1.csv";
   private static final Alphabet na = new NormalAlphabet();
