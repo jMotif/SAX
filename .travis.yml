@@ -3,6 +3,8 @@ language:
 
 jdk:
   - oraclejdk8
+  - oraclejdk9
+  - openjdk7
 
 before_install:
   - pip install --user codecov
