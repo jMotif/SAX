@@ -155,6 +155,19 @@ There two classes implementing end-to-end workflow for SAX. These are [TSProcess
 	}
 
 #### 3.4 Time series motif (recurrent pattern) discovery
+
+Class [EMMAImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/motif/EMMAImplementation.java) implements a method for getting the most frequent structural patterns with EMMA algorithm:
+
+        // read the data
+	double[] series = TSProcessor.readFileColumn(DATA_FNAME, 0, 0);
+	
+	// find the best motif with EMMA
+	MotifRecord motifsEMMA = EMMAImplementation.series2EMMAMotifs(series, MOTIF_SIZE, 
+							MOTIF_RANGE, 5, 5, 0.001);
+        		
+        // print motifs
+	System.out.println(motifsEMMA);
+			
 Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/datastructure/SAXRecords.java) implements a method for getting the most frequent SAX words:
 
         // read the data
