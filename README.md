@@ -163,7 +163,7 @@ Class [EMMAImplementation](https://github.com/jMotif/SAX/blob/master/src/main/ja
 	
 	// find the best motif with EMMA
 	MotifRecord motifsEMMA = EMMAImplementation.series2EMMAMotifs(series, MOTIF_SIZE, 
-							MOTIF_RANGE, 5, 5, 0.001);
+					MOTIF_RANGE, PAA_SIZE, ALPHABET_SIZE, ZNORM_THRESHOLD);
         		
         // print motifs
 	System.out.println(motifsEMMA);
