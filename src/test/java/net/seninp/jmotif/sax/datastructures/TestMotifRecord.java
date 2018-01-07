@@ -32,7 +32,7 @@ public class TestMotifRecord {
     assertSame("Testing freqs", 1, mr.getFrequency());
     assertTrue("Testing freqs", mr.getOccurrences().contains(1));
     mr.add(77);
-    assertSame("Testing freqs", 77, mr.getFrequency());
+    assertSame("Testing freqs", 2, mr.getFrequency());
     assertTrue("Testing freqs", mr.getOccurrences().contains(77));
 
     assertSame("Testing freqs", 2, mr.getOccurrences().size());
