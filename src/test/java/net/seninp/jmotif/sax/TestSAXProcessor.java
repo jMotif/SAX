@@ -85,7 +85,7 @@ public class TestSAXProcessor {
         NumerosityReductionStrategy.EXACT, 0.01, skips);
     LOGGER.debug("EXACT with skips: there are " + saxData.getAllIndices().size() + " words: \n"
         + saxData.getSAXString(" ") + "\n" + saxData.getAllIndices());
-    
+
   }
 
   /**
@@ -222,8 +222,6 @@ public class TestSAXProcessor {
 
   /**
    * Test the MINDIST distance.
-   *
-   * @throws Exception if error occur.
    */
   @Test
   public void testMINDIST() {

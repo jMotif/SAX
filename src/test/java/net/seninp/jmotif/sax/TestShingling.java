@@ -21,15 +21,17 @@ import net.seninp.jmotif.sax.datastructure.SAXRecords;
 public class TestShingling {
 
   private static final String ts1File = "src/resources/test-data/timeseries01.csv";
-  //private static final String ts2File = "src/resources/test-data/timeseries02.csv";
+  // private static final String ts2File = "src/resources/test-data/timeseries02.csv";
 
   private static final int length = 15;
 
   /**
    * Testing the permutation production.
+   * 
+   * @throws Exception if error occurs.
    */
   @Test
-  public void testPermutations() throws NumberFormatException, IOException, SAXException {
+  public void testPermutations() throws Exception {
 
     String[] arr = { "a", "b", "c" };
 
@@ -49,9 +51,11 @@ public class TestShingling {
 
   /**
    * Testing the shingling.
+   * 
+   * @throws Exception if error occurs.
    */
   @Test
-  public void testShingling() throws NumberFormatException, IOException, SAXException {
+  public void testShingling() throws Exception {
 
     final SAXProcessor sp = new SAXProcessor();
     final Alphabet a = new NormalAlphabet();

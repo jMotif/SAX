@@ -20,10 +20,13 @@ public class TestCBFGenerator {
   private static final int REPEATS = 5;
 
   /**
-   * @param args
-   * @throws IOException
+   * The main runnable.
+   * 
+   * @param args none are used.
+   * 
+   * @throws Exception if error occurs.
    */
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws Exception {
 
     // ticks
     int[] t = new int[SERIES_LENGTH];
