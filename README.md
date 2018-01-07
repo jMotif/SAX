@@ -158,19 +158,19 @@ There two classes implementing end-to-end workflow for SAX. These are [TSProcess
 
 Class [EMMAImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/motif/EMMAImplementation.java) implements a method for getting the most frequent structural patterns with EMMA algorithm:
 
-        // read the data
+	// read the data
 	double[] series = TSProcessor.readFileColumn(DATA_FNAME, 0, 0);
 	
 	// find the best motif with EMMA
 	MotifRecord motifsEMMA = EMMAImplementation.series2EMMAMotifs(series, MOTIF_SIZE, 
 					MOTIF_RANGE, PAA_SIZE, ALPHABET_SIZE, ZNORM_THRESHOLD);
         		
-        // print motifs
+	// print motifs
 	System.out.println(motifsEMMA);
 			
 Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/datastructure/SAXRecords.java) implements a method for getting the most frequent SAX words:
 
-        // read the data
+	// read the data
 	double[] series = TSProcessor.readFileColumn(DATA_FNAME, 0, 0);
 	
 	// instantiate classes
@@ -181,11 +181,11 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
 	saxData = sp.ts2saxViaWindow(series, WIN_SIZE, PAA_SIZE, na.getCuts(ALPHABET_SIZE),
         		NR_STRATEGY, NORM_THRESHOLD);
         		
-        // get the list of 10 most frequent SAX words
+	// get the list of 10 most frequent SAX words
 	ArrayList<SAXRecord> motifs = saxData.getMotifs(10);
 	SAXRecord topMotif = motifs.get(0);
         
-        // print motifs
+	// print motifs
 	System.out.println("top motif " + String.valueOf(topMotif.getPayload()) + " seen " + 
     	   		topMotif.getIndexes().size() + " times.");
 
