@@ -40,7 +40,7 @@ public class MotifRecord {
    * 
    * @return the motif location.
    */
-  public double getLocation() {
+  public int getLocation() {
     return location;
   }
 
