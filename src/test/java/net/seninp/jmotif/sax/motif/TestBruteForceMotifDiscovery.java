@@ -5,8 +5,6 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.util.StackTrace;
 
@@ -17,10 +15,6 @@ public class TestBruteForceMotifDiscovery {
   private static final int MOTIF_SIZE = 100;
 
   private static final double MOTIF_RANGE = 1.0;
-
-  // logging stuff
-  //
-  private static final Logger LOGGER = LoggerFactory.getLogger(TestBruteForceMotifDiscovery.class);
 
   private double[] series;
 

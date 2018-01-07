@@ -1,8 +1,13 @@
 package net.seninp.jmotif.sax.motif;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.seninp.jmotif.sax.SAXProcessor;
+import net.seninp.jmotif.sax.TSProcessor;
+import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.datastructure.SAXRecords;
 import net.seninp.jmotif.sax.discord.BruteForceDiscordImplementation;
 
 /**
@@ -11,10 +16,14 @@ import net.seninp.jmotif.sax.discord.BruteForceDiscordImplementation;
  * @author psenin
  *
  */
-public class BruteForceMotifImplementation {
+public class EMMAImplementation {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(BruteForceDiscordImplementation.class);
+
+  private static TSProcessor tp = new TSProcessor();
+  private static SAXProcessor sp = new SAXProcessor();
+  private static NormalAlphabet normalA = new NormalAlphabet();
 
   /**
    * Finds 1-Motif
@@ -22,38 +31,33 @@ public class BruteForceMotifImplementation {
    * @param series the input time series.
    * @param motifSize the motif size.
    * @param range the similarity range cut off.
+   * @param paaSize the PAA size.
+   * @param alphabetSize the alphabet size.
+   * @param zThreshold z normalization threshold.
    * @return motif's positions.
    * @throws Exception if error occurs.
    */
-  public static MotifRecord series2BruteForceMotifs(double[] series, int motifSize,
-      double range) throws Exception {
+  public static MotifRecord series2EMMAMotifs(double[] series, int motifSize, double range,
+      int paaSize, int alphabetSize, double zThreshold) throws Exception {
 
     int bestMotifCount = -1;
     int bestMotifLiocation = -1;
-    ArrayList<Integer> bestMotifOccurrences = null;
+    boolean finished = false;
+
+    HashMap<String, ArrayList<Integer>> buckets = new HashMap<String, ArrayList<Integer>>(
+        (int) Math.pow(paaSize, alphabetSize));
 
     for (int i = 0; i < (series.length - motifSize); i++) {
-
-      int count = 0;
-      ArrayList<Integer> occurrences = new ArrayList<Integer>();
-
-      for (int j = 0; j < (series.length - motifSize); j++) {
-        if (isNonTrivialMatch(series, i, j, motifSize, 2 * range)) {
-          count++;
-          occurrences.add(j);
-        }
+      String sax = String.valueOf(tp.ts2String(
+          tp.paa(tp.znorm(tp.subseriesByCopy(series, i, i + motifSize), zThreshold), paaSize),
+          normalA.getCuts(alphabetSize)));
+      if (null == buckets.get(sax)) {
+        buckets.put(sax, new ArrayList<Integer>());
       }
-
-      if (count > 0 && count > bestMotifCount) {
-        bestMotifCount = count;
-        bestMotifLiocation = i;
-        bestMotifOccurrences = occurrences;
-        LOGGER.debug("current best motif at {} with freq {}", bestMotifLiocation,
-            occurrences.size());
-      }
+      buckets.get(sax).add(i);
     }
 
-    return new MotifRecord(bestMotifLiocation, bestMotifOccurrences);
+    return null;
 
   }
 

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.seninp.jmotif.sax.alphabet.Alphabet;
 
 /**
  * Implements algorithms for low-level data manipulation.
@@ -373,13 +372,11 @@ public class TSProcessor {
    * Convert the timeseries into the index using SAX cuts.
    * 
    * @param series The timeseries to convert.
-   * @param alphabet The alphabet to use.
-   * @param alphabetSize The alphabet size in use.
-   * @return SAX representation of timeseries.
+   * @param cuts The alphabet cuts.
+   * @return SAX cuts indices.
    * @throws Exception if error occurs.
    */
-  public int[] ts2Index(double[] series, Alphabet alphabet, int alphabetSize) throws Exception {
-    double[] cuts = alphabet.getCuts(alphabetSize);
+  public int[] ts2Index(double[] series, double[] cuts) throws Exception {
     int[] res = new int[series.length];
     for (int i = 0; i < series.length; i++) {
       res[i] = num2index(series[i], cuts);

@@ -465,6 +465,7 @@ public final class SAXProcessor {
     int windowCounter = 0;
 
     double[] centralLines = na.getCentralCuts(alphabetSize);
+    double[] cuts = na.getCuts(alphabetSize);
 
     for (int i = 0; i < ts.length - winSize + 1; i++) {
 
@@ -476,7 +477,7 @@ public final class SAXProcessor {
       }
 
       double[] paa = tsProcessor.paa(subseries, paaSize);
-      int[] leterIndexes = tsProcessor.ts2Index(paa, na, alphabetSize);
+      int[] leterIndexes = tsProcessor.ts2Index(paa, cuts);
 
       windowCounter++;
 
