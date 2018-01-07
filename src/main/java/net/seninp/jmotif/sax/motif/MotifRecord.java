@@ -60,10 +60,8 @@ public class MotifRecord {
    */
   public ArrayList<Integer> getOccurrences() {
     ArrayList<Integer> res = new ArrayList<Integer>(this.occurrences.size());
-    int i = 0;
     for (Integer e : this.occurrences) {
-      res.set(i, e);
-      i++;
+      res.add(e);
     }
     return res;
   }
