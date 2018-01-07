@@ -17,7 +17,7 @@ public class TestMotifDiscovery {
 
   private static final double MOTIF_RANGE = 2.;
 
-  private static final double ZNORM_THRESHOLD = 0.001;
+  private static final double ZNORM_THRESHOLD = 0.1;
 
   private double[] series;
 
@@ -35,11 +35,11 @@ public class TestMotifDiscovery {
 
       motifsBF = BruteForceMotifImplementation.series2BruteForceMotifs(series, MOTIF_SIZE,
           MOTIF_RANGE, ZNORM_THRESHOLD);
-      // System.out.println(motifsBF);
+      System.out.println(motifsBF);
 
       motifsEMMA = EMMAImplementation.series2EMMAMotifs(series, MOTIF_SIZE, MOTIF_RANGE, 5, 5,
-          0.001);
-      // System.out.println(motifsEMMA);
+          ZNORM_THRESHOLD);
+      System.out.println(motifsEMMA);
 
       assertEquals("Asserting motif frequency", motifsBF.getFrequency(), motifsEMMA.getFrequency());
 

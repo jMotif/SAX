@@ -1,7 +1,6 @@
 package net.seninp.jmotif.sax.motif;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -91,9 +90,6 @@ public class EMMAImplementation {
       }
 
       LOGGER.debug("current bucket {} at {}", MPC.getValue(), neighborhood);
-      if (neighborhood.contains(140)) {
-        LOGGER.debug(" ***");
-      }
 
       MotifRecord tmpRes = ADM(series, neighborhood, motifSize, range, znormThreshold);
 
@@ -143,15 +139,15 @@ public class EMMAImplementation {
 
     int maxCount = 0;
     for (int i = 0; i < neighborhood.size(); i++) {
-      if (140 == neighborhood.get(i)) {
-        LOGGER.debug(Arrays.toString(admDistances[i]));
-      }
+
       int tmpCounter = 0;
+      
       for (int j = 0; j < neighborhood.size(); j++) {
         if (admDistances[i][j]) {
           tmpCounter++;
         }
       }
+      
       if (tmpCounter > maxCount) {
         maxCount = tmpCounter;
         ArrayList<Integer> occurrences = new ArrayList<>();
