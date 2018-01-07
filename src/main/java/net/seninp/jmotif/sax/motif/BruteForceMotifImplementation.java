@@ -61,6 +61,17 @@ public class BruteForceMotifImplementation {
 
   }
 
+  /**
+   * Checks for the overlap and the range-configured distance.
+   * 
+   * @param series  the series to use.
+   * @param i the position of subseries a.
+   * @param j the position of subseries b.
+   * @param motifSize the motif length.
+   * @param range the range value.
+   * @param znormThreshold z-normalization threshold.
+   * @return true if all is cool, false if overlaps or above the range value.
+   */
   private static boolean isNonTrivialMatch(double[] series, int i, int j, Integer motifSize,
       double range, double znormThreshold) {
 
@@ -77,6 +88,17 @@ public class BruteForceMotifImplementation {
     return false;
   }
 
+  /**
+   * Early abandoning distance configure by range.
+   * 
+   * @param series the series to use.
+   * @param a the position of subseries a.
+   * @param b the position of subseries b.
+   * @param motifSize the motif length.
+   * @param range the range value.
+   * @param znormThreshold z-normalization threshold.
+   * @return a distance value or NAN if above the threshold.
+   */
   private static Double eaDistance(double[] series, int a, int b, Integer motifSize, double range,
       double znormThreshold) {
 
@@ -96,6 +118,13 @@ public class BruteForceMotifImplementation {
 
   }
 
+  /**
+   * Distance square.
+   * 
+   * @param p1 point1.
+   * @param p2 point2.
+   * @return the distance square.
+   */
   private static double distance2(double p1, double p2) {
     return (p1 - p2) * (p1 - p2);
   }
