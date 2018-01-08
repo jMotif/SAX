@@ -150,7 +150,7 @@ public class EMMAImplementation {
 
       int tmpCounter = 0;
 
-      for (int j = 0; j < i; j++) {
+      for (int j = 0; j < neighborhood.size(); j++) {
         if (admDistances.get(i).get(j)) {
           tmpCounter++;
         }

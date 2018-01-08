@@ -17,7 +17,7 @@ public class TestMotifDiscovery {
 
   private static final double MOTIF_RANGE = 2.;
 
-  private static final double ZNORM_THRESHOLD = 0.1;
+  private static final double ZNORM_THRESHOLD = 0.01;
 
   private double[] series;
 
