@@ -1,6 +1,7 @@
 package net.seninp.jmotif.sax.motif;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -127,13 +128,20 @@ public class EMMAImplementation {
       double range, double znormThreshold) {
 
     MotifRecord res = new MotifRecord(-1, new ArrayList<Integer>());
-    boolean[][] admDistances = new boolean[neighborhood.size()][neighborhood.size()];
+
+    ArrayList<BitSet> admDistances = new ArrayList<BitSet>(neighborhood.size());
+    for (int i = 0; i < neighborhood.size(); i++) {
+      admDistances.add(new BitSet(neighborhood.size()));
+    }
 
     for (int i = 0; i < neighborhood.size(); i++) {
-      for (int j = 0; j <= i; j++) {
-        admDistances[i][j] = isNonTrivialMatch(series, neighborhood.get(i), neighborhood.get(j),
+      for (int j = 0; j < i; j++) { // diagonal wouldn't count anyway
+        boolean isMatch = isNonTrivialMatch(series, neighborhood.get(i), neighborhood.get(j),
             motifSize, range, znormThreshold);
-        admDistances[j][i] = admDistances[i][j];
+        if (isMatch) {
+          admDistances.get(i).set(j);
+          admDistances.get(j).set(i);
+        }
       }
     }
 
@@ -141,18 +149,18 @@ public class EMMAImplementation {
     for (int i = 0; i < neighborhood.size(); i++) {
 
       int tmpCounter = 0;
-      
-      for (int j = 0; j < neighborhood.size(); j++) {
-        if (admDistances[i][j]) {
+
+      for (int j = 0; j < i; j++) {
+        if (admDistances.get(i).get(j)) {
           tmpCounter++;
         }
       }
-      
+
       if (tmpCounter > maxCount) {
         maxCount = tmpCounter;
         ArrayList<Integer> occurrences = new ArrayList<>();
         for (int j = 0; j < neighborhood.size(); j++) {
-          if (admDistances[i][j]) {
+          if (admDistances.get(i).get(j)) {
             occurrences.add(neighborhood.get(j));
           }
         }
