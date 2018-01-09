@@ -180,7 +180,7 @@
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <!-- disable 'release' profile from super pom -->
-              <useReleaseProfile>false</useReleaseProfile>
+              <!-- <useReleaseProfile>false</useReleaseProfile>  -->
               <releaseProfiles>release</releaseProfiles>
               <goals>deploy</goals>
             </configuration>
