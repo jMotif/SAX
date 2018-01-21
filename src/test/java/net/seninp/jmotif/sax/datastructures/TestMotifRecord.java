@@ -1,5 +1,6 @@
 package net.seninp.jmotif.sax.datastructures;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -27,8 +28,10 @@ public class TestMotifRecord {
   @Test
   public void testGetFrequency() {
     MotifRecord mr = new MotifRecord(0, new ArrayList<Integer>());
+    assertTrue("Testing freqs", mr.isEmpty());
     assertSame("Testing freqs", 0, mr.getFrequency());
     mr.add(1);
+    assertFalse("Testing freqs", mr.isEmpty());
     assertSame("Testing freqs", 1, mr.getFrequency());
     assertTrue("Testing freqs", mr.getOccurrences().contains(1));
     mr.add(77);
