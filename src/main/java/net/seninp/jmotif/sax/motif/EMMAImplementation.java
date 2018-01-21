@@ -8,10 +8,10 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
-import net.seninp.jmotif.sax.discord.BruteForceDiscordImplementation;
 import net.seninp.util.JmotifMapEntry;
 
 /**
@@ -23,11 +23,16 @@ import net.seninp.util.JmotifMapEntry;
 public class EMMAImplementation {
 
   private static final Logger LOGGER = LoggerFactory
-      .getLogger(BruteForceDiscordImplementation.class);
+      .getLogger(EMMAImplementation.class);
 
   private static TSProcessor tp = new TSProcessor();
   private static SAXProcessor sp = new SAXProcessor();
   private static NormalAlphabet normalA = new NormalAlphabet();
+
+  private static EuclideanDistance ed = new EuclideanDistance();
+
+  public static int eaCounter;
+  public static int distCounter;
 
   /**
    * Finds 1-Motif
@@ -78,7 +83,7 @@ public class EMMAImplementation {
     JmotifMapEntry<Integer, String> MPC = bucketsOrder.get(currBucketIdx);
     ArrayList<Integer> neighborhood = new ArrayList<Integer>(buckets.get(MPC.getValue()));
 
-    while (!(finished) && (currBucketIdx < (bucketsOrder.size())) && (neighborhood.size() > 2)) {
+    while (!(finished) && (currBucketIdx < bucketsOrder.size()) && (neighborhood.size() > 2)) {
 
       if (currBucketIdx < (bucketsOrder.size() - 1)) {
         for (int i = currBucketIdx + 1; i < bucketsOrder.size(); i++) {
@@ -94,8 +99,48 @@ public class EMMAImplementation {
 
       MotifRecord tmpRes = ADM(series, neighborhood, motifSize, range, znormThreshold);
 
-      if (tmpRes.getFrequency() > res.getFrequency()) {
+      LOGGER.debug("current tmp motif {} ", tmpRes.toString());
+
+      if (tmpRes.getFrequency() > res.getFrequency() || res.isEmpty()) {
         res = tmpRes;
+        LOGGER.debug("updating the best motif to {} ", res.toString());
+      }
+      else if (tmpRes.getFrequency() == res.getFrequency() && !(res.isEmpty())) {
+
+        LOGGER.debug(" ** its's a tie, checking for variation...");
+
+        double[] motifA = tp.subseriesByCopy(series, res.getLocation(),
+            res.getLocation() + motifSize);
+        double[] distancesA = new double[res.getFrequency()];
+
+        double[] motifB = tp.subseriesByCopy(series, tmpRes.getLocation(),
+            tmpRes.getLocation() + motifSize);
+        double[] distancesB = new double[res.getFrequency()];
+
+        ArrayList<Integer> bestMotifOccurrences = res.getOccurrences();
+        ArrayList<Integer> tmpMotifOccurrences = tmpRes.getOccurrences();
+        for (int j = 0; j < res.getFrequency(); j++) {
+
+          Integer locA = bestMotifOccurrences.get(j);
+          double distA = ed.distance(tp.znorm(motifA, znormThreshold),
+              tp.znorm(tp.subseriesByCopy(series, locA, locA + motifSize), znormThreshold));
+          distancesA[j] = distA;
+
+          Integer locB = tmpMotifOccurrences.get(j);
+          double distB = ed.distance(tp.znorm(motifB, znormThreshold),
+              tp.znorm(tp.subseriesByCopy(series, locB, locB + motifSize), znormThreshold));
+          distancesB[j] = distB;
+
+        }
+
+        double varA = tp.var(distancesA);
+        double varB = tp.var(distancesB);
+
+        if (varB < varA) {
+          LOGGER.debug("updated current best motif to {}", tmpRes);
+          res = tmpRes;
+        }
+
       }
 
       if ((currBucketIdx < (bucketsOrder.size() - 1))
@@ -104,6 +149,10 @@ public class EMMAImplementation {
       }
       else {
         currBucketIdx++;
+        if (currBucketIdx == bucketsOrder.size()) {
+          // we processed all buckets up in here -- break out
+          break;
+        }
         MPC = bucketsOrder.get(currBucketIdx);
         neighborhood = new ArrayList<Integer>(buckets.get(MPC.getValue()));
       }
@@ -123,15 +172,17 @@ public class EMMAImplementation {
    * @param range the range value.
    * @param znormThreshold z-normalization threshold.
    * @return the best motif record found within the neighborhood.
+   * @throws Exception if error occurs.
+   * 
    */
   private static MotifRecord ADM(double[] series, ArrayList<Integer> neighborhood, int motifSize,
-      double range, double znormThreshold) {
+      double range, double znormThreshold) throws Exception {
 
     MotifRecord res = new MotifRecord(-1, new ArrayList<Integer>());
 
     ArrayList<BitSet> admDistances = new ArrayList<BitSet>(neighborhood.size());
     for (int i = 0; i < neighborhood.size(); i++) {
-      admDistances.add(new BitSet(neighborhood.size()));
+      admDistances.add(new BitSet(i));
     }
 
     for (int i = 0; i < neighborhood.size(); i++) {
@@ -166,6 +217,7 @@ public class EMMAImplementation {
         }
         res = new MotifRecord(neighborhood.get(i), occurrences);
       }
+
     }
 
     return res;
@@ -213,6 +265,8 @@ public class EMMAImplementation {
   private static Double eaDistance(double[] series, int a, int b, Integer motifSize, double range,
       double znormThreshold) {
 
+    distCounter++;
+
     double cutOff2 = range * range;
 
     double[] seriesA = tp.znorm(tp.subseriesByCopy(series, a, a + motifSize), znormThreshold);
@@ -222,6 +276,7 @@ public class EMMAImplementation {
     for (int i = 0; i < motifSize; i++) {
       res = res + distance2(seriesA[i], seriesB[i]);
       if (res > cutOff2) {
+        eaCounter++;
         return Double.NaN;
       }
     }

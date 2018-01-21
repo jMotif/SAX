@@ -83,4 +83,8 @@ public class MotifRecord {
         + ", occurrences=" + occurrences + "]";
   }
 
+  public boolean isEmpty() {
+    return occurrences.isEmpty();
+  }
+
 }
