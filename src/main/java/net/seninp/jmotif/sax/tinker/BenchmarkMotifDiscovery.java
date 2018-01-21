@@ -20,6 +20,7 @@ public class BenchmarkMotifDiscovery {
 
   private static double[] series;
 
+  @SuppressWarnings("unused")
   private static TSProcessor tp = new TSProcessor();
 
   public static void main(String[] args) throws Exception {

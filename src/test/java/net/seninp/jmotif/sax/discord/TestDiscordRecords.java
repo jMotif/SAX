@@ -114,7 +114,7 @@ public class TestDiscordRecords {
     ds.add(discord1);
     ds.add(discord2);
 
-    System.out.println(ds.toString());
+    // System.out.println(ds.toString());
 
     assertTrue(ds.toString().contains(String.valueOf(ds1Pos)));
   }
