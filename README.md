@@ -240,6 +240,9 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
 
 #### Versions:
+`1.1.4` 
+  * fixing EMMA for a case of "tie" -- chosing a motif with the smallest variance
+  
 `1.1.3` 
   * adding an EMMA implementation with a *fake* ADM
   * some old code optimization (breaking some APIs)
