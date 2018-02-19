@@ -8,6 +8,10 @@ This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-license
   * EMMA (Enumeration of Motifs through Matrix Approximation) algorithm for time series motif discovery [2]
   * HOT-SAX - a time series anomaly (discord) discovery algorithm [3]
   * time series bitmap-related routines [4]
+  
+
+##### Note that the most of library's functionality is also available in [R](https://github.com/jMotif/jmotif-R) and [Python](https://github.com/seninp/saxpy) as well...
+
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., 
 [*Finding Motifs in Time Series*](http://cs.gmu.edu/~jessica/Lin_motif.pdf), 
@@ -23,8 +27,6 @@ In Proc. ICDM (2005)
 
 [4] Kumar, N., Lolla, V.N., Keogh, E.J., Lonardi, S. and Chotirat (Ann) Ratanamahatana,
 [Time-series Bitmaps: a Practical Visualization Tool for Working with Large Time Series Databases](http://www.cs.ucr.edu/~eamonn/time_series_bitmaps.pdf), In SDM 2005 Apr 21 (pp. 531-535).
-
-##### _Note that the most of library's functionality is also available in [R](https://github.com/jMotif/jmotif-R)_
 
 #### Citing this work:
 
