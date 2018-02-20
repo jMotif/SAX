@@ -30,7 +30,7 @@ In Proc. ICDM (2005)
 
 #### Citing this work:
 
-If you are using this implementation for you academic work, please cite our [Grammarviz 3.0 paper](http://link.springer.com/chapter/10.1007/978-3-662-44845-8_37):
+If you are using this implementation for you academic work, please cite our [Grammarviz 3.0 paper](https://dl.acm.org/citation.cfm?id=3051126&dl=ACM&coll=DL):
 
 [[Citation]](https://raw.githubusercontent.com/jMotif/SAX/master/citation.bib) Senin, P., Lin, J., Wang, X., Oates, T., Gandhi, S., Boedihardjo, A.P., Chen, C., Frankenstein, S.,  [*GrammarViz 3.0: Interactive Discovery of Variable-Length Time Series Patterns*](https://github.com/csdl/techreports/blob/master/techreports/2017/17-04/17-04.pdf), ACM Trans. Knowl. Discov. Data, February 2018.
 
