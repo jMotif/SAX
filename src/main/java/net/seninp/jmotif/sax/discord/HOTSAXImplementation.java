@@ -37,7 +37,7 @@ public class HOTSAXImplementation {
   private static SAXProcessor sp = new SAXProcessor();
   private static EuclideanDistance ed = new EuclideanDistance();
 
-//logging stuff
+  //logging stuff
   //
   private static final Logger LOGGER;
   private static final Level LOGGING_LEVEL = Level.INFO;
