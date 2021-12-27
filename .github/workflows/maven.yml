@@ -16,7 +16,6 @@ jobs:
     
     strategy:
       matrix:
-        distribution: 'temurin'
         java-version: [ 8, 11, 17 ]
 
     steps:
@@ -24,6 +23,7 @@ jobs:
     - name: Set up JDK 8
       uses: actions/setup-java@v2
       with:
+        distribution: 'temurin'
         java-version: ${{ matrix.java-version }}
         cache: maven
     - name: Build with Maven
