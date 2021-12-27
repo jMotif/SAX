@@ -3,15 +3,36 @@ on:
   release:
     types: [created]
 jobs:
-  publish:
+
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        java: [ 8, 11 ]
+    env:
+      OS: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Java ${{ matrix.java }}
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: ${{ matrix.java }}
+        cache: maven
+    
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+  publish_github:
     runs-on: ubuntu-latest 
+    needs: build
     permissions: 
       contents: read
       packages: write 
     steps:
-    
       - uses: actions/checkout@v2
-      
       - name: Set up Java for publishing to GitHub Packages
         uses: actions/setup-java@v2
         with:
@@ -23,6 +44,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  publish_maven_central:
+    runs-on: ubuntu-latest
+    needs: build 
+    permissions: 
+      contents: read
+      packages: write 
+    steps:
+      - uses: actions/checkout@v2
       - name: Set up Java for publishing to Maven Central Repository
         uses: actions/setup-java@v2
         with:
