@@ -22,7 +22,6 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: MAVEN_GPG_PRIVATE_KEY
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
-          
       - name: Publish to the Maven Central Repository
         run: mvn --batch-mode deploy
         env:
@@ -36,6 +35,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+          server-id: github
       - name: Publish to GitHub Packages
         run: mvn --batch-mode deploy
         env:
