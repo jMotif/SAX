@@ -1,5 +1,7 @@
 package net.seninp.jmotif.sax.tinker;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.discord.BruteForceDiscordImplementation;
@@ -10,11 +12,14 @@ import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
 
 public class DiscordDiscoveryPerformanceDoubleLong {
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(BruteForceDiscordImplementation.class);
+
   private static final String TEST_DATA_FNAME = "src/resources/test-data/ecg0606_1.csv";
 
-  private static final int WIN_SIZE = 120;
-  private static final int PAA_SIZE = 3;
-  private static final int ALPHABET_SIZE = 3;
+  private static final int WIN_SIZE = 100;
+  private static final int PAA_SIZE = 5;
+  private static final int ALPHABET_SIZE = 5;
 
   private static final double NORM_THRESHOLD = 0.5;
 
@@ -26,12 +31,14 @@ public class DiscordDiscoveryPerformanceDoubleLong {
 
     series = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
 
-    double[] tmp = new double[series.length * 2];
-    for (int i = 0; i < series.length; i++) {
-      tmp[i] = series[i];
-      tmp[i + series.length] = series[i];
-    }
-    series = tmp;
+//    double[] tmp = new double[series.length * 2];
+//    for (int i = 0; i < series.length; i++) {
+//      tmp[i] = series[i];
+//      tmp[i + series.length] = series[i];
+//    }
+//    series = tmp;
+
+    LOGGER.debug("going to find discords in a series of {} points", series.length);
 
     DiscordRecords discordsBruteForce = null;
     DiscordRecords discordsHash = null;

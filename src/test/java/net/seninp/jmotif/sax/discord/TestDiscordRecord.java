@@ -85,7 +85,7 @@ public class TestDiscordRecord {
 
     assertTrue(dr.equals(dr));
     assertFalse(dr.equals(null));
-    assertFalse(dr.equals(new Integer(3)));
+    assertFalse(dr.equals(Integer.valueOf(3)));
 
     DiscordRecord dr2 = new DiscordRecord(idx1 + 2, dist1);
     assertFalse(dr.equals(dr2));

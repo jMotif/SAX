@@ -3,8 +3,9 @@ package net.seninp.jmotif.sax.parallel;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
@@ -63,7 +64,13 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
 
   // logging stuff
   //
-  private static final Logger LOGGER = LoggerFactory.getLogger(SAXWorker.class);
+  private static final Logger LOGGER;
+  private static final Level LOGGING_LEVEL = Level.INFO;
+
+  static {
+    LOGGER = (Logger) LoggerFactory.getLogger(SAXWorker.class);
+    LOGGER.setLevel(LOGGING_LEVEL);
+  }
 
   /**
    * Performs SAX discretization.

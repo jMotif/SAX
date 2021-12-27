@@ -52,12 +52,15 @@ public class UCRdataBitmapPrinter {
   public static void main(String[] args) throws SAXException, IOException {
 
     BitmapParameters params = new BitmapParameters();
-    JCommander jct = new JCommander(params, args);
+    JCommander jct = new JCommander(params);
 
     if (0 == args.length) {
       jct.usage();
     }
     else {
+      
+      jct.parse(args);
+      
       // get params printed
       //
       StringBuilder sb = new StringBuilder(1024);

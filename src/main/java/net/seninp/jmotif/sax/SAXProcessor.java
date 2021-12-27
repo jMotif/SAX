@@ -5,9 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.joda.time.Duration;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
+import java.util.concurrent.TimeUnit;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.SAXRecord;
@@ -588,12 +586,34 @@ public final class SAXProcessor {
    */
   public static String timeToString(long start, long finish) {
 
-    Duration duration = new Duration(finish - start); // in milliseconds
-    PeriodFormatter formatter = new PeriodFormatterBuilder().appendDays().appendSuffix("d")
-        .appendHours().appendSuffix("h").appendMinutes().appendSuffix("m").appendSeconds()
-        .appendSuffix("s").appendMillis().appendSuffix("ms").toFormatter();
+    long millis = finish - start;
 
-    return formatter.print(duration.toPeriod());
+    if (millis < 0) {
+      throw new IllegalArgumentException("Duration must be greater than zero!");
+    }
+
+    long days = TimeUnit.MILLISECONDS.toDays(millis);
+    millis -= TimeUnit.DAYS.toMillis(days);
+    long hours = TimeUnit.MILLISECONDS.toHours(millis);
+    millis -= TimeUnit.HOURS.toMillis(hours);
+    long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+    millis -= TimeUnit.MINUTES.toMillis(minutes);
+    long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+    millis -= TimeUnit.SECONDS.toMillis(seconds);
+
+    StringBuilder sb = new StringBuilder(64);
+    sb.append(days);
+    sb.append("d");
+    sb.append(hours);
+    sb.append("h");
+    sb.append(minutes);
+    sb.append("m");
+    sb.append(seconds);
+    sb.append("s");
+    sb.append(millis);
+    sb.append("ms");
+
+    return sb.toString();
 
   }
 }

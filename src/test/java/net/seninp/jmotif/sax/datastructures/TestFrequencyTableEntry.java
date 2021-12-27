@@ -123,7 +123,7 @@ public class TestFrequencyTableEntry {
 
     assertTrue(fe1.equals(fe1));
     assertFalse(fe1.equals(null));
-    assertFalse(fe1.equals(new Integer(5)));
+    assertFalse(fe1.equals(Integer.valueOf(5)));
 
   }
 }

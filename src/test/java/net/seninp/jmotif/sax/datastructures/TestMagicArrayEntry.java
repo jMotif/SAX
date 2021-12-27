@@ -36,7 +36,7 @@ public class TestMagicArrayEntry {
     assertTrue("testing hash function", entry1.equals(entry1));
 
     assertFalse("testing hash function", entry1.equals(null));
-    assertFalse("testing hash function", entry1.equals(new Integer(7)));
+    assertFalse("testing hash function", entry1.equals(Integer.valueOf(7)));
 
     entry2 = new MagicArrayEntry(PAYLOAD2, FREQUENCY1);
     assertFalse("testing hash function", entry1.equals(entry2));

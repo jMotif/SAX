@@ -6,8 +6,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
@@ -22,8 +23,15 @@ import net.seninp.util.JmotifMapEntry;
  */
 public class EMMAImplementation {
 
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(EMMAImplementation.class);
+  // logging stuff
+  //
+  private static final Logger LOGGER;
+  private static final Level LOGGING_LEVEL = Level.INFO;
+
+  static {
+    LOGGER = (Logger) LoggerFactory.getLogger(EMMAImplementation.class);
+    LOGGER.setLevel(LOGGING_LEVEL);
+  }
 
   private static TSProcessor tp = new TSProcessor();
   private static SAXProcessor sp = new SAXProcessor();

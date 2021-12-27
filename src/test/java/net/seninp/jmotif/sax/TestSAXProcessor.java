@@ -10,8 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.Test;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.SAXRecord;
@@ -47,7 +48,13 @@ public class TestSAXProcessor {
 
   // logging stuff
   //
-  private static final Logger LOGGER = LoggerFactory.getLogger(TestSAXProcessor.class);
+  private static final Logger LOGGER;
+  private static final Level LOGGING_LEVEL = Level.INFO;
+
+  static {
+    LOGGER = (Logger) LoggerFactory.getLogger(TestSAXProcessor.class);
+    LOGGER.setLevel(LOGGING_LEVEL);
+  }
 
   /**
    * Testing the concatenated time series SAX conversion.
@@ -202,11 +209,11 @@ public class TestSAXProcessor {
     assertNotNull("Testing ts2sax", ts2SAX.getByWord(ts2str_7));
 
     assertEquals("Testing ts2sax", ts2SAX.getByWord(ts2str_0).getIndexes().iterator().next(),
-        new Integer(0));
+        Integer.valueOf(0));
     assertEquals("Testing ts2sax", ts2SAX.getByWord(ts2str_3).getIndexes().iterator().next(),
-        new Integer(3));
+        Integer.valueOf(3));
     assertEquals("Testing ts2sax", ts2SAX.getByWord(ts2str_7).getIndexes().iterator().next(),
-        new Integer(7));
+        Integer.valueOf(7));
 
     SAXRecords ts2SAXerror = null;
 

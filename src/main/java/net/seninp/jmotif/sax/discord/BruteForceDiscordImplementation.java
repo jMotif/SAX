@@ -1,8 +1,9 @@
 package net.seninp.jmotif.sax.discord;
 
 import java.util.Date;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
@@ -16,8 +17,15 @@ import net.seninp.jmotif.sax.registry.VisitRegistry;
  */
 public class BruteForceDiscordImplementation {
 
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(BruteForceDiscordImplementation.class);
+  // logging stuff
+  //
+  private static final Logger LOGGER;
+  private static final Level LOGGING_LEVEL = Level.INFO;
+
+  static {
+    LOGGER = (Logger) LoggerFactory.getLogger(BruteForceDiscordImplementation.class);
+    LOGGER.setLevel(LOGGING_LEVEL);
+  }
 
   private static TSProcessor tsProcessor = new TSProcessor();
 
@@ -119,7 +127,7 @@ public class BruteForceDiscordImplementation {
       // imo this is a useless piece
       // check the global visits registry
       // if (globalRegistry.isVisited(outerIdx)) {
-      //   continue;
+      // continue;
       // }
 
       double[] candidateSeq = tsProcessor

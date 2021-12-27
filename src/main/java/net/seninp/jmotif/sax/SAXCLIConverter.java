@@ -41,12 +41,15 @@ public final class SAXCLIConverter {
     try {
 
       SAXCLIParameters params = new SAXCLIParameters();
-      JCommander jct = new JCommander(params, args);
+      JCommander jct = new JCommander(params);
 
       if (0 == args.length) {
         jct.usage();
       }
       else {
+        
+        jct.parse(args);
+        
         // get params printed
         //
         StringBuffer sb = new StringBuffer(1024);
