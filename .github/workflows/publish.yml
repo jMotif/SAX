@@ -44,27 +44,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish_maven_central:
-    runs-on: ubuntu-latest
-    needs: build 
-    permissions: 
-      contents: read
-      packages: write 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Java for publishing to Maven Central Repository
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - name: Publish to the Maven Central Repository
-        run: mvn --batch-mode -P mavenCentral deploy
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+# wouldn't work with maven central as github wouldn't pack javadocs and sources...
+# need to figure that out ... released manually
+#
+#  publish_maven_central:
+#    runs-on: ubuntu-latest
+#    needs: build 
+#    permissions: 
+#      contents: read
+#      packages: write 
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Set up Java for publishing to Maven Central Repository
+#        uses: actions/setup-java@v2
+#        with:
+#          java-version: '11'
+#          distribution: 'temurin'
+#          server-id: ossrh
+#          server-username: MAVEN_USERNAME
+#          server-password: MAVEN_PASSWORD
+#          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+#          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+#      - name: Publish to the Maven Central Repository
+#        run: mvn --batch-mode -P mavenCentral deploy
+#        env:
+#          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+#          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+#          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
