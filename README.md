@@ -1,4 +1,4 @@
-Time series symbolic discretization with SAX
+Time series symbolic discretization (approximation) with SAX
 ====
 ![maven build](https://github.com/jMotif/SAX/actions/workflows/maven.yml/badge.svg) 
 [![codecov.io](http://codecov.io/github/jMotif/SAX/coverage.svg?branch=master)](http://codecov.io/github/jMotif/SAX?branch=master) 
