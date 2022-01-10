@@ -41,3 +41,6 @@ jobs:
         flags: unittests
         name: codecov-umbrella
         verbose: true
+
+    - name: Run SonarScan
+      run: mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=jMotif_SAX
