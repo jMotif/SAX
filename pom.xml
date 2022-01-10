@@ -18,6 +18,8 @@
     <maven-findbugs-plugin.version>3.0.5</maven-findbugs-plugin.version>
     <maven-jacoco-plugin.version>0.8.7</maven-jacoco-plugin.version>
     <gpg.keyname>0xF96A2E08</gpg.keyname>
+    <sonar.organization>jmotif</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
 
   <dependencies>
