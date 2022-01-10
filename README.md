@@ -5,6 +5,8 @@ Time series symbolic discretization (approximation) with SAX
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax)
 [![License](http://img.shields.io/:license-gpl2-green.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/summary/new_code?id=jMotif_SAX)
+
 This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) and implements in Java:
   * Symbolic Aggregate approXimation (i.e., SAX) toolkit stack [1]
   * EMMA (Enumeration of Motifs through Matrix Approximation) algorithm for time series motif discovery [2]
