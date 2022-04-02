@@ -270,11 +270,26 @@ public class TSProcessor {
 
   /**
    * Z-Normalize routine.
+   * Single parameter version is for actual distance calculation.
+   * Double parameter version (include normalizationThreshold) is for SAX.
    * 
    * @param series the input timeseries.
    * @param normalizationThreshold the zNormalization threshold value.
    * @return Z-normalized time-series.
    */
+  
+  public double[] znorm(double[] series) {
+    double[] res = new double[series.length];
+    double mean = mean(series);
+    double sd = stDev(series);
+
+    for (int i = 0; i < res.length; i++) {
+      res[i] = (series[i] - mean) / sd;
+    }
+    return res;
+
+  }
+
   public double[] znorm(double[] series, double normalizationThreshold) {
     double[] res = new double[series.length];
     double sd = stDev(series);

@@ -238,7 +238,7 @@ public class HOTSAXImplementation {
 
         // fix the current subsequence trace
         double[] currentCandidateSeq = tp
-            .znorm(tp.subseriesByCopy(series, currentPos, currentPos + windowSize), nThreshold);
+            .znorm(tp.subseriesByCopy(series, currentPos, currentPos + windowSize));
 
         // let the search begin ..
         double nearestNeighborDist = Double.MAX_VALUE;
@@ -259,7 +259,7 @@ public class HOTSAXImplementation {
           // nextOccurrence + windowSize);
           // double dist = ed.distance(currentCandidateSeq, occurrenceSubsequence);
           double dist = distance(currentCandidateSeq, series, nextOccurrence,
-              nextOccurrence + windowSize, nThreshold);
+              nextOccurrence + windowSize);
           distanceCalls++;
 
           // keep track of best so far distance
@@ -314,8 +314,7 @@ public class HOTSAXImplementation {
             // double[] randomSubsequence = tp.subseriesByCopy(series, randomPos,
             // randomPos + windowSize);
             // double dist = ed.distance(currentCandidateSeq, randomSubsequence);
-            double dist = distance(currentCandidateSeq, series, randomPos, randomPos + windowSize,
-                nThreshold);
+            double dist = distance(currentCandidateSeq, series, randomPos, randomPos + windowSize);
             distanceCalls++;
 
             // keep track
@@ -673,16 +672,15 @@ public class HOTSAXImplementation {
    * Calculates the Euclidean distance between two points. Don't use this unless you need that.
    * 
    * @param subseries The first subsequence -- ASSUMED TO BE Z-normalized.
-   * @param series The second point.
+   * @param series The second subsequence.
    * @param from the initial index of the range to be copied, inclusive
    * @param to the final index of the range to be copied, exclusive. (This index may lie outside the
    * array.)
    * @param nThreshold z-Normalization threshold.
    * @return The Euclidean distance between z-Normalized versions of subsequences.
    */
-  private static double distance(double[] subseries, double[] series, int from, int to,
-      double nThreshold) throws Exception {
-    double[] subsequence = tp.znorm(tp.subseriesByCopy(series, from, to), nThreshold);
+  private static double distance(double[] subseries, double[] series, int from, int to) throws Exception {
+    double[] subsequence = tp.znorm(tp.subseriesByCopy(series, from, to));
     Double sum = 0D;
     for (int i = 0; i < subseries.length; i++) {
       double tmp = subseries[i] - subsequence[i];
