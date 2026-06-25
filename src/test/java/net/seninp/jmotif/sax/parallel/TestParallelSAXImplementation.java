@@ -1,6 +1,8 @@
 package net.seninp.jmotif.sax.parallel;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
 import org.junit.Test;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
@@ -25,6 +27,28 @@ public class TestParallelSAXImplementation {
   private static final int ALPHABET_SIZE = 3;
 
   private static final double NORM_THRESHOLD = 0.001;
+
+  /**
+   * Asserts that two SAX results are identical as full index-&gt;word maps: same set of indices and
+   * the same word at every index. This is stronger than the legacy split-on-space comparison, which
+   * only checked the first min(len1,len2) words by position and therefore silently accepted a
+   * divergent word count (trailing truncation or trailing extra words at a seam).
+   *
+   * @param expected the reference (sequential) result.
+   * @param actual the parallel result.
+   * @param context a label for assertion messages.
+   */
+  private static void assertSameMap(SAXRecords expected, SAXRecords actual, String context) {
+    ArrayList<Integer> expKeys = expected.getAllIndices();
+    ArrayList<Integer> actKeys = actual.getAllIndices();
+    assertEquals(context + ": word count must match", expKeys.size(), actKeys.size());
+    assertEquals(context + ": index set must match", expKeys, actKeys);
+    for (int i : expKeys) {
+      String e = String.valueOf(expected.getByIndex(i).getPayload());
+      String a = String.valueOf(actual.getByIndex(i).getPayload());
+      assertEquals(context + ": word at index " + i, e, a);
+    }
+  }
 
   /**
    * Test parallel SAX conversion.
@@ -198,5 +222,83 @@ public class TestParallelSAXImplementation {
       }
     }
 
+  }
+
+  /**
+   * Strict equality: parallel must reproduce the sequential result as an exact index-&gt;word map
+   * (same keys, same words, same count) for every strategy and thread count -- including the
+   * single-threaded (threadsNum == 1) rollback path. This catches word-count divergences at seams
+   * that the legacy split-on-space comparisons miss.
+   *
+   * @throws Exception if error occurs.
+   */
+  @Test
+  public void testParallelSAXStrictMapEquality() throws Exception {
+
+    SAXProcessor sp = new SAXProcessor();
+    NormalAlphabet na = new NormalAlphabet();
+
+    double[] ts = TSProcessor.readFileColumn(TEST_DATA, 0, 0);
+
+    ParallelSAXImplementation ps = new ParallelSAXImplementation();
+
+    for (NumerosityReductionStrategy strategy : NumerosityReductionStrategy.values()) {
+
+      SAXRecords sequentialRes = sp.ts2saxViaWindow(ts, WINDOW_SIZE, PAA_SIZE,
+          na.getCuts(ALPHABET_SIZE), strategy, NORM_THRESHOLD);
+
+      for (int threadsNum = 1; threadsNum <= 8; threadsNum++) {
+        SAXRecords parallelRes = ps.process(ts, threadsNum, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
+            strategy, NORM_THRESHOLD);
+        assertSameMap(sequentialRes, parallelRes,
+            "strategy=" + strategy + ", threads=" + threadsNum);
+      }
+    }
+  }
+
+  /**
+   * Order-independence regression test. The chunk results merge in nondeterministic completion
+   * order, so a merge that relies on completion order can produce a different result run-to-run.
+   * This is most easily triggered when the same SAX word repeats across several consecutive chunk
+   * boundaries (e.g. a near-constant series), where an incremental seam dedup can leave a duplicate
+   * behind on some completion orders but not others. We run each configuration many times so that a
+   * variety of completion orders are exercised, and assert that every run reproduces the sequential
+   * result exactly.
+   *
+   * @throws Exception if error occurs.
+   */
+  @Test
+  public void testParallelSAXOrderIndependence() throws Exception {
+
+    SAXProcessor sp = new SAXProcessor();
+    NormalAlphabet na = new NormalAlphabet();
+
+    // a near-constant series: almost every window maps to the same word, so chunk seams repeatedly
+    // land on identical words -- the worst case for an order-dependent seam dedup.
+    double[] flat = new double[2299];
+    java.util.Random rnd = new java.util.Random(42);
+    for (int i = 0; i < flat.length; i++) {
+      flat[i] = 5.0 + rnd.nextDouble() * 1e-4;
+    }
+
+    final int window = 160;
+    final int repeats = 20;
+
+    ParallelSAXImplementation ps = new ParallelSAXImplementation();
+
+    for (NumerosityReductionStrategy strategy : NumerosityReductionStrategy.values()) {
+
+      SAXRecords sequentialRes = sp.ts2saxViaWindow(flat, window, PAA_SIZE, na.getCuts(ALPHABET_SIZE),
+          strategy, NORM_THRESHOLD);
+
+      for (int threadsNum = 2; threadsNum <= 8; threadsNum++) {
+        for (int rep = 0; rep < repeats; rep++) {
+          SAXRecords parallelRes = ps.process(flat, threadsNum, window, PAA_SIZE, ALPHABET_SIZE,
+              strategy, NORM_THRESHOLD);
+          assertSameMap(sequentialRes, parallelRes,
+              "strategy=" + strategy + ", threads=" + threadsNum + ", rep=" + rep);
+        }
+      }
+    }
   }
 }

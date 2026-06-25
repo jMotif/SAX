@@ -2,7 +2,6 @@ package net.seninp.jmotif.sax.parallel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
@@ -25,9 +24,6 @@ import net.seninp.jmotif.sax.datastructure.SAXRecords;
  * @author psenin
  */
 public class ParallelSAXImplementation {
-
-  // locale, charset, etc
-  static final int COMPLETED_FLAG = -1;
 
   // logging stuff
   //
@@ -76,18 +72,15 @@ public class ParallelSAXImplementation {
     executorService = Executors.newFixedThreadPool(threadsNum);
     LOGGER.debug("Created thread pool of {} threads", threadsNum);
 
-    NumerosityReductionStrategy nrStrategy = NumerosityReductionStrategy
-        .fromValue(numRedStrategy.index());
     //
-    // *** I can't figure out how to process MINDIST in parallel for now, rolling back onto failsafe
-    // implementation
+    // Numerosity reduction (EXACT and MINDIST) is order-dependent and therefore cannot be applied
+    // safely inside the parallel workers, whose results merge in nondeterministic completion order.
+    // Each worker always runs with NONE so the full, contiguous window-start sequence is
+    // reconstructed regardless of merge order; the requested reduction is then applied as a single
+    // deterministic post-pass over the merged, index-sorted result (identical to the sequential
+    // implementation in SAXProcessor.ts2saxViaWindow).
     //
-    if (NumerosityReductionStrategy.MINDIST.equals(nrStrategy)) {
-      LOGGER.warn(
-          "Unable to run with {} numerosity reduction stategy in parallel -- rolling back to NONE implementation and post-pruning.",
-          nrStrategy);
-      nrStrategy = NumerosityReductionStrategy.NONE;
-    }
+    NumerosityReductionStrategy nrStrategy = NumerosityReductionStrategy.NONE;
 
     ExecutorCompletionService<HashMap<Integer, char[]>> completionService = new ExecutorCompletionService<HashMap<Integer, char[]>>(
         executorService);
@@ -101,7 +94,12 @@ public class ParallelSAXImplementation {
     // first chunk takes on the uneven division
     //
     int evenIncrement = timeseries.length / threadsNum;
-    if (evenIncrement <= slidingWindowSize) {
+    // The chunking/merge logic below assumes at least two chunks (a distinct first and last
+    // chunk). With a single thread there is exactly one chunk worth of work, so the "last chunk"
+    // would be submitted as a second task writing completedChunks[1] on a size-1 array, and the
+    // first chunk would over-read the series past its end. Route the single-threaded case (and
+    // any chunk that is too small to yield a window start) to the sequential implementation.
+    if (threadsNum <= 1 || evenIncrement <= slidingWindowSize) {
       LOGGER.warn("Unable to run with {} threads. Rolling back to single-threaded implementation.",
           threadsNum);
       return sp.ts2saxViaWindow(timeseries, slidingWindowSize, paaSize, na.getCuts(alphabetSize),
@@ -156,9 +154,6 @@ public class ParallelSAXImplementation {
 
     executorService.shutdown();
 
-    // the array of completed tasks
-    int[] completedChunks = new int[threadsNum];
-
     try {
       while (totalTaskCounter > 0) {
 
@@ -180,201 +175,16 @@ public class ParallelSAXImplementation {
           //
           HashMap<Integer, char[]> chunkRes = finished.get();
 
-          // ArrayList<Integer> keys = new ArrayList<Integer>();
-          // for (int i : chunkRes.keySet()) {
-          // keys.add(i);
-          // }
-          // Collections.sort(keys);
-          // for (int i : keys) {
-          // System.out.println(i + "," + String.valueOf(chunkRes.get(i)));
-          // }
+          LOGGER.debug("job with stamp {} has finished", chunkRes.get(-1));
 
-          // get the real job index out
-          //
-          int idx = (int) (Long.parseLong(String.valueOf(chunkRes.get(-1))) - tstamp);
-
-          LOGGER.debug("job with stamp {} of chunk {} has finished", chunkRes.get(-1), idx);
-          LOGGER.debug("current completion status: {} completion flag: {}",
-              Arrays.toString(completedChunks), COMPLETED_FLAG);
-
+          // drop the job-id marker entry
           chunkRes.remove(-1);
 
-          if (0 == res.size() || nrStrategy.equals(NumerosityReductionStrategy.NONE)) {
-            res.addAll(chunkRes);
-            completedChunks[idx] = COMPLETED_FLAG;
-            if (nrStrategy.equals(NumerosityReductionStrategy.NONE)) {
-              LOGGER.debug("merged in as is because the NR strategy is NONE");
-            }
-            else {
-              LOGGER.debug("merged in as is because the result id empty");
-            }
-          }
-          else {
-
-            LOGGER.debug("processing chunk {}; res has results already...", idx);
-
-            // the very first chunk has ID=0
-            //
-            if (0 == idx) {
-              completedChunks[0] = COMPLETED_FLAG;
-
-              if (completedChunks[1] == COMPLETED_FLAG) {
-
-                LOGGER.debug("this is the very first chunk, merging the tail only");
-
-                // chunk tail
-                int chunkTailIndex = Collections.max(chunkRes.keySet());
-                String tailStr = String.valueOf(chunkRes.get(chunkTailIndex));
-
-                // res head
-                int resultHeadIndex = res.getMinIndex();
-                SAXRecord resultHead = res.getByIndex(resultHeadIndex);
-                String headStr = String.valueOf(resultHead.getPayload());
-
-                // print the log
-                LOGGER.debug("first index in the res {} for {}, last index in head {} for {}",
-                    resultHeadIndex, headStr, chunkTailIndex, headStr);
-
-                // if the last entry equals the first, drop the first
-                if (nrStrategy.equals(NumerosityReductionStrategy.EXACT)
-                    && headStr.equalsIgnoreCase(tailStr)) {
-                  LOGGER.debug("res head {} at {} is dropped in favor of head tail {} at {}",
-                      headStr, resultHeadIndex, tailStr, chunkTailIndex);
-                  res.dropByIndex(resultHeadIndex);
-                }
-                // else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                // && (sp.checkMinDistIsZero(tailStr.toCharArray(), headStr.toCharArray()))) {
-                // LOGGER.debug("res head " + headStr + " at " + resultHeadIndex
-                // + " is dropped in favor of head tail " + tailStr + " at " + chunkTailIndex);
-                // res.dropByIndex(resultHeadIndex);
-                //
-                // }
-              }
-              else {
-                LOGGER.debug(
-                    "this is the very first chunk, but second is not yet in the results, merging all in");
-              }
-              res.addAll(chunkRes);
-            }
-            else if (threadsNum - 1 == idx) {
-              completedChunks[idx] = COMPLETED_FLAG;
-
-              if (completedChunks[idx - 1] == COMPLETED_FLAG) {
-
-                LOGGER.debug("this is the very last chunk, merging the head only");
-
-                int chunkHeadIndex = Collections.min(chunkRes.keySet());
-                String headStr = String.valueOf(chunkRes.get(chunkHeadIndex));
-
-                // find the RES last index
-                int resultTailIndex = res.getMaxIndex();
-                SAXRecord resTail = res.getByIndex(resultTailIndex);
-                String resStr = String.valueOf(resTail.getPayload());
-
-                LOGGER.debug("last index in the res {} for {}, first index in the tail {} for {}",
-                    resultTailIndex, resStr, chunkHeadIndex, headStr);
-
-                // if the last entry equals the first, drop the first
-                if (nrStrategy.equals(NumerosityReductionStrategy.EXACT)
-                    && resStr.equalsIgnoreCase(headStr)) {
-                  LOGGER.debug("chunk head {} at {} is dropped in favor of res tail {} at {}",
-                      headStr, chunkHeadIndex, resStr, resultTailIndex);
-                  chunkRes.remove(chunkHeadIndex);
-                }
-                // else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                // && (sp.checkMinDistIsZero(headStr.toCharArray(), resStr.toCharArray()))) {
-                // LOGGER.debug("chunk head " + headStr + " at " + chunkHeadIndex
-                // + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
-                // chunkRes.remove(chunkHeadIndex);
-                // }
-              }
-              else {
-                LOGGER.debug(
-                    "this is the very last chunk, but previous is not yet in the results, merging all in");
-              }
-              res.addAll(chunkRes);
-            }
-            else {
-              // the other chunks
-              //
-              completedChunks[idx] = COMPLETED_FLAG;
-
-              LOGGER.debug("processing chunk {}", idx);
-
-              if (completedChunks[idx - 1] == COMPLETED_FLAG) {
-
-                LOGGER.debug("previous chunk was completed, merging in");
-
-                int chunkHeadIndex = Collections.min(chunkRes.keySet());
-                String headStr = String.valueOf(chunkRes.get(chunkHeadIndex));
-
-                // find the RES last index
-                int tmpIdx = chunkHeadIndex;
-                while (null == res.getByIndex(tmpIdx)) {
-                  tmpIdx--;
-                }
-                int resultTailIndex = tmpIdx;
-                SAXRecord resTail = res.getByIndex(resultTailIndex);
-                String resStr = String.valueOf(resTail.getPayload());
-
-                LOGGER.debug("last index in the res {} for {}, first index in the chunk {} for {}",
-                    resultTailIndex, resStr, chunkHeadIndex, headStr);
-
-                // if the last entry equals the first, drop the first
-                if (nrStrategy.equals(NumerosityReductionStrategy.EXACT)
-                    && resStr.equalsIgnoreCase(headStr)) {
-                  LOGGER.debug("chunk head {} at {} is dropped in favor of res tail {} at {}",
-                      headStr, chunkHeadIndex, resStr, resultTailIndex);
-                  chunkRes.remove(chunkHeadIndex);
-                }
-                // else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                // && (sp.checkMinDistIsZero(headStr.toCharArray(), resStr.toCharArray()))) {
-                // LOGGER.debug("chunk head " + headStr + " at " + chunkHeadIndex
-                // + " is dropped in favor of res tail " + resStr + " at " + resultTailIndex);
-                // chunkRes.remove(chunkHeadIndex);
-                // }
-              }
-
-              if (completedChunks[idx + 1] == COMPLETED_FLAG) {
-
-                LOGGER.debug("next chunk was completed, merging the tail");
-
-                // chunk tail
-                int chunkTailIdx = Collections.max(chunkRes.keySet());
-                String tailStr = String.valueOf(chunkRes.get(chunkTailIdx));
-
-                // res head
-                int tmpIdx = chunkTailIdx;
-                while (null == res.getByIndex(tmpIdx)) {
-                  tmpIdx++;
-                }
-                int resultHeadIndex = tmpIdx;
-                SAXRecord resultHead = res.getByIndex(resultHeadIndex);
-                String headStr = String.valueOf(resultHead.getPayload());
-
-                // print the log
-                LOGGER.debug("last index in the res {} for {}, first index in the chunk {} for {}",
-                    resultHeadIndex, headStr, chunkTailIdx, headStr);
-
-                // if the last entry equals the first, drop the first
-                if (nrStrategy.equals(NumerosityReductionStrategy.EXACT)
-                    && headStr.equalsIgnoreCase(tailStr)) {
-                  LOGGER.debug("chunk head {} at {} is dropped in favor of res tail {} at {}",
-                      headStr, resultHeadIndex, tailStr, chunkTailIdx);
-                  res.dropByIndex(resultHeadIndex);
-                }
-                // else if (nrStrategy.equals(NumerosityReductionStrategy.MINDIST)
-                // && (sp.checkMinDistIsZero(tailStr.toCharArray(), headStr.toCharArray()))) {
-                // LOGGER.debug("res head " + headStr + " at " + resultHeadIndex
-                // + " is dropped in favor of chunk tail " + tailStr + " at " + chunkTailIdx);
-                // res.dropByIndex(resultHeadIndex);
-                // }
-              }
-
-              res.addAll(chunkRes);
-
-            }
-          }
+          // Workers run with NONE, so chunk results never overlap in window-start index and merge
+          // order is irrelevant -- just collect every chunk's windows. The requested numerosity
+          // reduction is applied once, deterministically, after all chunks are merged.
+          //
+          res.addAll(chunkRes);
         }
         totalTaskCounter--;
       }
@@ -407,28 +217,36 @@ public class ParallelSAXImplementation {
 
     }
 
-    if (NumerosityReductionStrategy.MINDIST.equals(numRedStrategy)) {
-
-      // need to prune the result according to MINDIST strategy
+    // Apply the requested numerosity reduction as a single deterministic post-pass over the
+    // merged, index-sorted result. This walks the full NONE sequence in exactly the same order as
+    // the sequential SAXProcessor.ts2saxViaWindow loop, so EXACT/MINDIST produce identical output.
+    //
+    if (NumerosityReductionStrategy.EXACT.equals(numRedStrategy)
+        || NumerosityReductionStrategy.MINDIST.equals(numRedStrategy)) {
 
       SAXRecords newRes = new SAXRecords();
       ArrayList<Integer> keys = res.getAllIndices();
-      char[] oldStr = null;
+      char[] previousStr = null;
       for (int i : keys) {
 
         SAXRecord entry = res.getByIndex(i);
 
-        if (null != oldStr && sp.checkMinDistIsZero(entry.getPayload(), oldStr)) {
-          continue;
+        if (null != previousStr) {
+          if (NumerosityReductionStrategy.EXACT.equals(numRedStrategy)
+              && Arrays.equals(entry.getPayload(), previousStr)) {
+            continue;
+          }
+          else if (NumerosityReductionStrategy.MINDIST.equals(numRedStrategy)
+              && sp.checkMinDistIsZero(entry.getPayload(), previousStr)) {
+            continue;
+          }
         }
 
         newRes.add(entry.getPayload(), i);
-        oldStr = entry.getPayload();
-
+        previousStr = entry.getPayload();
       }
 
       res = newRes;
-
     }
 
     return res;
