@@ -62,7 +62,7 @@ The code is written in Java and I use maven to build it. Use the profile `single
 	
 	...
 	
-	[INFO] Building jar: /media/Stock/git/jmotif-sax/target/jmotif-sax-1.0.1-SNAPSHOT-jar-with-dependencies.jar
+	[INFO] Building jar: /media/Stock/git/jmotif-sax/target/jmotif-sax-1.3.0-SNAPSHOT-jar-with-dependencies.jar
 	[INFO] ------------------------------------------------------------------------
 	[INFO] BUILD SUCCESSFUL
 
@@ -70,7 +70,7 @@ The code is written in Java and I use maven to build it. Use the profile `single
 ------------
 The jar file can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
 
-	$ java -jar target/jmotif-sax-0.1.1-SNAPSHOT-jar-with-dependencies.jar
+	$ java -jar target/jmotif-sax-1.3.0-SNAPSHOT-jar-with-dependencies.jar
 	Usage: <main class> [options] 
   	Options:
     		--alphabet_size, -a
@@ -93,7 +93,7 @@ The jar file can be used to convert a time series (represented as a single-colum
 
 When run, it prints the time series point index and a corresponding word:
 
- 	$ java -jar "target/jmotif-sax-1.0.1-SNAPSHOT-jar-with-dependencies.jar" \ 
+ 	$ java -jar "target/jmotif-sax-1.3.0-SNAPSHOT-jar-with-dependencies.jar" \ 
  	                      -d src/resources/test-data/ecg0606_1.csv -o test.txt
  	$ head test.txt
  	0, aabc
@@ -116,10 +116,10 @@ There two classes implementing end-to-end workflow for SAX. These are [TSProcess
 	double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
 	
 	// perform the discretization
-	String str = sp.ts2saxByChunking(ts, paaSize, na.getCuts(alphabetSize), nThreshold);
+	SAXRecords res = sp.ts2saxByChunking(ts, paaSize, na.getCuts(alphabetSize), nThreshold);
 
 	// print the output
-	System.out.println(str);
+	System.out.println(res.getSAXString(""));
 
 #### 3.2 Discretizing time-series *via sliding window*:
 
@@ -188,7 +188,7 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
         		NR_STRATEGY, NORM_THRESHOLD);
         		
 	// get the list of 10 most frequent SAX words
-	ArrayList<SAXRecord> motifs = saxData.getMotifs(10);
+	ArrayList<SAXRecord> motifs = saxData.getSimpleMotifs(10);
 	SAXRecord topMotif = motifs.get(0);
         
 	// print motifs
@@ -200,7 +200,7 @@ Class [SAXRecords](https://github.com/jMotif/SAX/blob/master/src/main/java/net/s
 The [BruteForceDiscordImplementation](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/discord/BruteForceDiscordImplementation.java) class implements a brute-force search for discords, which is intended to be used as a reference in tests (HOTSAX and NONE yield exactly the same discords).
 
  	discordsBruteForce = BruteForceDiscordImplementation.series2BruteForceDiscords(series, 
- 	   WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm());
+ 	   WIN_SIZE, DISCORDS_TO_TEST, new LargeWindowAlgorithm(), NORM_THRESHOLD);
         
         for (DiscordRecord d : discordsBruteForce) {
            System.out.println("brute force discord " + d.toString());
@@ -246,6 +246,11 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
 
 #### Versions:
+`1.3.0` 
+  * z-normalization aligned to the *population* standard deviation (divide by `n`), matching the saxpy reference; SAX words for values close to a Gaussian breakpoint may differ from earlier releases
+  * HOT-SAX and brute-force discord search now compute distances on z-normalized subsequences, break ties by the lowest index, and exclude the trivial-match neighborhood of `±(windowSize - 1)`; reported discord positions/distances may differ from earlier releases
+  * EMMA correctness fixes -- removed an unsound early-stop and added deterministic tie-breaking
+
 `1.1.4` 
   * fixing EMMA for a case of "tie" -- chosing a motif with the smallest variance
   
