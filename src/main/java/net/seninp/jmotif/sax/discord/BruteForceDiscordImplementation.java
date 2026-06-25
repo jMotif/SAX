@@ -139,8 +139,9 @@ public class BruteForceDiscordImplementation {
       while (-1 != (innerIdx = innerRegistry.getNextRandomUnvisitedPosition())) { // inner loop
         innerRegistry.markVisited(innerIdx);
 
-        if (Math.abs(outerIdx - innerIdx) > windowSize) { // > means they shall not overlap even
-                                                          // over a single point
+        if (Math.abs(outerIdx - innerIdx) >= windowSize) { // >= : non-overlapping
+                                                           // (adjacent at exactly windowSize is
+                                                           // valid; matches saxpy)
 
           double[] currentSubsequence = tsProcessor.znorm(
               tsProcessor.subseriesByCopy(series, innerIdx, innerIdx + windowSize), nThreshold);
@@ -157,8 +158,11 @@ public class BruteForceDiscordImplementation {
 
       }
 
+      // strictly larger NN distance, or exact tie with a smaller position
+      // (deterministic lowest-index tie-break, matching saxpy)
       if (!(Double.isInfinite(nearestNeighborDistance))
-          && nearestNeighborDistance > bestSoFarDistance) {
+          && (nearestNeighborDistance > bestSoFarDistance
+              || (nearestNeighborDistance == bestSoFarDistance && outerIdx < bestSoFarPosition))) {
         bestSoFarDistance = nearestNeighborDistance;
         bestSoFarPosition = outerIdx;
         LOGGER.trace("discord updated: pos {}, dist {}", bestSoFarPosition, bestSoFarDistance);

@@ -146,7 +146,9 @@ public class HOTSAXImplementation {
 
       // and maintain data structures
       //
-      int markStart = bestDiscord.getPosition() - windowSize;
+      // global exclusion zone +/-(windowSize-1) around the found discord (loop
+      // end is exclusive), matching saxpy.
+      int markStart = bestDiscord.getPosition() - windowSize + 1;
       if (markStart < 0) {
         markStart = 0;
       }
@@ -223,14 +225,11 @@ public class HOTSAXImplementation {
         LOGGER.trace("conducting search for {} at {}, iteration {}", currentWord, currentPos,
             iterationCounter);
 
-        int markStart = currentPos - windowSize;
-        // if (markStart < 0) {
-        // markStart = 0;
-        // }
-        int markEnd = currentPos + windowSize;
-        // if (markEnd > series.length) {
-        // markEnd = series.length;
-        // }
+        // self-exclusion zone +/-(windowSize-1): the windows at exactly
+        // +/-windowSize are non-overlapping and ARE valid NN candidates
+        // (matches saxpy; previously this used +/-windowSize and excluded them).
+        int markStart = currentPos - windowSize + 1;
+        int markEnd = currentPos + windowSize - 1;
 
         // all the candidates we are not going to try
         HashSet<Integer> alreadyVisited = new HashSet<Integer>(
@@ -340,7 +339,12 @@ public class HOTSAXImplementation {
 
         } // end of random search loop
 
-        if (nearestNeighborDist > bestSoFarDistance && nearestNeighborDist < Double.MAX_VALUE) {
+        // Update on a strictly larger NN distance, or on an exact tie with a
+        // smaller position -- a deterministic lowest-index tie-break so the
+        // result is independent of the (RNG-driven) visit order (matches saxpy).
+        if (nearestNeighborDist < Double.MAX_VALUE
+            && (nearestNeighborDist > bestSoFarDistance
+                || (nearestNeighborDist == bestSoFarDistance && currentPos < bestSoFarPosition))) {
           LOGGER.debug("discord updated: pos {}, dist {}", currentPos, bestSoFarDistance);
           bestSoFarDistance = nearestNeighborDist;
           bestSoFarPosition = currentPos;
