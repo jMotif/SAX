@@ -123,7 +123,8 @@ public class TestTSProcessor {
    */
   @Test
   public void testStdev() {
-    assertEquals("stdev", 2.640316, tsp.stDev(ts1), delta);
+    // Population std (divide by n) as of 2.1.0; was 2.640316 with sample std.
+    assertEquals("stdev", 2.550787, tsp.stDev(ts1), delta);
   }
 
   /**

@@ -32,10 +32,12 @@ public class TestApproxDistance {
 
       distZnorm = sp.approximationDistancePAA(series, 15, 7, 0.01);
       distZnorm = sp.approximationDistancePAA(series2, 15, 7, 0.01);
-      assertEquals("testing approx distance", 0.1192569, distZnorm, 0.000001);
+      // population-std znorm (2.1.0); was 0.1192569 with sample std.
+      assertEquals("testing approx distance", 0.12344268, distZnorm, 0.000001);
 
       double newApproximationDistance = sp.approximationDistanceAlphabet(series, 15, 7, 3, 0.01);
-      assertEquals("testing approx distance", 0.2764062, newApproximationDistance, 0.01);
+      // population-std znorm (2.1.0); was 0.2764062 with sample std.
+      assertEquals("testing approx distance", 0.2879032, newApproximationDistance, 0.01);
     }
     catch (Exception e) {
       fail("exception shall not be thrown!");

@@ -265,7 +265,12 @@ public class TSProcessor {
       count += 1;
     }
     double len = ((Integer) count).doubleValue();
-    return Math.sqrt((len * num0 - sum * sum) / (len * (len - 1)));
+    // Population standard deviation (divide by n, not n-1). Matches the Matrix
+    // Profile / MASS convention and the saxpy reference, and makes each
+    // normalized window have empirical variance exactly 1 -- the assumption
+    // behind SAX's equiprobable Gaussian breakpoints. (Aligned 2026-06; was
+    // (len*(len-1)), i.e. sample std.)
+    return Math.sqrt((len * num0 - sum * sum) / (len * len));
   }
 
   /**

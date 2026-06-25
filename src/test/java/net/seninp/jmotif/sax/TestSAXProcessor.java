@@ -30,11 +30,13 @@ public class TestSAXProcessor {
   private static final String ts2File = "src/resources/test-data/timeseries02.csv";
   private static final String ts3File = "src/resources/test-data/timeseries03.csv";
 
-  private static final String ts1StrRep10 = "bcjkiheebb";
-  private static final String ts2StrRep10 = "bcefgijkdb";
+  // SAX strings under the 2.1.0 population-std znorm (divide by n); a few
+  // letters near a breakpoint shifted vs the previous sample-std convention.
+  private static final String ts1StrRep10 = "bcjkjheebb";
+  private static final String ts2StrRep10 = "bcefgijkcb";
 
-  private static final String ts1StrRep14 = "bcdijjhgfeecbb";
-  private static final String ts2StrRep14 = "bbdeeffhijjfbb";
+  private static final String ts1StrRep14 = "bbdijjigfeecbb";
+  private static final String ts2StrRep14 = "abdeeffhijjfbb";
 
   private static final String ts1StrRep7 = "bcggfddba";
   private static final String ts2StrRep7 = "accdefgda";
