@@ -48,12 +48,12 @@ public class BruteForceMotifImplementation {
     int bestMotifLiocation = -1;
     ArrayList<Integer> bestMotifOccurrences = null;
 
-    for (int i = 0; i < (series.length - motifSize); i++) {
+    for (int i = 0; i <= (series.length - motifSize); i++) {
 
       int count = 0;
       ArrayList<Integer> occurrences = new ArrayList<Integer>();
 
-      for (int j = 0; j < (series.length - motifSize); j++) {
+      for (int j = 0; j <= (series.length - motifSize); j++) {
         if (isNonTrivialMatch(series, i, j, motifSize, range, znormThreshold)) {
           count++;
           occurrences.add(j);

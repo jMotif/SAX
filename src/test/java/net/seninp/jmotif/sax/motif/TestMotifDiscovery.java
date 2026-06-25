@@ -82,4 +82,44 @@ public class TestMotifDiscovery {
       fail("It shouldnt fail, but failed with " + StackTrace.toString(e));
     }
   }
+
+  /**
+   * Sweep several motif-size / range / PAA / alphabet combinations and assert
+   * EMMA agrees with the brute-force oracle on every one. The single-config test
+   * above passed even while EMMA had real bugs (an unsound early-stop that
+   * under-reported the motif frequency, and an ADM tie-break that ignored the
+   * paper's lowest-variance rule); those only surfaced away from that config, so
+   * this guards against regressing them. Uses an 800-point prefix to keep the
+   * O(n^2) brute force fast.
+   */
+  @Test
+  public void testEMMAvsBruteForceSweep() {
+    try {
+      double[] s = java.util.Arrays.copyOf(series, 800);
+      int[] motifSizes = { 60, 100 };
+      double[] ranges = { 0.8, 1.5, 2.5, 3.5 };
+      int[] paaSizes = { 4, 6 };
+      int[] alphabetSizes = { 4, 5 };
+      for (int ms : motifSizes) {
+        for (double r : ranges) {
+          for (int paa : paaSizes) {
+            for (int alpha : alphabetSizes) {
+              MotifRecord bf = BruteForceMotifImplementation.series2BruteForceMotifs(s, ms, r,
+                  ZNORM_THRESHOLD);
+              MotifRecord em = EMMAImplementation.series2EMMAMotifs(s, ms, r, paa, alpha,
+                  ZNORM_THRESHOLD);
+              String cfg = "ms=" + ms + " r=" + r + " paa=" + paa + " alpha=" + alpha;
+              assertEquals("EMMA frequency must match brute force for " + cfg, bf.getFrequency(),
+                  em.getFrequency());
+              assertEquals("EMMA occurrences must match brute force for " + cfg, bf.getOccurrences(),
+                  em.getOccurrences());
+            }
+          }
+        }
+      }
+    }
+    catch (Exception e) {
+      fail("It shouldnt fail, but failed with " + StackTrace.toString(e));
+    }
+  }
 }

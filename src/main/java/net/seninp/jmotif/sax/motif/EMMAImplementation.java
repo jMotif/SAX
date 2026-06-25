@@ -58,12 +58,11 @@ public class EMMAImplementation {
       int paaSize, int alphabetSize, double znormThreshold) throws Exception {
 
     MotifRecord res = new MotifRecord(-1, new ArrayList<Integer>());
-    boolean finished = false;
 
     HashMap<String, ArrayList<Integer>> buckets = new HashMap<String, ArrayList<Integer>>(
         (int) Math.pow(paaSize, alphabetSize));
 
-    for (int i = 0; i < (series.length - motifSize); i++) {
+    for (int i = 0; i <= (series.length - motifSize); i++) {
       String sax = String.valueOf(tp.ts2String(
           tp.paa(tp.znorm(tp.subseriesByCopy(series, i, i + motifSize), znormThreshold), paaSize),
           normalA.getCuts(alphabetSize)));
@@ -85,21 +84,36 @@ public class EMMAImplementation {
       }
     });
 
+    // Degenerate input: a series too short for even one window yields no
+    // buckets. Return the empty motif rather than indexing an empty list.
+    if (bucketsOrder.isEmpty()) {
+      return res;
+    }
+
     double[][] dm = normalA.getDistanceMatrix(alphabetSize);
-    int currBucketIdx = 0;
 
-    JmotifMapEntry<Integer, String> MPC = bucketsOrder.get(currBucketIdx);
-    ArrayList<Integer> neighborhood = new ArrayList<Integer>(buckets.get(MPC.getValue()));
+    // Process every bucket as a candidate MPC, densest first. The admissible
+    // speedup is the MINDIST neighborhood pruning below (buckets farther than
+    // `range` in MINDIST cannot contain a true match, so they are skipped); the
+    // previous early-stop -- comparing the best frequency to the NEXT bucket's
+    // raw size -- was unsound because an EMMA motif aggregates matches across
+    // many buckets, so a small bucket can still seed a larger motif. We instead
+    // examine all buckets and keep the best, which the brute force confirms.
+    for (int currBucketIdx = 0; currBucketIdx < bucketsOrder.size(); currBucketIdx++) {
 
-    while (!(finished) && (currBucketIdx < bucketsOrder.size()) && (neighborhood.size() > 2)) {
+      JmotifMapEntry<Integer, String> MPC = bucketsOrder.get(currBucketIdx);
+      ArrayList<Integer> neighborhood = new ArrayList<Integer>(buckets.get(MPC.getValue()));
 
-      if (currBucketIdx < (bucketsOrder.size() - 1)) {
-        for (int i = currBucketIdx + 1; i < bucketsOrder.size(); i++) {
-          String cWord = bucketsOrder.get(i).getValue();
-          if (range > sp.saxMinDist(MPC.getValue().toCharArray(), cWord.toCharArray(), dm,
-              motifSize, paaSize)) {
-            neighborhood.addAll(buckets.get(cWord));
-          }
+      for (int i = 0; i < bucketsOrder.size(); i++) {
+        if (i == currBucketIdx) {
+          continue;
+        }
+        String cWord = bucketsOrder.get(i).getValue();
+        // >= : a bucket whose MINDIST equals `range` can still hold a member at
+        // true distance exactly `range` (a valid match), so include it.
+        if (range >= sp.saxMinDist(MPC.getValue().toCharArray(), cWord.toCharArray(), dm,
+            motifSize, paaSize)) {
+          neighborhood.addAll(buckets.get(cWord));
         }
       }
 
@@ -151,20 +165,6 @@ public class EMMAImplementation {
 
       }
 
-      if ((currBucketIdx < (bucketsOrder.size() - 1))
-          && (tmpRes.getFrequency() > bucketsOrder.get(currBucketIdx + 1).getKey())) {
-        finished = true;
-      }
-      else {
-        currBucketIdx++;
-        if (currBucketIdx == bucketsOrder.size()) {
-          // we processed all buckets up in here -- break out
-          break;
-        }
-        MPC = bucketsOrder.get(currBucketIdx);
-        neighborhood = new ArrayList<Integer>(buckets.get(MPC.getValue()));
-      }
-
     }
 
     return res;
@@ -205,6 +205,7 @@ public class EMMAImplementation {
     }
 
     int maxCount = 0;
+    double bestVar = Double.MAX_VALUE;
     for (int i = 0; i < neighborhood.size(); i++) {
 
       int tmpCounter = 0;
@@ -215,15 +216,34 @@ public class EMMAImplementation {
         }
       }
 
+      if (tmpCounter == 0) {
+        continue;
+      }
+
+      // Collect this seed's match occurrences.
+      ArrayList<Integer> occurrences = new ArrayList<>();
+      for (int j = 0; j < neighborhood.size(); j++) {
+        if (admDistances.get(i).get(j)) {
+          occurrences.add(neighborhood.get(j));
+        }
+      }
+
+      // Prefer the seed with the most matches; break count ties by LOWER
+      // variance of the match distances, per the EMMA paper (previously this
+      // used strict > on count alone, keeping an arbitrary first-index seed).
       if (tmpCounter > maxCount) {
         maxCount = tmpCounter;
-        ArrayList<Integer> occurrences = new ArrayList<>();
-        for (int j = 0; j < neighborhood.size(); j++) {
-          if (admDistances.get(i).get(j)) {
-            occurrences.add(neighborhood.get(j));
-          }
-        }
+        bestVar = matchDistanceVariance(series, neighborhood.get(i), occurrences, motifSize,
+            znormThreshold);
         res = new MotifRecord(neighborhood.get(i), occurrences);
+      }
+      else if (tmpCounter == maxCount) {
+        double v = matchDistanceVariance(series, neighborhood.get(i), occurrences, motifSize,
+            znormThreshold);
+        if (v < bestVar) {
+          bestVar = v;
+          res = new MotifRecord(neighborhood.get(i), occurrences);
+        }
       }
 
     }
@@ -233,8 +253,33 @@ public class EMMAImplementation {
   }
 
   /**
+   * Variance of the z-normed Euclidean distances from a seed subsequence to each
+   * of its match occurrences -- used to break frequency ties (lower variance
+   * wins) per the EMMA paper.
+   *
+   * @param series the input timeseries.
+   * @param location the seed subsequence position.
+   * @param occurrences the seed's match positions.
+   * @param motifSize the motif length.
+   * @param znormThreshold z-normalization threshold.
+   * @return the variance of the match distances.
+   */
+  private static double matchDistanceVariance(double[] series, int location,
+      ArrayList<Integer> occurrences, int motifSize, double znormThreshold) throws Exception {
+    double[] seed = tp.znorm(tp.subseriesByCopy(series, location, location + motifSize),
+        znormThreshold);
+    double[] distances = new double[occurrences.size()];
+    for (int k = 0; k < occurrences.size(); k++) {
+      int loc = occurrences.get(k);
+      distances[k] = ed.distance(seed,
+          tp.znorm(tp.subseriesByCopy(series, loc, loc + motifSize), znormThreshold));
+    }
+    return tp.var(distances);
+  }
+
+  /**
    * Checks for the overlap and the range-configured distance.
-   * 
+   *
    * @param series the series to use.
    * @param i the position of subseries a.
    * @param j the position of subseries b.
