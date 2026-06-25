@@ -74,7 +74,16 @@ public class TestDiscordDiscoveryEXACT {
       Double d2 = discordsHash.get(i).getNNDistance();
       Double d3 = discordsOle.get(i).getNNDistance();
       assertEquals(d2, d3);
+      // positions, not just distances, must agree between the two hash impls.
+      assertEquals(discordsHash.get(i).getPosition(), discordsOle.get(i).getPosition());
     }
 
+    // Golden anchor for the top discord (z-normed /n, full series): without an
+    // absolute value, a uniform shift in BOTH hash implementations would pass
+    // the d2==d3 agreement check unnoticed. (Secondary discords legitimately
+    // differ from the brute force under EXACT numerosity reduction, so only the
+    // top discord is pinned.)
+    assertEquals(430, discordsHash.get(0).getPosition());
+    assertEquals(5.279080, discordsHash.get(0).getNNDistance(), 1e-6);
   }
 }

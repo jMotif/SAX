@@ -92,7 +92,19 @@ public class TestDiscordDiscoveryNONE {
       assertEquals(d1, d2);
       assertEquals(d1, d3);
 
+      // also assert the discord POSITION agrees across implementations -- a
+      // wrong-but-consistent distance would otherwise pass; with the
+      // deterministic lowest-index tie-break the positions must match too.
+      assertEquals(discordsBruteForce.get(i).getPosition(), discordsHash.get(i).getPosition());
+      assertEquals(discordsBruteForce.get(i).getPosition(), discordsOle.get(i).getPosition());
     }
 
+    // Golden anchor (z-normed /n distances on the 800-pt prefix): pins the
+    // actual top discords so a uniform shift across all three implementations
+    // cannot pass silently.
+    assertEquals(430, discordsBruteForce.get(0).getPosition());
+    assertEquals(5.329944, discordsBruteForce.get(0).getNNDistance(), 1e-6);
+    assertEquals(318, discordsBruteForce.get(1).getPosition());
+    assertEquals(4.337772, discordsBruteForce.get(1).getNNDistance(), 1e-6);
   }
 }

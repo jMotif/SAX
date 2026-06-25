@@ -85,6 +85,24 @@ public class TestSAXProcessor {
     LOGGER.debug("NONE with skips: there are " + saxData.getAllIndices().size() + " words: \n"
         + saxData.getSAXString(" ") + "\n" + saxData.getAllIndices());
 
+    // ts2saxViaWindowSkipping is z-norm-dependent; assert its CONTENT (golden
+    // values under the population-std /n znorm), not just that it is non-null.
+    // The skipping run must equal the NONE run minus exactly the 6 skipped
+    // window-start indices 24..29, with every surviving word unchanged.
+    assertEquals("NONE word count", 55, regularSAX.getAllIndices().size());
+    assertEquals("skipping word count (55 - 6 skipped)", 49, saxData.getAllIndices().size());
+    for (int i : saxData.getAllIndices()) {
+      assertTrue("skipped index " + i + " must be absent", i < 24 || i >= 30);
+      assertEquals("word at " + i + " must match the non-skipping run",
+          String.valueOf(regularSAX.getByIndex(i).getPayload()),
+          String.valueOf(saxData.getByIndex(i).getPayload()));
+    }
+    assertEquals("skipping NONE SAX string",
+        "cca cca bbc bac aac acb bca cba caa cab aac aac abc acc abc bbb acb bca bbb bac bbb acb bbb "
+            + "caa aac bba bca cbb bac aac abc acb bca cba caa bbb bbb acb abc bac bbb bca bca cba cab "
+            + "bac acc acc acc",
+        saxData.getSAXString(" ").trim());
+
     regularSAX = sp.ts2saxViaWindow(ts, 6, 3, normalA.getCuts(3), NumerosityReductionStrategy.EXACT,
         0.01);
     assertNotNull("asserting the processing result", regularSAX);
@@ -94,7 +112,11 @@ public class TestSAXProcessor {
         NumerosityReductionStrategy.EXACT, 0.01, skips);
     LOGGER.debug("EXACT with skips: there are " + saxData.getAllIndices().size() + " words: \n"
         + saxData.getSAXString(" ") + "\n" + saxData.getAllIndices());
-
+    assertEquals("skipping EXACT word count", 43, saxData.getAllIndices().size());
+    assertEquals("skipping EXACT SAX string",
+        "cca bbc bac aac acb bca cba caa cab aac abc acc abc bbb acb bca bbb bac bbb acb bbb caa aac "
+            + "bba bca cbb bac aac abc acb bca cba caa bbb acb abc bac bbb bca cba cab bac acc",
+        saxData.getSAXString(" ").trim());
   }
 
   /**

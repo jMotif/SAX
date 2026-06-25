@@ -36,8 +36,10 @@ public class TestApproxDistance {
       assertEquals("testing approx distance", 0.12344268, distZnorm, 0.000001);
 
       double newApproximationDistance = sp.approximationDistanceAlphabet(series, 15, 7, 3, 0.01);
-      // population-std znorm (2.1.0); was 0.2764062 with sample std.
-      assertEquals("testing approx distance", 0.2879032, newApproximationDistance, 0.01);
+      // population-std znorm (2.1.0); was 0.2764062 with sample std. Tight 1e-6
+      // delta: the old 0.01 tolerance was barely wider than the ~0.0115 znorm
+      // shift it absorbed, so a smaller convention change could have slipped by.
+      assertEquals("testing approx distance", 0.2879032, newApproximationDistance, 1e-6);
     }
     catch (Exception e) {
       fail("exception shall not be thrown!");

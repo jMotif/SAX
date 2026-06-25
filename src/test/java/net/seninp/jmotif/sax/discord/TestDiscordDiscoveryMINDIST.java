@@ -74,7 +74,14 @@ public class TestDiscordDiscoveryMINDIST {
       Double d2 = discordsHash.get(i).getNNDistance();
       Double d3 = discordsOle.get(i).getNNDistance();
       assertEquals(d3, d2);
+      // positions, not just distances, must agree between the two hash impls.
+      assertEquals(discordsHash.get(i).getPosition(), discordsOle.get(i).getPosition());
     }
 
+    // Golden anchor for the top discord (z-normed /n, full series), so a
+    // uniform shift in both hash implementations cannot pass the d2==d3
+    // agreement check unnoticed.
+    assertEquals(430, discordsHash.get(0).getPosition());
+    assertEquals(5.279080, discordsHash.get(0).getNNDistance(), 1e-6);
   }
 }

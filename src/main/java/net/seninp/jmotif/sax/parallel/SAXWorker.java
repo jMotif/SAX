@@ -118,7 +118,6 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
 
     // scan across the time series extract sub sequences, and convert
     // them to strings
-    char[] previousString = null;
     for (int i = this.intervalStart; i < this.intervalEnd - (this.saxWindowSize - 1); i++) {
 
       // fix the current subsection
@@ -133,23 +132,11 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
       // Convert the PAA to a string.
       char[] currentString = tsp.ts2String(paa, na.getCuts(this.saxAlphabetSize));
 
-      if (null != previousString) {
-
-        if (NumerosityReductionStrategy.EXACT.equals(this.numerosityReductionStrategy)
-            && Arrays.equals(previousString, currentString)) {
-          // NumerosityReduction
-          continue;
-        }
-        // there is no MINDIST at the moment
-        // else if (NumerosityReductionStrategy.MINDIST.equals(this.numerosityReductionStrategy)
-        // && sp.checkMinDistIsZero(previousString, currentString)) {
-        // continue;
-        // }
-
-      }
-
-      previousString = currentString;
-
+      // NB: no numerosity reduction here -- workers ALWAYS emit every window.
+      // EXACT/MINDIST reduction is order-dependent and is applied once,
+      // deterministically, as a post-pass in ParallelSAXImplementation after all
+      // chunks are merged. Reducing per-chunk here would reintroduce the
+      // completion-order-dependent seam bug that design removed.
       res.put(i, currentString);
 
       LOGGER.trace(this.id + ", " + String.valueOf(currentString) + ", " + i);
