@@ -324,6 +324,14 @@ public class TSProcessor {
       for (int i = 0; i < paaSize + 1; i++) {
         breaks[i] = i * pointsPerSegment;
       }
+      // The final break is paaSize * (len/paaSize), which should be exactly len
+      // but in IEEE-754 often rounds to len + epsilon (e.g. 7*(29/7) =
+      // 29.000000000000004). That makes floor(segEnd) == len for the last
+      // segment, so fractionEnd collapses to ~1e-15 (zeroing the last sample)
+      // and ceil(segEnd) == len + 1, an out-of-range read that today only works
+      // because Arrays.copyOfRange silently zero-pads. Snap it to len so the
+      // boundary is exact and in-range, matching the saxpy fractional PAA.
+      breaks[paaSize] = len;
 
       for (int i = 0; i < paaSize; i++) {
         double segStart = breaks[i];
