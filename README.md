@@ -62,7 +62,7 @@ The code is written in Java and I use maven to build it. Use the profile `single
 	
 	...
 	
-	[INFO] Building jar: /media/Stock/git/jmotif-sax/target/jmotif-sax-1.3.0-SNAPSHOT-jar-with-dependencies.jar
+	[INFO] Building jar: /media/Stock/git/jmotif-sax/target/jmotif-sax-2.0.0-jar-with-dependencies.jar
 	[INFO] ------------------------------------------------------------------------
 	[INFO] BUILD SUCCESSFUL
 
@@ -70,7 +70,7 @@ The code is written in Java and I use maven to build it. Use the profile `single
 ------------
 The jar file can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
 
-	$ java -jar target/jmotif-sax-1.3.0-SNAPSHOT-jar-with-dependencies.jar
+	$ java -jar target/jmotif-sax-2.0.0-jar-with-dependencies.jar
 	Usage: <main class> [options] 
   	Options:
     		--alphabet_size, -a
@@ -93,7 +93,7 @@ The jar file can be used to convert a time series (represented as a single-colum
 
 When run, it prints the time series point index and a corresponding word:
 
- 	$ java -jar "target/jmotif-sax-1.3.0-SNAPSHOT-jar-with-dependencies.jar" \ 
+ 	$ java -jar "target/jmotif-sax-2.0.0-jar-with-dependencies.jar" \ 
  	                      -d src/resources/test-data/ecg0606_1.csv -o test.txt
  	$ head test.txt
  	0, aabc
@@ -246,10 +246,12 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
 
 #### Versions:
-`1.3.0` 
+`2.0.0` 
+  * **the build now targets Java 21** (was Java 8); consumers need a JDK 21 or newer. Plugins refreshed (compiler 3.13, surefire 3.2.5, JaCoCo 0.8.13) and the CI/publish workflows updated to a 21/25 matrix
   * z-normalization aligned to the *population* standard deviation (divide by `n`), matching the saxpy reference; SAX words for values close to a Gaussian breakpoint may differ from earlier releases
   * HOT-SAX and brute-force discord search now compute distances on z-normalized subsequences, break ties by the lowest index, and exclude the trivial-match neighborhood of `±(windowSize - 1)`; reported discord positions/distances may differ from earlier releases
   * EMMA correctness fixes -- removed an unsound early-stop and added deterministic tie-breaking
+  * parallel SAX: fixed an order-dependent seam merge and a single-thread crash; the result now matches the single-threaded conversion exactly
 
 `1.1.4` 
   * fixing EMMA for a case of "tie" -- chosing a motif with the smallest variance
