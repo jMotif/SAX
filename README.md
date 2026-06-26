@@ -16,6 +16,20 @@ This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-license
 
 ##### Note that the most of library's functionality is also available in [R](https://github.com/jMotif/jmotif-R) and [Python](https://github.com/seninp/saxpy) as well...
 
+##### Cross-implementation alignment
+
+As of 2.0.0 the Java, R, and Python ([saxpy](https://github.com/seninp/saxpy))
+implementations are kept aligned: the SAX stack (z-normalization, PAA, Gaussian
+breakpoints, symbol assignment) and the HOT-SAX / brute-force discord search
+produce the same results across all three to floating-point precision. The
+shared conventions are: z-normalization uses the **population** standard
+deviation (divide by `n`, matching the Matrix Profile / MASS convention);
+PAA uses fractional segment boundaries; a value exactly on a breakpoint maps to
+the symbol **above** the cut; and discord search compares **z-normalized**
+subsequences and breaks distance ties by the lowest index for reproducibility.
+The 2.0.0 discord/z-normalization fixes mean SAX words and discord positions
+near a breakpoint may differ from earlier releases (see the version notes).
+
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., 
 [*Finding Motifs in Time Series*](http://cs.gmu.edu/~jessica/Lin_motif.pdf), 
