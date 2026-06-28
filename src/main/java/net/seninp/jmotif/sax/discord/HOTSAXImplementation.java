@@ -68,6 +68,34 @@ public class HOTSAXImplementation {
   public static DiscordRecords series2Discords(double[] series, int discordsNumToReport,
       int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
       double nThreshold) throws Exception {
+    // Historical behavior: an unseeded RNG drives the random-search visit order, so the search
+    // trajectory (and distance-call count) varies run-to-run. The reported discords are
+    // order-independent, so this does not change results -- only the trajectory.
+    return series2Discords(series, discordsNumToReport, windowSize, paaSize, alphabetSize, strategy,
+        nThreshold, new Random());
+  }
+
+  /**
+   * Reproducible overload of
+   * {@link #series2Discords(double[], int, int, int, int, NumerosityReductionStrategy, double)}
+   * that takes an explicit {@link Random}. Pass a seeded {@code new Random(seed)} to make the
+   * random-search visit order -- and hence the distance-call count / search trajectory --
+   * reproducible. The reported discords are identical regardless of the RNG.
+   *
+   * @param series the timeseries.
+   * @param discordsNumToReport num of discords to report.
+   * @param windowSize SAX sliding window size.
+   * @param paaSize SAX PAA value.
+   * @param alphabetSize SAX alphabet size.
+   * @param strategy the numerosity reduction strategy.
+   * @param nThreshold the normalization threshold value.
+   * @param rnd the random source for the random-search visit order.
+   * @return The set of discords found within the time series.
+   * @throws Exception if error occurs.
+   */
+  public static DiscordRecords series2Discords(double[] series, int discordsNumToReport,
+      int windowSize, int paaSize, int alphabetSize, NumerosityReductionStrategy strategy,
+      double nThreshold, Random rnd) throws Exception {
 
     // fix the start time
     Date start = new Date();
@@ -91,7 +119,7 @@ public class HOTSAXImplementation {
         SAXProcessor.timeToString(saxEnd.getTime(), hashEnd.getTime()));
 
     DiscordRecords discords = getDiscordsWithMagic(series, sax, windowSize, magicArray,
-        discordsNumToReport, nThreshold);
+        discordsNumToReport, nThreshold, rnd);
 
     Date end = new Date();
 
@@ -103,7 +131,7 @@ public class HOTSAXImplementation {
 
   private static DiscordRecords getDiscordsWithMagic(double[] series, SAXRecords sax,
       int windowSize, ArrayList<MagicArrayEntry> magicArray, int discordCollectionSize,
-      double nThreshold) throws Exception {
+      double nThreshold, Random rnd) throws Exception {
 
     // sort the candidates
     Collections.sort(magicArray);
@@ -124,7 +152,7 @@ public class HOTSAXImplementation {
 
       Date start = new Date();
       DiscordRecord bestDiscord = findBestDiscordWithMagic(series, windowSize, sax, magicArray,
-          visitRegistry, nThreshold);
+          visitRegistry, nThreshold, rnd);
       Date end = new Date();
 
       // if the discord is null we getting out of the search
@@ -184,7 +212,7 @@ public class HOTSAXImplementation {
    */
   private static DiscordRecord findBestDiscordWithMagic(double[] series, int windowSize,
       SAXRecords sax, ArrayList<MagicArrayEntry> allWords, HashSet<Integer> discordRegistry,
-      double nThreshold) throws Exception {
+      double nThreshold, Random rnd) throws Exception {
 
     // prepare the visits array, note that there can't be more points to visit that in a SAX index
     int[] visitArray = new int[series.length];
@@ -294,9 +322,9 @@ public class HOTSAXImplementation {
           }
           cIndex--;
 
-          // shuffle the visit array
+          // shuffle the visit array (rnd is supplied by the caller; an unseeded Random preserves
+          // the historical non-reproducible order, a seeded one makes the trajectory reproducible)
           //
-          Random rnd = new Random();
           for (int i = cIndex; i > 0; i--) {
             int index = rnd.nextInt(i + 1);
             int a = visitArray[index];
